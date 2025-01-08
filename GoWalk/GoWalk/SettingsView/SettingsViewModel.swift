@@ -13,11 +13,20 @@ import RxCocoa
 class SettingsViewModel {
     
     var themeMode = BehaviorRelay<ThemeMode>(value: .light)
+    var temperature = BehaviorRelay<TemperatureUnit>(value: .celsius)
+    var windSpeed = BehaviorRelay<WindSpeedUnit>(value: .metersPerSecond)
     
     func toggleMode(to mode: ThemeMode) {
             themeMode.accept(mode)
         }
     
+    func tapTemperature(to unit: TemperatureUnit) {
+        temperature.accept(unit)
+    }
+    
+    func tapWindSpeed(to unit: WindSpeedUnit) {
+        windSpeed.accept(unit)
+    }
     
 }
 
