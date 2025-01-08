@@ -58,6 +58,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         iconImageView.snp.makeConstraints { make in
             make.top.equalTo(timeLabel.snp.bottom).offset(4)
             make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
             make.size.equalTo(24)
         }
 
