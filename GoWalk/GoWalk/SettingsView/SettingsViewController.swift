@@ -154,6 +154,12 @@ class SettingsViewController: UIViewController {
                 self.updateTemperatureUnit(unit)
             }).disposed(by: disposeBag)
         
+        viewModel.windSpeed
+            .subscribe(onNext: { [weak self] unit in
+                guard let self = self else { return }
+                self.updateWindSpeedUnit(unit)
+            }).disposed(by: disposeBag)
+        
         lightModeButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.toggleMode(to: .light)
@@ -172,6 +178,21 @@ class SettingsViewController: UIViewController {
         fahrenheitButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.tapTemperature(to: .fahrenheit)
+            }.disposed(by: disposeBag)
+        
+        meterPerSecondButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapWindSpeed(to: .metersPerSecond)
+            }.disposed(by: disposeBag)
+        
+        kiloMeterPerHourButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapWindSpeed(to: .kilometersPerHour)
+            }.disposed(by: disposeBag)
+        
+        milePerHoutButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapWindSpeed(to: .milesPerHour)
             }.disposed(by: disposeBag)
     }
     
@@ -198,8 +219,26 @@ class SettingsViewController: UIViewController {
             celsiusButton.backgroundColor = .systemCyan
             fahrenheitButton.backgroundColor = .systemGray4
         case .fahrenheit:
-            fahrenheitButton.backgroundColor = .systemCyan
             celsiusButton.backgroundColor = .systemGray4
+            fahrenheitButton.backgroundColor = .systemCyan
+        }
+    }
+    
+    // 풍속 설정 UI 반영
+    private func updateWindSpeedUnit(_ unit: WindSpeedUnit) {
+        switch unit {
+        case .metersPerSecond:
+            meterPerSecondButton.backgroundColor = .systemCyan
+            kiloMeterPerHourButton.backgroundColor = .systemGray4
+            milePerHoutButton.backgroundColor = .systemGray4
+        case .kilometersPerHour:
+            meterPerSecondButton.backgroundColor = .systemGray4
+            kiloMeterPerHourButton.backgroundColor = .systemCyan
+            milePerHoutButton.backgroundColor = .systemGray4
+        case .milesPerHour:
+            meterPerSecondButton.backgroundColor = .systemGray4
+            kiloMeterPerHourButton.backgroundColor = .systemGray4
+            milePerHoutButton.backgroundColor = .systemCyan
         }
     }
 
