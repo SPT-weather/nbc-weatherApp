@@ -11,12 +11,12 @@ import RxSwift
 import RxCocoa
 
 class SettingsViewController: UIViewController {
-    
+
     let viewModel = SettingsViewModel()
     let disposeBag = DisposeBag()
-    
-    //MARK: - UI 컴포넌트 선언
-    
+
+    // MARK: - UI 컴포넌트 선언
+
     // 온도 단위 설정 레이블
     private let temperatureLabel: UILabel = {
         let label = UILabel()
@@ -25,6 +25,7 @@ class SettingsViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 28)
         return label
     }()
+
     // 섭씨 버튼
     private let celsiusButton: UIButton = {
         let button = UIButton()
@@ -35,7 +36,7 @@ class SettingsViewController: UIViewController {
         button.layer.cornerRadius = 8
         return button
     }()
-    
+
     // 화씨 버튼
     private let fahrenheitButton: UIButton = {
         let button = UIButton()
@@ -46,7 +47,7 @@ class SettingsViewController: UIViewController {
         button.layer.cornerRadius = 8
         return button
     }()
-    
+
     // 풍속 단위 설정 레이블
     private let windSpeedLabel: UILabel = {
         let label = UILabel()
@@ -55,7 +56,7 @@ class SettingsViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 28)
         return label
     }()
-    
+
     // m/s 버튼
     private let meterPerSecondButton: UIButton = {
         let button = UIButton()
@@ -66,7 +67,7 @@ class SettingsViewController: UIViewController {
         button.layer.cornerRadius = 8
         return button
     }()
-    
+
     // km/h 버튼
     private let kiloMeterPerHourButton: UIButton = {
         let button = UIButton()
@@ -87,14 +88,14 @@ class SettingsViewController: UIViewController {
         button.layer.cornerRadius = 8
         return button
     }()
-    
+
     // 구분선
     private let underLineView: UIView = {
         let view = UIView()
         view.backgroundColor = .gray
         return view
     }()
-    
+
     // 화면 모드 설정 레이블
     private let modeLabel: UILabel = {
         let label = UILabel()
@@ -103,7 +104,7 @@ class SettingsViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 28)
         return label
     }()
-    
+
     // 라이트 모드 버튼
     private let lightModeButton: UIButton = {
         let button = UIButton()
@@ -113,7 +114,7 @@ class SettingsViewController: UIViewController {
         button.contentHorizontalAlignment = .left
         return button
     }()
-    
+
     // 다크 모드 버튼
     private let darkModeButton: UIButton = {
         let button = UIButton()
@@ -123,7 +124,7 @@ class SettingsViewController: UIViewController {
         button.contentHorizontalAlignment = .left
         return button
     }()
-    
+
     // 체크 마크 이미지뷰
     private let checkImageView: UIImageView = {
         let imageView = UIImageView()
@@ -132,15 +133,28 @@ class SettingsViewController: UIViewController {
         imageView.isHidden = false
         return imageView
     }()
-    
+
+    // MARK: - ViewDidLoad
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print("모드 저장값: \(UserDefaults.standard.themeMode)")
+        print("온도 단위 저장값: \(UserDefaults.standard.temperatureUnit)")
+        print("풍속 단위 저장값: \(UserDefaults.standard.windSpeedUnit)")
+        
+        // 다크 모드와 라이트 모드 모두에서 적절한 배경 색상 설정
+        view.backgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            return traitCollection.userInterfaceStyle == .dark ? .black : .white
+        }
+        
         setNavigationBar()
         setupUI()
         bind()
+        
     }
     
-    //MARK: - UI 업데이트 메서드
+    // MARK: - UI 업데이트 메서드
     
     // 바인딩 메서드
     private func bind() {
@@ -202,14 +216,24 @@ class SettingsViewController: UIViewController {
     private func updateMode(_ mode: ThemeMode) {
         switch mode {
         case .light:
-            UIApplication.shared.windows.forEach { window in
-                window.overrideUserInterfaceStyle = .light
-            }
+            // iOS 15 이상에서 권장되는 방식
+            UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .forEach { windowScene in
+                    windowScene.windows.forEach { window in
+                        window.overrideUserInterfaceStyle = .light
+                    }
+                }
             updateCheckMaker(lightModeButton)
+            
         case .dark:
-            UIApplication.shared.windows.forEach { window in
-                window.overrideUserInterfaceStyle = .dark
-            }
+            UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .forEach { windowScene in
+                    windowScene.windows.forEach { window in
+                        window.overrideUserInterfaceStyle = .dark
+                    }
+                }
             updateCheckMaker(darkModeButton)
         }
     }
@@ -249,7 +273,7 @@ class SettingsViewController: UIViewController {
         checkImageView.isHidden = false
         checkImageView.snp.remakeConstraints {
             $0.width.height.equalTo(20)
-            $0.leading.equalTo(button.snp.trailing).offset(200)
+            $0.trailing.equalToSuperview().offset(-30)
             $0.centerY.equalTo(button.snp.centerY)
         }
     }
@@ -334,21 +358,21 @@ class SettingsViewController: UIViewController {
         
         lightModeButton.snp.makeConstraints {
             $0.top.equalTo(modeLabel.snp.bottom).offset(20)
-            $0.leading.equalTo(temperatureLabel.snp.leading)
-            $0.width.equalTo(120)
-            $0.height.equalTo(35)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalTo(checkImageView.snp.leading)
+            $0.height.equalTo(40)
         }
         
         darkModeButton.snp.makeConstraints {
             $0.top.equalTo(lightModeButton.snp.bottom).offset(10)
-            $0.leading.equalTo(temperatureLabel.snp.leading)
-            $0.width.equalTo(120)
-            $0.height.equalTo(35)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalTo(checkImageView.snp.leading)
+            $0.height.equalTo(40)
         }
         
         checkImageView.snp.makeConstraints {
             $0.width.height.equalTo(20)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-30)
+            $0.trailing.equalToSuperview().offset(-30)
             $0.centerY.equalTo(lightModeButton.snp.centerY)
         }
     }
