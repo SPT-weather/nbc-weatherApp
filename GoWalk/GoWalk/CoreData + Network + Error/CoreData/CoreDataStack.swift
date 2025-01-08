@@ -9,6 +9,7 @@ import CoreData
 
 // Core Location은 필요한 위, 경도 정보 외에 불필요한 정보 제공이 될 가능성, 많은 import가 필요하여 별개의 구조체 선언했습니다.
 struct LocationPoint {
+    let regionName: String
     let latitude: Double
     let longitude: Double
 }
@@ -24,7 +25,7 @@ final class CoreDataStack {
         let container = NSPersistentContainer(name: "Location")
         container.loadPersistentStores { _, error in
             if let error = error {
-                print("failed to load persistent container")
+                print(AppError.data(.failedToMakePersistentContainer).localizedDescription)
             }
         }
         return container
@@ -37,6 +38,7 @@ final class CoreDataStack {
     // MARK: - 지역 추가, 삭제
     func addLocation(at newLocation: LocationPoint) {
         let location: Location = Location(context: context)
+        location.regionName = newLocation.regionName
         location.latitude = newLocation.latitude
         location.longitude = newLocation.longitude
         saveContext()
@@ -54,7 +56,7 @@ final class CoreDataStack {
         do {
             try context.save()
         } catch {
-            print("failed to save context")
+            print(AppError.data(.failedToSaveContext(error: error)))
         }
     }
 }
