@@ -9,6 +9,24 @@ import UIKit
 import SnapKit
 
 class DetailViewController: UIViewController {
+    
+    private lazy var hourlyTitleLabel: UILabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 18, weight: .bold)
+            label.textColor = .black
+            label.textAlignment = .left
+            label.text = "시간별 날씨"
+            return label
+        }()
+
+        private lazy var weeklyTitleLabel: UILabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 18, weight: .bold)
+            label.textColor = .black
+            label.textAlignment = .left
+            label.text = "요일별 날씨"
+            return label
+        }()
 
     private lazy var hourlyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -17,6 +35,7 @@ class DetailViewController: UIViewController {
         layout.minimumLineSpacing = 10
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
         collectionView.backgroundColor = .white
         collectionView.layer.cornerRadius = 16
         collectionView.clipsToBounds = true
@@ -30,6 +49,7 @@ class DetailViewController: UIViewController {
         layout.minimumLineSpacing = 10
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
         collectionView.backgroundColor = .white
         collectionView.layer.cornerRadius = 16
         collectionView.clipsToBounds = true
@@ -60,19 +80,31 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController {
     private func setupUI() {
-        hourlyCollectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
-        weeklyCollectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
+        [hourlyTitleLabel, hourlyCollectionView,
+         weeklyTitleLabel, weeklyCollectionView]
+            .forEach { view.addSubview($0) }
         
-        [hourlyCollectionView, weeklyCollectionView].forEach { view.addSubview($0) }
-        
-        hourlyCollectionView.snp.makeConstraints { make in
+        view.addSubview(hourlyTitleLabel)
+        hourlyTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        view.addSubview(hourlyCollectionView)
+        hourlyCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(hourlyTitleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(120)
         }
-        
-        weeklyCollectionView.snp.makeConstraints { make in
+        view.addSubview(weeklyTitleLabel)
+        weeklyTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(hourlyCollectionView.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        view.addSubview(weeklyCollectionView)
+        weeklyCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(weeklyTitleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().offset(-16)
         }
