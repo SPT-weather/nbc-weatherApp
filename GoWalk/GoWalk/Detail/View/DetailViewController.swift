@@ -9,21 +9,31 @@ import UIKit
 import SnapKit
 
 class DetailViewController: UIViewController {
-    
-    private var hourlyCollectionView: UICollectionView = {
+
+    private lazy var hourlyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 70, height: 100)
         layout.minimumLineSpacing = 10
-        return UICollectionView(frame: .zero, collectionViewLayout: layout)
+
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.layer.cornerRadius = 16
+        collectionView.clipsToBounds = true
+        return collectionView
     }()
-    
-    private var weeklyCollectionView: UICollectionView = {
+
+    private lazy var weeklyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 32, height: 50) // 주간 예보 셀 크기
         layout.minimumLineSpacing = 10
-        return UICollectionView(frame: .zero, collectionViewLayout: layout)
+
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.layer.cornerRadius = 16
+        collectionView.clipsToBounds = true
+        return collectionView
     }()
     
     init() {
@@ -36,23 +46,22 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemGray6
+        
+        hourlyCollectionView.dataSource = self
+        hourlyCollectionView.delegate = self
+        
         setupUI()
     }
 }
 
 extension DetailViewController {
     private func setupUI() {
-        view.backgroundColor = .white
+        hourlyCollectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
+        //        weeklyCollectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
         
-        hourlyCollectionView.backgroundColor = .systemGray6
-        weeklyCollectionView.backgroundColor = .systemGray6
-        
-//        hourlyCollectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
-//        weeklyCollectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
-        
-        view.addSubview(hourlyCollectionView)
-        view.addSubview(weeklyCollectionView)
-        
+        [hourlyCollectionView, weeklyCollectionView].forEach { view.addSubview($0) }
+
         hourlyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
@@ -67,3 +76,19 @@ extension DetailViewController {
     }
 }
 
+extension DetailViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 100
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.identifier, for: indexPath)
+                as? HourlyCollectionViewCell  else { return UICollectionViewCell() }
+        
+        return cell
+    }
+}
+
+extension DetailViewController: UICollectionViewDelegate {
+
+}
