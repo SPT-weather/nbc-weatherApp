@@ -28,7 +28,7 @@ class SettingsViewController: UIViewController {
     // 섭씨 버튼
     private let celsiusButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .systemGray4
+        button.backgroundColor = .systemCyan
         button.setTitle("°C", for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
@@ -59,7 +59,7 @@ class SettingsViewController: UIViewController {
     // m/s 버튼
     private let meterPerSecondButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .systemGray4
+        button.backgroundColor = .systemCyan
         button.setTitle("m/s", for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
@@ -145,7 +145,13 @@ class SettingsViewController: UIViewController {
         viewModel.themeMode
             .subscribe(onNext: { [weak self] mode in
                 guard let self = self else { return }
-                self.updateUI(mode)
+                self.updateMode(mode)
+            }).disposed(by: disposeBag)
+        
+        viewModel.temperature
+            .subscribe(onNext: { [weak self] unit in
+                guard let self = self else { return }
+                self.updateTemperatureUnit(unit)
             }).disposed(by: disposeBag)
         
         lightModeButton.rx.tap
@@ -157,10 +163,20 @@ class SettingsViewController: UIViewController {
             .bind { [weak self] in
                 self?.viewModel.toggleMode(to: .dark)
             }.disposed(by: disposeBag)
+        
+        celsiusButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapTemperature(to: .celsius)
+            }.disposed(by: disposeBag)
+        
+        fahrenheitButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapTemperature(to: .fahrenheit)
+            }.disposed(by: disposeBag)
     }
     
     // 라이트모드/다크모드 적용
-    private func updateUI(_ mode: ThemeMode) {
+    private func updateMode(_ mode: ThemeMode) {
         switch mode {
         case .light:
             UIApplication.shared.windows.forEach { window in
@@ -175,6 +191,18 @@ class SettingsViewController: UIViewController {
         }
     }
     
+    // 온도 설정 UI 반영
+    private func updateTemperatureUnit(_ unit: TemperatureUnit) {
+        switch unit {
+        case .celsius:
+            celsiusButton.backgroundColor = .systemCyan
+            fahrenheitButton.backgroundColor = .systemGray4
+        case .fahrenheit:
+            fahrenheitButton.backgroundColor = .systemCyan
+            celsiusButton.backgroundColor = .systemGray4
+        }
+    }
+
     // 체크 마크 위치 업데이트
     private func updateCheckMaker(_ button: UIButton) {
         checkImageView.isHidden = false
@@ -183,7 +211,6 @@ class SettingsViewController: UIViewController {
             $0.leading.equalTo(button.snp.trailing).offset(200)
             $0.centerY.equalTo(button.snp.centerY)
         }
-        view.layoutIfNeeded() // 레이아웃 강제 갱신
     }
     
     // 네비바 셋업
