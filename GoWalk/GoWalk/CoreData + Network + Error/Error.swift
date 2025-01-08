@@ -13,6 +13,7 @@ enum AppError: Error {
     enum DataError: Error {
         case failedToMakePersistentContainer
         case failedToSaveContext(error: Error)  // save()가 이미 error를 던져주지만 통일된 사용을 위해서 다시 AppError로 감싸도록 했습니다.
+        case failedToFetch(error: Error)
     }
 
     enum NetworkError: Error {
@@ -30,6 +31,8 @@ extension AppError: LocalizedError {
                 return "영구 저장소 생성 실패"
             case .failedToSaveContext(let error):
                 return "Context 저장 실패. 실패 사유: \(error)"
+            case .failedToFetch(let error):
+                return "Fetch 요청 실패. 실패 사유: \(error)"
             }
 
         case .network(let error):
