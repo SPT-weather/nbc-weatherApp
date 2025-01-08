@@ -140,6 +140,8 @@ class SettingsViewController: UIViewController {
         bind()
     }
     
+    //MARK: - UI 업데이트 메서드
+    
     // 바인딩 메서드
     private func bind() {
         viewModel.themeMode
