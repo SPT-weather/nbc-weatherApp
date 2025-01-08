@@ -47,12 +47,10 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
     }
 
     private func setupUI() {
-        // 셀 배경색 및 스타일 설정
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 8
         contentView.layer.masksToBounds = true
         
-        // UI 요소 추가
         contentView.addSubview(dateLabel)
         contentView.addSubview(iconImageView)
         contentView.addSubview(temperatureLabel)
