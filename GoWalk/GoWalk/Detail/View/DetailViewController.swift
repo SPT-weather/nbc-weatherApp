@@ -51,6 +51,9 @@ class DetailViewController: UIViewController {
         hourlyCollectionView.dataSource = self
         hourlyCollectionView.delegate = self
         
+        weeklyCollectionView.dataSource = self
+        weeklyCollectionView.delegate = self
+        
         setupUI()
     }
 }
@@ -58,10 +61,10 @@ class DetailViewController: UIViewController {
 extension DetailViewController {
     private func setupUI() {
         hourlyCollectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
-        //        weeklyCollectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
+        weeklyCollectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
         
         [hourlyCollectionView, weeklyCollectionView].forEach { view.addSubview($0) }
-
+        
         hourlyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
@@ -78,14 +81,28 @@ extension DetailViewController {
 
 extension DetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        if collectionView == hourlyCollectionView {
+            return 10
+        } else if collectionView == weeklyCollectionView {
+            return 7
+        }
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.identifier, for: indexPath)
-                as? HourlyCollectionViewCell  else { return UICollectionViewCell() }
-        
-        return cell
+        if collectionView == hourlyCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.identifier, for: indexPath)
+                    as? HourlyCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            //cell.timeLabel.text = "오후 \(indexPath.item + 1)시"
+            //cell.temperatureLabel.text = "\(indexPath.item)도"
+            return cell
+        } else if collectionView == weeklyCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeeklyCollectionViewCell.identifier, for: indexPath)
+            return cell
+        }
+        return UICollectionViewCell()
     }
 }
 
