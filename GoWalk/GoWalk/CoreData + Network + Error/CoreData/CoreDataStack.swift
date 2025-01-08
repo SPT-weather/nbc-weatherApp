@@ -58,7 +58,7 @@ final class CoreDataStack {
                 )
             }
         } catch {
-            print(AppError.data(.failedToFetch(error: error)))
+            print(AppError.data(.failedToFetch(error: error)).localizedDescription)
             return []
         }
     }
