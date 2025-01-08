@@ -7,8 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class SettingsViewController: UIViewController {
+    
+    let viewModel = SettingsViewModel()
+    let disposeBag = DisposeBag()
     
     //MARK: - UI 컴포넌트 선언
     
@@ -132,11 +137,60 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         setNavigationBar()
         setupUI()
+        bind()
     }
+    
+    // 바인딩 메서드
+    private func bind() {
+        viewModel.themeMode
+            .subscribe(onNext: { [weak self] mode in
+                guard let self = self else { return }
+                self.updateUI(mode)
+            }).disposed(by: disposeBag)
+        
+        lightModeButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.toggleMode(to: .light)
+            }.disposed(by: disposeBag)
+        
+        darkModeButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.toggleMode(to: .dark)
+            }.disposed(by: disposeBag)
+    }
+    
+    // 라이트모드/다크모드 적용
+    private func updateUI(_ mode: ThemeMode) {
+        switch mode {
+        case .light:
+            UIApplication.shared.windows.forEach { window in
+                window.overrideUserInterfaceStyle = .light
+            }
+            updateCheckMaker(lightModeButton)
+        case .dark:
+            UIApplication.shared.windows.forEach { window in
+                window.overrideUserInterfaceStyle = .dark
+            }
+            updateCheckMaker(darkModeButton)
+        }
+    }
+    
+    // 체크 마크 위치 업데이트
+    private func updateCheckMaker(_ button: UIButton) {
+        checkImageView.isHidden = false
+        checkImageView.snp.remakeConstraints {
+            $0.width.height.equalTo(20)
+            $0.leading.equalTo(button.snp.trailing).offset(200)
+            $0.centerY.equalTo(button.snp.centerY)
+        }
+        view.layoutIfNeeded() // 레이아웃 강제 갱신
+    }
+    
     // 네비바 셋업
     private func setNavigationBar() {
         navigationItem.title = "Settings"
     }
+    
     // UI 셋업
     private func setupUI() {
         [
@@ -155,7 +209,7 @@ class SettingsViewController: UIViewController {
         ].forEach { view.addSubview($0) }
         
         temperatureLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(100)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(60)
             $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(20)
         }
         
