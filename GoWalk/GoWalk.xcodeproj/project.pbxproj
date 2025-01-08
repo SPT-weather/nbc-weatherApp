@@ -28,6 +28,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		231986272D2E4D3900195B24 /* MainView */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MainView;
+			sourceTree = "<group>";
+		};
 		F9FB02BE2D2D132A0005563A /* GoWalk */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -56,6 +61,7 @@
 		F9FB02B32D2D132A0005563A = {
 			isa = PBXGroup;
 			children = (
+				231986272D2E4D3900195B24 /* MainView */,
 				F9FB02BE2D2D132A0005563A /* GoWalk */,
 				F9FB02BD2D2D132A0005563A /* Products */,
 			);
@@ -86,6 +92,7 @@
 				F9FB02E32D2D13800005563A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				231986272D2E4D3900195B24 /* MainView */,
 				F9FB02BE2D2D132A0005563A /* GoWalk */,
 			);
 			name = GoWalk;
