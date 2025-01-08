@@ -32,15 +32,19 @@ final class WeatherSimpleView: UIView {
         stackView.spacing = 10
         return stackView
     }()
-    // 온도를 담은 스택 뷰
-    private let temperatureStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.backgroundColor = stackViewBackgroundColor
-        stackView.spacing = 8
-        return stackView
-    }()
+//    // 온도를 담은 스택 뷰
+//    private let temperatureStackView: UIStackView = {
+//        let stackView = UIStackView()
+//        stackView.axis = .horizontal
+//        stackView.backgroundColor = stackViewBackgroundColor
+//        stackView.spacing = 8
+//        return stackView
+//    }()
 
+    let currentTemperatureLabel: UILabel = {
+        let label = temperatureLabel()
+        return label
+    }()
     // 날씨 이미지 뷰
     let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -58,10 +62,10 @@ final class WeatherSimpleView: UIView {
         label.backgroundColor = labelBackgroundLabel
         return label
     }()
-    // 높은 온도 라벨 뷰
-    let highestTemperatureLabel: UILabel = temperatureLabel()
-    // 낮은 온도 라벨 뷰
-    let lowestTemperatureLabel: UILabel = temperatureLabel()
+//    // 높은 온도 라벨 뷰
+//    let highestTemperatureLabel: UILabel = temperatureLabel()
+//    // 낮은 온도 라벨 뷰
+//    let lowestTemperatureLabel: UILabel = temperatureLabel()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -79,11 +83,11 @@ final class WeatherSimpleView: UIView {
         [imageView, labelStackVieW]
             .forEach { wholeStackVieW.addArrangedSubview($0) }
         // 지역 라벨, 기온 스택 뷰
-        [locationLabel, temperatureStackView]
+        [locationLabel, currentTemperatureLabel]
             .forEach { labelStackVieW.addArrangedSubview($0) }
-        // 최고 온도, 최저 온도, 공백
-        [highestTemperatureLabel, lowestTemperatureLabel, UIView()]
-            .forEach { temperatureStackView.addArrangedSubview($0) }
+//        // 최고 온도, 최저 온도, 공백
+//        [highestTemperatureLabel, lowestTemperatureLabel, UIView()]
+//            .forEach { temperatureStackView.addArrangedSubview($0) }
 
         wholeStackVieW.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -108,6 +112,7 @@ extension WeatherSimpleView {
         label.numberOfLines = 1
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.backgroundColor = labelBackgroundLabel
+        label.text = "현재온도: -- ℃"
         return label
     }
 }
