@@ -95,9 +95,12 @@ extension DetailViewController {
         }
         
         view.addSubview(hourlyCollectionView)
+
+        let contentLayoutGuide = view.layoutMarginsGuide
+
         hourlyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(hourlyTitleLabel.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalTo(contentLayoutGuide)
             make.height.equalTo(120)
         }
         view.addSubview(weeklyTitleLabel)
