@@ -10,7 +10,7 @@ import SnapKit
 
 class HourlyCollectionViewCell: UICollectionViewCell {
     static let identifier = "HourlyCollectionViewCell"
-
+    
     private let timeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -19,7 +19,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         label.text = "오후 1시"
         return label
     }()
-
+    
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -27,7 +27,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         imageView.image = UIImage(resource: .dummyWeather).withTintColor(.label)
         return imageView
     }()
-
+    
     private let temperatureLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -36,7 +36,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         label.text = "1도"
         return label
     }()
-
+    
     private lazy var stackView = {
         let stackView = UIStackView(arrangedSubviews: [timeLabel, iconImageView, temperatureLabel])
         stackView.axis = .vertical
@@ -45,16 +45,16 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         stackView.distribution = .fill
         return stackView
     }()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func setupUI() {
         contentView.addSubview(stackView)
         
@@ -62,10 +62,10 @@ class HourlyCollectionViewCell: UICollectionViewCell {
             make.top.leading.trailing.equalToSuperview().inset(8)
         }
     }
-
-    //    func configure(with model: HourlyForecast) {
-    //        timeLabel.text = model.time
-    //        temperatureLabel.text = model.temperature
-    //        iconImageView.image = UIImage(systemName: model.icon)
-    //    }
+    
+    func configure(with model: DummyDetailModel) {
+        timeLabel.text = model.time
+        temperatureLabel.text = model.temperature
+        iconImageView.image = model.icon
+    }
 }

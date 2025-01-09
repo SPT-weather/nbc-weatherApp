@@ -76,11 +76,19 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
             make.width.height.equalTo(30)
         }
     }
+    
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd"
+        return formatter
+    }()
+        
+    func configure(with model: DummyDetailModel) {
+        dateLabel.text = Self.dateFormatter.string(from: model.date)
+        iconImageView.image = model.icon
+        maxTemperatureLabel.text = "최고: \(model.maxTemperature)"
+        minTemperatureLabel.text = "최저: \(model.minTemperature)"
+        
+    }
 }
-
-//    func configure(with model: HourlyForecast) {
-//        timeLabel.text = model.time
-//        temperatureLabel.text = model.temperature
-//        iconImageView.image = UIImage(systemName: model.icon)
-//    }
 

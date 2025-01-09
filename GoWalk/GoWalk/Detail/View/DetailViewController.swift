@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class DetailViewController: UIViewController {
+    
+    private var disposeBag = DisposeBag()
     
     private lazy var hourlyTitleLabel: UILabel = {
         let label = UILabel()
@@ -31,7 +35,7 @@ class DetailViewController: UIViewController {
     private lazy var hourlyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 70, height: 100)
+        layout.itemSize = CGSize(width: 80, height: 100)
         layout.minimumLineSpacing = 10
         layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
@@ -72,17 +76,62 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named:"ModalBgColor")
         
-        hourlyCollectionView.dataSource = self
+        //hourlyCollectionView.dataSource = self
         hourlyCollectionView.delegate = self
         
-        weeklyCollectionView.dataSource = self
+        //weeklyCollectionView.dataSource = self
         weeklyCollectionView.delegate = self
         
         setupUI()
+        bind()
+    }
+}
+
+struct DummyDetailModel {
+    let time: String
+    let temperature: String
+    let icon: UIImage
+    let date: Date
+    let minTemperature: String
+    let maxTemperature: String
+}
+
+extension DummyDetailModel {
+    static var dummy: [DummyDetailModel] {
+        return [
+            DummyDetailModel(time: "오후 1시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 2시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 3시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 4시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 5시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 6시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 7시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
+            DummyDetailModel(time: "오후 8시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃")
+        ]
     }
 }
 
 extension DetailViewController {
+    private func bind() {
+        Observable<[DummyDetailModel]>
+            .just(DummyDetailModel.dummy)
+            .debug()
+            .observe(on: MainScheduler.instance)
+            .bind(to: hourlyCollectionView.rx.items(cellIdentifier: HourlyCollectionViewCell.identifier)) { (indexPath, item, cell: HourlyCollectionViewCell) in
+                cell.configure(with: item)
+            }
+            .disposed(by: disposeBag)
+        
+        Observable<[DummyDetailModel]>
+            .just(DummyDetailModel.dummy)
+            .debug()
+            .observe(on: MainScheduler.instance)
+            .bind(to: weeklyCollectionView.rx.items(cellIdentifier: WeeklyCollectionViewCell.identifier)) { (indexPath, item, cell: WeeklyCollectionViewCell) in
+                cell.configure(with: item)
+            }
+            .disposed(by: disposeBag)
+    }
+    
     private func setupUI() {
         [hourlyTitleLabel, hourlyCollectionView,
          weeklyTitleLabel, weeklyCollectionView]
