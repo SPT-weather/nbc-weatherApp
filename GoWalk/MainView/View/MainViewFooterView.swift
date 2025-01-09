@@ -85,7 +85,6 @@ final class MainViewFooterView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addStackView()
-        backgroundColor = .lightGray
         layer.cornerRadius = 20
     }
     required init?(coder: NSCoder) {
@@ -175,15 +174,14 @@ extension MainViewFooterView {
     }
     private static func valueLabel() -> UILabel {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 20)
+        label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 1
-        label.text = "00"
         return label
     }
     private static func footerLabel() -> UILabel {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18)
+        label.font = .systemFont(ofSize: 20, weight: .regular)
         label.textAlignment = .center
         label.textColor = labelColor
         return label

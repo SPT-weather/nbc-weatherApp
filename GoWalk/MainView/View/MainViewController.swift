@@ -12,12 +12,10 @@ private let labelColor = UIColor.label
 private let backgroundColor = UIColor.systemBackground
 
 class MainViewController: UIViewController {
-
     private let navigationView: UIView = {
         let view = UIView()
         return view
     }()
-
     private let mapButton: UIButton = {
         let button = mainViewButton()
         button.setImage(UIImage(systemName: "map"), for: .normal)
@@ -36,7 +34,7 @@ class MainViewController: UIViewController {
     private let weatherSimpleView = WeatherSimpleView()
     private let puppyImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .green
+        imageView.backgroundColor = .lightGray
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -45,16 +43,17 @@ class MainViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
     }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        forTest()
     }
     private func configureUI() {
         view.backgroundColor = backgroundColor
-        [mapButton, locationButton, settingButton].forEach { navigationView.addSubview($0) }
-        [navigationView, weatherSimpleView, puppyImageView, footerView].forEach { view.addSubview($0) }
-
+        [mapButton, locationButton, settingButton]
+            .forEach { navigationView.addSubview($0) }
+        [navigationView, weatherSimpleView, puppyImageView, footerView]
+            .forEach { view.addSubview($0) }
         navigationView.snp.makeConstraints {
             $0.leading.trailing.top.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(80)
@@ -89,18 +88,17 @@ class MainViewController: UIViewController {
             $0.height.equalTo(180)
         }
     }
-    func forTest() {
-        let weatherViewModel = WeatherSimple(location: "내일배움캠프",
-                                              weather: .cloudy,
-                                             highestTemperature: 10,
-                                             lowestTemperature: 3)
-
-        weatherSimpleView.imageView.image = WeatherAssetTranslator.resourceImage(from: weatherViewModel.weather)
+    private func forTest() {
+        let weatherViewModel = MockDataModel.weather
+        let temperatureFormatter = MockDataModel.temperatureFormatter
+        weatherSimpleView.imageView.image = WeatherAssetTranslator
+            .resourceImage(from: weatherViewModel.weather)?
+            .withTintColor(labelColor)
         weatherSimpleView.locationLabel.text = weatherViewModel.location
-//        weatherSimpleView.highestTemperatureLabel.text = weatherViewModel.highestTempDescription
-//        weatherSimpleView.lowestTemperatureLabel.text = weatherViewModel.lowestTempDescription
+        weatherSimpleView.currentTemperatureLabel.text = temperatureFormatter.current
+        footerView.highestTemperatureLabel.text = temperatureFormatter.highest
+        footerView.lowestTemperatureLabel.text = temperatureFormatter.lowest
     }
-
     private static func mainViewButton() -> UIButton {
         var configuration = UIButton.Configuration.plain()
         configuration.preferredSymbolConfigurationForImage = .init(pointSize: 20)

@@ -8,49 +8,51 @@
 import Foundation
 
 struct WeatherSimple {
-
     let location: String
     let weather: TemporaryWeather
+    private let currentTemperature: Int
     private let temperature: (highest: Int, lowest: Int)
-
+    var currentTempDescription: String {
+        return "현재온도: " + TemperatureFormatter.current(currentTemperature)
+    }
     var highestTempDescription: String {
-        return tempForm(style: .highest, temperature.highest)
+        return TemperatureFormatter.simple(temperature.highest)
     }
-
     var lowestTempDescription: String {
-        return tempForm(style: .highest, temperature.highest)
+        return TemperatureFormatter.simple(temperature.lowest)
     }
-
-    private var temperatureStyle: TemperatureStyle {
-        // 설정에서 저장된 값 불러오기
-        return .celsius
-    }
-
-    // 기온 라벨에 적합한 형태로 반환
-    private func tempForm(style: TempeatureLabelStyle, _ temp: Int) -> String {
-        "\(style.korean): \(temp) \(temperatureStyle.mark)"
-    }
-
     init(location: String,
          weather: TemporaryWeather,
+         currentTemperature: Int,
          highestTemperature: Int,
          lowestTemperature: Int) {
         self.location = location
         self.weather = weather
+        self.currentTemperature = currentTemperature
         self.temperature = (highest: highestTemperature,
                             lowest: lowestTemperature)
     }
+}
 
-    // 날씨 라벨 타입 ( 최고, 최저 )
-    private enum TempeatureLabelStyle {
-        case highest
-        case lowest
+struct TemperatureModel {
+    private let currentTemperature: Int
+    private let highestTemperature: Int
+    private let lowestTemperature: Int
+    var current: String {
+        return "현재온도: " + TemperatureFormatter.current(currentTemperature)
+    }
+    var highest: String {
+        return TemperatureFormatter.simple(highestTemperature)
+    }
+    var lowest: String {
+        return TemperatureFormatter.simple(lowestTemperature)
+    }
 
-        var korean: String {
-            switch self {
-            case .highest: return "최고"
-            case .lowest: return "최저"
-            }
-        }
+    init(currentTemperature: Int,
+         highestTemperature: Int,
+         lowestTemperature: Int) {
+        self.currentTemperature = currentTemperature
+        self.highestTemperature = highestTemperature
+        self.lowestTemperature = lowestTemperature
     }
 }

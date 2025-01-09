@@ -11,7 +11,7 @@ enum WeatherAssetTranslator {
     static func resourceImage(from weather: TemporaryWeather) -> UIImage? {
         switch weather {
         case .sunny:
-            return UIImage(systemName: "sun.min")
+            return UIImage(systemName: "sun.max")
         case .cloudy:
             return UIImage(systemName: "cloud.fill")
         }
