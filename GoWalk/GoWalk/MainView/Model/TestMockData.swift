@@ -7,13 +7,19 @@
 
 import Foundation
 
-struct MockDataModel {
+struct TestMockData {
+
+    static let dust = TempDust(micro: 100,
+                               fine: 100)
+
     static let temperatureFormatter = TemperatureModel(currentTemperature: 13,
                                                        highestTemperature: 15,
                                                        lowestTemperature: -11)
+
     static let weather = WeatherSimple(location: "서울특별시",
-                                       weather: .cloudy,
-                                       currentTemperature: 10,
-                                       highestTemperature: 12,
-                                       lowestTemperature: 0)
+                                       weather: .cloudy)
+
+    static let testWeather = WeatherSimple(location: "작동확인",
+                                           weather: .cloudy)
+
 }

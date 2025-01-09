@@ -11,4 +11,11 @@ import Foundation
 enum TemporaryWeather {
     case sunny
     case cloudy
+
+    var korean: String {
+        switch self {
+        case .sunny: return "맑음"
+        case .cloudy: return "구름"
+        }
+    }
 }

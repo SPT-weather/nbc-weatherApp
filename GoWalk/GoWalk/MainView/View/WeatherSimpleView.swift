@@ -32,12 +32,13 @@ final class WeatherSimpleView: UIView {
         stackView.spacing = 10
         return stackView
     }()
+    // 현재 온도 라벨
     let currentTemperatureLabel: UILabel = {
         let label = temperatureLabel()
         return label
     }()
     // 날씨 이미지 뷰
-    let imageView: UIImageView = {
+    let weatherImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(systemName: "sun.max")
@@ -54,6 +55,7 @@ final class WeatherSimpleView: UIView {
         label.backgroundColor = labelBackgroundLabel
         return label
     }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -67,7 +69,7 @@ final class WeatherSimpleView: UIView {
     private func configureUI() {
         addSubview(wholeStackVieW)
         // 날씨 이미지 뷰, 지역 + 기온 스택 뷰
-        [imageView, labelStackVieW]
+        [weatherImageView, labelStackVieW]
             .forEach { wholeStackVieW.addArrangedSubview($0) }
         // 지역 라벨, 기온 스택 뷰
         [locationLabel, currentTemperatureLabel]
@@ -78,7 +80,7 @@ final class WeatherSimpleView: UIView {
         locationLabel.snp.makeConstraints {
             $0.height.equalTo(30)
         }
-        imageView.snp.makeConstraints {
+        weatherImageView.snp.makeConstraints {
             $0.width.height.equalTo(labelStackVieW.snp.height)
         }
         wholeStackVieW.snp.makeConstraints {

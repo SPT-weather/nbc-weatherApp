@@ -10,34 +10,17 @@ import Foundation
 struct WeatherSimple {
     let location: String
     let weather: TemporaryWeather
-    private let currentTemperature: Int
-    private let temperature: (highest: Int, lowest: Int)
-    var currentTempDescription: String {
-        return "현재온도: " + TemperatureFormatter.current(currentTemperature)
-    }
-    var highestTempDescription: String {
-        return TemperatureFormatter.simple(temperature.highest)
-    }
-    var lowestTempDescription: String {
-        return TemperatureFormatter.simple(temperature.lowest)
-    }
-    init(location: String,
-         weather: TemporaryWeather,
-         currentTemperature: Int,
-         highestTemperature: Int,
-         lowestTemperature: Int) {
-        self.location = location
-        self.weather = weather
-        self.currentTemperature = currentTemperature
-        self.temperature = (highest: highestTemperature,
-                            lowest: lowestTemperature)
-    }
+
+    static let `default` = WeatherSimple(location: "",
+                                         weather: .sunny)
+
 }
 
 struct TemperatureModel {
     private let currentTemperature: Int
     private let highestTemperature: Int
     private let lowestTemperature: Int
+
     var current: String {
         return "현재온도: " + TemperatureFormatter.current(currentTemperature)
     }
@@ -55,4 +38,8 @@ struct TemperatureModel {
         self.highestTemperature = highestTemperature
         self.lowestTemperature = lowestTemperature
     }
+
+    static let `default` = TemperatureModel(currentTemperature: 0,
+                                            highestTemperature: 0,
+                                            lowestTemperature: 0)
 }
