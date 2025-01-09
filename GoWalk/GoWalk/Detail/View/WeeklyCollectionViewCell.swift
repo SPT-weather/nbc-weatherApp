@@ -15,7 +15,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textColor = .black
+        label.textColor = .label
         label.text = "10/11"
         return label
     }()
@@ -24,7 +24,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.image = UIImage(named: "DummyWeather")
+        imageView.image = UIImage(resource: .dummyWeather).withTintColor(.label)
         return imageView
     }()
     
@@ -32,7 +32,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .right
         label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textColor = .darkGray
+        label.textColor = .label
         label.text = "최고: 0℃"
         return label
     }()
@@ -41,7 +41,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .right
         label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textColor = .darkGray
+        label.textColor = .label
         label.text = "최저: -7℃"
         return label
     }()
