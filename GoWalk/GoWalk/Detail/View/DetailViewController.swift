@@ -39,6 +39,7 @@ class DetailViewController: UIViewController {
         collectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
         collectionView.backgroundColor = UIColor(named: "SectionBgColor")
         collectionView.layer.cornerRadius = 16
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.clipsToBounds = true
         return collectionView
     }()
@@ -54,6 +55,7 @@ class DetailViewController: UIViewController {
         collectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
         collectionView.backgroundColor = UIColor(named: "SectionBgColor")
         collectionView.layer.cornerRadius = 16
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.clipsToBounds = true
         return collectionView
     }()
