@@ -22,7 +22,7 @@ class SettingsViewController: UIViewController {
         let label = UILabel()
         label.text = "TEMPERATURE"
         label.textColor = .label
-        label.font = UIFont.boldSystemFont(ofSize: 28)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return label
     }()
 
@@ -32,7 +32,7 @@ class SettingsViewController: UIViewController {
         button.backgroundColor = .systemCyan
         button.setTitle("°C", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
         return button
     }()
@@ -43,7 +43,7 @@ class SettingsViewController: UIViewController {
         button.backgroundColor = .systemGray4
         button.setTitle("°F", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
         return button
     }()
@@ -53,7 +53,7 @@ class SettingsViewController: UIViewController {
         let label = UILabel()
         label.text = "WIND SPEED"
         label.textColor = .label
-        label.font = UIFont.boldSystemFont(ofSize: 28)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return label
     }()
 
@@ -63,7 +63,7 @@ class SettingsViewController: UIViewController {
         button.backgroundColor = .systemCyan
         button.setTitle("m/s", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
         return button
     }()
@@ -74,7 +74,7 @@ class SettingsViewController: UIViewController {
         button.backgroundColor = .systemGray4
         button.setTitle("km/h", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
         return button
     }()
@@ -84,7 +84,7 @@ class SettingsViewController: UIViewController {
         button.backgroundColor = .systemGray4
         button.setTitle("mph", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
         return button
     }()
@@ -101,7 +101,7 @@ class SettingsViewController: UIViewController {
         let label = UILabel()
         label.text = "Mode"
         label.textColor = .label
-        label.font = UIFont.boldSystemFont(ofSize: 28)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return label
     }()
 
@@ -110,7 +110,7 @@ class SettingsViewController: UIViewController {
         let button = UIButton()
         button.setTitle("라이트 모드", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.contentHorizontalAlignment = .left
         return button
     }()
@@ -120,7 +120,7 @@ class SettingsViewController: UIViewController {
         let button = UIButton()
         button.setTitle("다크 모드", for: .normal)
         button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.contentHorizontalAlignment = .left
         return button
     }()
@@ -216,7 +216,6 @@ class SettingsViewController: UIViewController {
     private func updateMode(_ mode: ThemeMode) {
         switch mode {
         case .light:
-            // iOS 15 이상에서 권장되는 방식
             UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
                 .forEach { windowScene in
@@ -306,7 +305,7 @@ class SettingsViewController: UIViewController {
         }
         
         celsiusButton.snp.makeConstraints {
-            $0.top.equalTo(temperatureLabel.snp.bottom).offset(20)
+            $0.top.equalTo(temperatureLabel.snp.bottom).offset(10)
             $0.leading.equalTo(temperatureLabel.snp.leading)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
@@ -314,7 +313,7 @@ class SettingsViewController: UIViewController {
         
         fahrenheitButton.snp.makeConstraints {
             $0.top.equalTo(celsiusButton.snp.top)
-            $0.leading.equalTo(celsiusButton.snp.trailing).offset(20)
+            $0.leading.equalTo(celsiusButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
@@ -325,7 +324,7 @@ class SettingsViewController: UIViewController {
         }
         
         meterPerSecondButton.snp.makeConstraints {
-            $0.top.equalTo(windSpeedLabel.snp.bottom).offset(20)
+            $0.top.equalTo(windSpeedLabel.snp.bottom).offset(10)
             $0.leading.equalTo(temperatureLabel.snp.leading)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
@@ -333,14 +332,14 @@ class SettingsViewController: UIViewController {
         
         kiloMeterPerHourButton.snp.makeConstraints {
             $0.top.equalTo(meterPerSecondButton.snp.top)
-            $0.leading.equalTo(meterPerSecondButton.snp.trailing).offset(20)
+            $0.leading.equalTo(meterPerSecondButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
         
         milePerHoutButton.snp.makeConstraints {
             $0.top.equalTo(meterPerSecondButton.snp.top)
-            $0.leading.equalTo(kiloMeterPerHourButton.snp.trailing).offset(20)
+            $0.leading.equalTo(kiloMeterPerHourButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
@@ -357,17 +356,17 @@ class SettingsViewController: UIViewController {
         }
         
         lightModeButton.snp.makeConstraints {
-            $0.top.equalTo(modeLabel.snp.bottom).offset(20)
+            $0.top.equalTo(modeLabel.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
-            $0.height.equalTo(40)
+            $0.height.equalTo(30)
         }
         
         darkModeButton.snp.makeConstraints {
             $0.top.equalTo(lightModeButton.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
-            $0.height.equalTo(40)
+            $0.height.equalTo(30)
         }
         
         checkImageView.snp.makeConstraints {
