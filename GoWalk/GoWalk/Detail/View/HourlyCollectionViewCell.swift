@@ -37,6 +37,15 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
+    private lazy var stackView = {
+        let stackView = UIStackView(arrangedSubviews: [timeLabel, iconImageView, temperatureLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        return stackView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -47,30 +56,16 @@ class HourlyCollectionViewCell: UICollectionViewCell {
     }
 
     private func setupUI() {
-        contentView.addSubview(timeLabel)
-        contentView.addSubview(temperatureLabel)
-        contentView.addSubview(iconImageView)
-
-        timeLabel.snp.makeConstraints { make in
+        contentView.addSubview(stackView)
+        
+        stackView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview().inset(8)
-        }
-
-        iconImageView.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(4)
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.size.equalTo(24)
-        }
-
-        temperatureLabel.snp.makeConstraints { make in
-            make.top.equalTo(iconImageView.snp.bottom).offset(4)
-            make.leading.trailing.equalToSuperview().inset(8)
         }
     }
 
-//    func configure(with model: HourlyForecast) {
-//        timeLabel.text = model.time
-//        temperatureLabel.text = model.temperature
-//        iconImageView.image = UIImage(systemName: model.icon)
-//    }
+    //    func configure(with model: HourlyForecast) {
+    //        timeLabel.text = model.time
+    //        temperatureLabel.text = model.temperature
+    //        iconImageView.image = UIImage(systemName: model.icon)
+    //    }
 }
