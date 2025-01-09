@@ -138,24 +138,24 @@ class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         print("모드 저장값: \(UserDefaults.standard.themeMode)")
         print("온도 단위 저장값: \(UserDefaults.standard.temperatureUnit)")
         print("풍속 단위 저장값: \(UserDefaults.standard.windSpeedUnit)")
-        
+
         // 다크 모드와 라이트 모드 모두에서 적절한 배경 색상 설정
         view.backgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
             return traitCollection.userInterfaceStyle == .dark ? .black : .white
         }
-        
+
         setNavigationBar()
         setupUI()
         bind()
-        
+
     }
-    
+
     // MARK: - UI 업데이트 메서드
-    
+
     // 바인딩 메서드
     private func bind() {
         viewModel.themeMode
@@ -163,55 +163,55 @@ class SettingsViewController: UIViewController {
                 guard let self = self else { return }
                 self.updateMode(mode)
             }).disposed(by: disposeBag)
-        
-        viewModel.temperature
+
+        viewModel.temperatureUnit
             .subscribe(onNext: { [weak self] unit in
                 guard let self = self else { return }
                 self.updateTemperatureUnit(unit)
             }).disposed(by: disposeBag)
-        
-        viewModel.windSpeed
+
+        viewModel.windSpeedUinit
             .subscribe(onNext: { [weak self] unit in
                 guard let self = self else { return }
                 self.updateWindSpeedUnit(unit)
             }).disposed(by: disposeBag)
-        
+
         lightModeButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.toggleMode(to: .light)
             }.disposed(by: disposeBag)
-        
+
         darkModeButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.toggleMode(to: .dark)
             }.disposed(by: disposeBag)
-        
+
         celsiusButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.tapTemperature(to: .celsius)
             }.disposed(by: disposeBag)
-        
+
         fahrenheitButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.tapTemperature(to: .fahrenheit)
             }.disposed(by: disposeBag)
-        
+
         meterPerSecondButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.tapWindSpeed(to: .metersPerSecond)
             }.disposed(by: disposeBag)
-        
+
         kiloMeterPerHourButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.tapWindSpeed(to: .kilometersPerHour)
             }.disposed(by: disposeBag)
-        
+
         milePerHoutButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel.tapWindSpeed(to: .milesPerHour)
             }.disposed(by: disposeBag)
     }
-    
+
     // 라이트모드/다크모드 적용
     private func updateMode(_ mode: ThemeMode) {
         switch mode {
@@ -224,7 +224,7 @@ class SettingsViewController: UIViewController {
                     }
                 }
             updateCheckMaker(lightModeButton)
-            
+
         case .dark:
             UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
@@ -236,7 +236,7 @@ class SettingsViewController: UIViewController {
             updateCheckMaker(darkModeButton)
         }
     }
-    
+
     // 온도 설정 UI 반영
     private func updateTemperatureUnit(_ unit: TemperatureUnit) {
         switch unit {
@@ -248,7 +248,7 @@ class SettingsViewController: UIViewController {
             fahrenheitButton.backgroundColor = .systemCyan
         }
     }
-    
+
     // 풍속 설정 UI 반영
     private func updateWindSpeedUnit(_ unit: WindSpeedUnit) {
         switch unit {
@@ -276,12 +276,12 @@ class SettingsViewController: UIViewController {
             $0.centerY.equalTo(button.snp.centerY)
         }
     }
-    
+
     // 네비바 셋업
     private func setNavigationBar() {
         navigationItem.title = "Settings"
     }
-    
+
     // UI 셋업
     private func setupUI() {
         [
@@ -298,77 +298,77 @@ class SettingsViewController: UIViewController {
             darkModeButton,
             checkImageView
         ].forEach { view.addSubview($0) }
-        
+
         temperatureLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(60)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(20)
         }
-        
+
         celsiusButton.snp.makeConstraints {
             $0.top.equalTo(temperatureLabel.snp.bottom).offset(10)
             $0.leading.equalTo(temperatureLabel.snp.leading)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
-        
+
         fahrenheitButton.snp.makeConstraints {
             $0.top.equalTo(celsiusButton.snp.top)
             $0.leading.equalTo(celsiusButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
-        
+
         windSpeedLabel.snp.makeConstraints {
             $0.top.equalTo(celsiusButton.snp.bottom).offset(20)
             $0.leading.equalTo(temperatureLabel.snp.leading)
         }
-        
+
         meterPerSecondButton.snp.makeConstraints {
             $0.top.equalTo(windSpeedLabel.snp.bottom).offset(10)
             $0.leading.equalTo(temperatureLabel.snp.leading)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
-        
+
         kiloMeterPerHourButton.snp.makeConstraints {
             $0.top.equalTo(meterPerSecondButton.snp.top)
             $0.leading.equalTo(meterPerSecondButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
-        
+
         milePerHoutButton.snp.makeConstraints {
             $0.top.equalTo(meterPerSecondButton.snp.top)
             $0.leading.equalTo(kiloMeterPerHourButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
-        
+
         underLineView.snp.makeConstraints {
             $0.top.equalTo(meterPerSecondButton.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(15)
             $0.height.equalTo(2)
         }
-        
+
         modeLabel.snp.makeConstraints {
             $0.top.equalTo(underLineView.snp.bottom).offset(20)
             $0.leading.equalTo(temperatureLabel.snp.leading)
         }
-        
+
         lightModeButton.snp.makeConstraints {
             $0.top.equalTo(modeLabel.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
             $0.height.equalTo(30)
         }
-        
+
         darkModeButton.snp.makeConstraints {
             $0.top.equalTo(lightModeButton.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
             $0.height.equalTo(30)
         }
-        
+
         checkImageView.snp.makeConstraints {
             $0.width.height.equalTo(20)
             $0.trailing.equalToSuperview().offset(-30)
