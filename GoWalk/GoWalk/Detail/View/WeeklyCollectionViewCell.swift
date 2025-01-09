@@ -14,7 +14,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .black
         label.text = "10/11"
         return label
@@ -31,7 +31,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
     private let temperatureLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .darkGray
         label.text = "최고: 0℃ 최저: -7℃"
         return label

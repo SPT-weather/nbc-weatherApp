@@ -12,7 +12,7 @@ class DetailViewController: UIViewController {
     
     private lazy var hourlyTitleLabel: UILabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 18, weight: .bold)
+            label.font = .systemFont(ofSize: 20, weight: .bold)
             label.textColor = .black
             label.textAlignment = .left
             label.text = "시간별 날씨"
@@ -21,7 +21,7 @@ class DetailViewController: UIViewController {
 
         private lazy var weeklyTitleLabel: UILabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 18, weight: .bold)
+            label.font = .systemFont(ofSize: 20, weight: .bold)
             label.textColor = .black
             label.textAlignment = .left
             label.text = "요일별 날씨"

@@ -14,7 +14,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
     private let timeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .black
         label.text = "오후 1시"
         return label
@@ -31,7 +31,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
     private let temperatureLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .darkGray
         label.text = "1도"
         return label
