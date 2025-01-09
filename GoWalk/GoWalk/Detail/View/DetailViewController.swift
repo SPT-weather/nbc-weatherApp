@@ -46,7 +46,7 @@ class DetailViewController: UIViewController {
     private lazy var weeklyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 32, height: 50) // 주간 예보 셀 크기
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 32, height: 60)
         layout.minimumLineSpacing = 10
         layout.sectionInset = UIEdgeInsets(top: 16, left: 10, bottom: 0, right: 10)
 
