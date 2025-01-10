@@ -47,7 +47,7 @@ class TestViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupUI()
-        bindViewModel()
+        bind()
     }
     
     // UI 설정
@@ -77,15 +77,15 @@ class TestViewController: UIViewController {
     }
     
     // ViewModel 바인딩
-    private func bindViewModel() {
+    private func bind() {
         // 온도 단위 레이블 바인딩
-        SettingsManager.shared.temperatureUnit
+        SettingsManager.shared.temperatureUnitSubject
             .subscribe(onNext: { unit in
                 let convertedTemperature = SettingsManager.shared.convertTemperature(self.currentTemperature)
                 self.temperatureLabel.text = "현재 온도: \(convertedTemperature) \(unit == .celsius ? "°C" : "°F")"
             }).disposed(by: disposeBag)
         
-        SettingsManager.shared.petType
+        SettingsManager.shared.petTypeSubject
             .map { petType -> UIImage? in
                 switch petType {
                 case .dog:
@@ -96,6 +96,29 @@ class TestViewController: UIViewController {
             }
             .bind(to: petImageView.rx.image)
             .disposed(by: disposeBag)
+        
+        SettingsManager.shared.themeModeSubject
+            .subscribe(onNext: { mode in
+                switch mode {
+                case .light:
+                    UIApplication.shared.connectedScenes
+                        .compactMap { $0 as? UIWindowScene }
+                        .forEach { windowScene in
+                            windowScene.windows.forEach { window in
+                                window.overrideUserInterfaceStyle = .light
+                            }
+                        }
+                case .dark:
+                    UIApplication.shared.connectedScenes
+                        .compactMap { $0 as? UIWindowScene }
+                        .forEach { windowScene in
+                            windowScene.windows.forEach { window in
+                                window.overrideUserInterfaceStyle = .dark
+                            }
+                        }
+                }
+            })
+            
         
     }
 }

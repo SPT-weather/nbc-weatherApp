@@ -12,29 +12,30 @@ import RxCocoa
 class SettingsViewModel {
 
     private let settingsManager = SettingsManager.shared
-
+    private let disposeBag = DisposeBag()
+    
     var themeMode: BehaviorRelay<ThemeMode> {
-        return settingsManager.themeMode
+        return settingsManager.themeModeSubject
     }
-
+    
     var temperatureUnit: BehaviorRelay<TemperatureUnit> {
-        return settingsManager.temperatureUnit
+        return settingsManager.temperatureUnitSubject
     }
-
+    
     var petType: BehaviorRelay<PetType> {
-        return settingsManager.petType
+        return settingsManager.petTypeSubject
     }
-
+    
     func toggleMode(to mode: ThemeMode) {
-        settingsManager.updateMode(to: mode)
+        settingsManager.themeModeSubject.accept(mode)
     }
-
+    
     func tapTemperature(to unit: TemperatureUnit) {
-        settingsManager.updateTemperatureUnit(to: unit)
+        settingsManager.temperatureUnitSubject.accept(unit)
     }
-
+    
     func tapPetType(to type: PetType) {
-        settingsManager.updatePetType(to: type)
+        settingsManager.petTypeSubject.accept(type)
     }
-
+    
 }

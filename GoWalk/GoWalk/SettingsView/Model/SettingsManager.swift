@@ -10,33 +10,39 @@ import RxSwift
 import RxCocoa
 
 class SettingsManager {
-
+    
     static let shared = SettingsManager()
-
-    private init() {}
-
-    var themeMode = BehaviorRelay<ThemeMode>(value: UserDefaults.standard.themeMode)
-    var temperatureUnit = BehaviorRelay<TemperatureUnit>(value: UserDefaults.standard.temperatureUnit)
-    var petType = BehaviorRelay<PetType>(value: UserDefaults.standard.petType)
-
-    func updateMode(to mode: ThemeMode) {
-        themeMode.accept(mode)
-        UserDefaults.standard.themeMode = mode
+    
+    var themeModeSubject = BehaviorRelay<ThemeMode>(value: UserDefaults.standard.themeMode)
+    var temperatureUnitSubject = BehaviorRelay<TemperatureUnit>(value: UserDefaults.standard.temperatureUnit)
+    var petTypeSubject = BehaviorRelay<PetType>(value: UserDefaults.standard.petType)
+    
+    private init() {
+        // Subject의 값이 변경될 때마다 UserDefaults에 저장
+        themeModeSubject
+            .subscribe(onNext: { mode in
+                UserDefaults.standard.themeMode = mode
+            })
+            .disposed(by: disposeBag)
+        
+        temperatureUnitSubject
+            .subscribe(onNext: { unit in
+                UserDefaults.standard.temperatureUnit = unit
+            })
+            .disposed(by: disposeBag)
+        
+        petTypeSubject
+            .subscribe(onNext: { type in
+                UserDefaults.standard.petType = type
+            })
+            .disposed(by: disposeBag)
     }
-
-    func updateTemperatureUnit(to unit: TemperatureUnit) {
-        temperatureUnit.accept(unit)
-        UserDefaults.standard.temperatureUnit = unit
-    }
-
-    func updatePetType(to type: PetType) {
-        petType.accept(type)
-        UserDefaults.standard.petType = type
-    }
-
+    
+    private let disposeBag = DisposeBag()
+    
     // 온도 단위 변환 클래스
     func convertTemperature(_ value: Double) -> String {
-        let currentUnit = temperatureUnit.value
+        let currentUnit = temperatureUnitSubject.value
         switch currentUnit {
         case .celsius:
             return String(format: "%.1f", value)
