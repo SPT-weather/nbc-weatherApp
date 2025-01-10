@@ -17,7 +17,7 @@ class SettingsManager {
 
     var themeMode = BehaviorRelay<ThemeMode>(value: UserDefaults.standard.themeMode)
     var temperatureUnit = BehaviorRelay<TemperatureUnit>(value: UserDefaults.standard.temperatureUnit)
-    var windSpeedUnit = BehaviorRelay<WindSpeedUnit>(value: UserDefaults.standard.windSpeedUnit)
+    var petType = BehaviorRelay<PetType>(value: UserDefaults.standard.petType)
 
     func updateMode(to mode: ThemeMode) {
         themeMode.accept(mode)
@@ -29,11 +29,12 @@ class SettingsManager {
         UserDefaults.standard.temperatureUnit = unit
     }
 
-    func updateWidnSpeedUnit(to unit: WindSpeedUnit) {
-        windSpeedUnit.accept(unit)
-        UserDefaults.standard.windSpeedUnit = unit
+    func updatePetType(to type: PetType) {
+        petType.accept(type)
+        UserDefaults.standard.petType = type
     }
 
+    // 온도 단위 변환 클래스
     func convertTemperature(_ value: Double) -> String {
         let currentUnit = temperatureUnit.value
         switch currentUnit {
@@ -43,20 +44,4 @@ class SettingsManager {
             return String(format: "%.1f", value.toFahrenheit())
         }
     }
-}
-
-enum TemperatureUnit: Int {
-    case celsius = 0
-    case fahrenheit
-}
-
-enum WindSpeedUnit: Int {
-    case metersPerSecond = 0
-    case kilometersPerHour
-    case milesPerHour
-}
-
-enum ThemeMode: Int {
-    case light = 0
-    case dark
 }

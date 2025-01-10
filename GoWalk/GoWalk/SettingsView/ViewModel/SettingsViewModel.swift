@@ -21,8 +21,8 @@ class SettingsViewModel {
         return settingsManager.temperatureUnit
     }
 
-    var windSpeedUinit: BehaviorRelay<WindSpeedUnit> {
-        return settingsManager.windSpeedUnit
+    var petType: BehaviorRelay<PetType> {
+        return settingsManager.petType
     }
 
     func toggleMode(to mode: ThemeMode) {
@@ -33,9 +33,8 @@ class SettingsViewModel {
         settingsManager.updateTemperatureUnit(to: unit)
     }
 
-    func tapWindSpeed(to unit: WindSpeedUnit) {
-        settingsManager.updateWidnSpeedUnit(to: unit)
+    func tapPetType(to type: PetType) {
+        settingsManager.updatePetType(to: type)
     }
 
 }
-

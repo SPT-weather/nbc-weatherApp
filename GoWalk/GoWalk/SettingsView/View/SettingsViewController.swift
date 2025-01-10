@@ -48,41 +48,31 @@ class SettingsViewController: UIViewController {
         return button
     }()
 
-    // 풍속 단위 설정 레이블
+    // 동물 이미지 설정 레이블
     private let windSpeedLabel: UILabel = {
         let label = UILabel()
-        label.text = "WIND SPEED"
+        label.text = "PET"
         label.textColor = .label
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return label
     }()
 
-    // m/s 버튼
-    private let meterPerSecondButton: UIButton = {
+    // 강아지 버튼
+    private let dogButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemCyan
-        button.setTitle("m/s", for: .normal)
+        button.setTitle("Dog", for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
         return button
     }()
 
-    // km/h 버튼
-    private let kiloMeterPerHourButton: UIButton = {
+    // 고양이 버튼
+    private let catButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemGray4
-        button.setTitle("km/h", for: .normal)
-        button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        button.layer.cornerRadius = 8
-        return button
-    }()
-    // mph 버튼
-    private let milePerHoutButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .systemGray4
-        button.setTitle("mph", for: .normal)
+        button.setTitle("Cat", for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.layer.cornerRadius = 8
@@ -138,11 +128,7 @@ class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        print("모드 저장값: \(UserDefaults.standard.themeMode)")
-        print("온도 단위 저장값: \(UserDefaults.standard.temperatureUnit)")
-        print("풍속 단위 저장값: \(UserDefaults.standard.windSpeedUnit)")
-
+        
         // 다크 모드와 라이트 모드 모두에서 적절한 배경 색상 설정
         view.backgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
             return traitCollection.userInterfaceStyle == .dark ? .black : .white
@@ -151,65 +137,74 @@ class SettingsViewController: UIViewController {
         setNavigationBar()
         setupUI()
         bind()
-
     }
 
     // MARK: - UI 업데이트 메서드
 
     // 바인딩 메서드
     private func bind() {
+        // MARK: - 버튼 탭 이벤트 처리
+        // 각각의 버튼 탭 이벤트를 구독하여 적절한 뷰모델의 메서드 호출
+
+        // 라이트 모드 버튼 탭 이벤트를 구독하여 모드를 라이트로 변경
+        lightModeButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.toggleMode(to: .light)
+            }.disposed(by: disposeBag)
+
+        // 다크 모드 버튼 탭 이벤트를 구독하여 모드를 다크로 변경
+        darkModeButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.toggleMode(to: .dark)
+            }.disposed(by: disposeBag)
+
+        // 섭씨 단위 버튼 탭 이벤트를 구독하여 온도 단위를 섭씨로 변경
+        celsiusButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapTemperature(to: .celsius)
+            }.disposed(by: disposeBag)
+
+        // 화씨 단위 버튼 탭 이벤트를 구독하여 온도 단위를 화씨로 변경
+        fahrenheitButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapTemperature(to: .fahrenheit)
+            }.disposed(by: disposeBag)
+
+        // 강아지 버튼 탭 이벤트를 구독하여 동물 타입을 강아지로 변경
+        dogButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapPetType(to: .dog)
+            }.disposed(by: disposeBag)
+
+        // 고양이 버튼 탭 이벤트를 구독하여 동물 타입을 고양이로 변경
+        catButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.tapPetType(to: .cat)
+            }.disposed(by: disposeBag)
+        
+        // MARK: -  뷰모델의 BehaviorRelay를 옵저빙하여 UI 업데이트
+        // 각각의 BehaviorRelay를 구독하여 값이 변경될 때마다 UI 업데이트 메서드 호출
+        
+        // 테마 모드 변경 사항을 구독하여 업데이트
         viewModel.themeMode
             .subscribe(onNext: { [weak self] mode in
                 guard let self = self else { return }
                 self.updateMode(mode)
             }).disposed(by: disposeBag)
 
+        // 온도 단위 변경 사항을 구독하여 업데이트
         viewModel.temperatureUnit
             .subscribe(onNext: { [weak self] unit in
                 guard let self = self else { return }
                 self.updateTemperatureUnit(unit)
             }).disposed(by: disposeBag)
 
-        viewModel.windSpeedUinit
-            .subscribe(onNext: { [weak self] unit in
+        // 동물 타입 변경 사항을 구독하여 업데이트
+        viewModel.petType
+            .subscribe(onNext: { [weak self] type in
                 guard let self = self else { return }
-                self.updateWindSpeedUnit(unit)
+                self.updatePetType(type)
             }).disposed(by: disposeBag)
-
-        lightModeButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.toggleMode(to: .light)
-            }.disposed(by: disposeBag)
-
-        darkModeButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.toggleMode(to: .dark)
-            }.disposed(by: disposeBag)
-
-        celsiusButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapTemperature(to: .celsius)
-            }.disposed(by: disposeBag)
-
-        fahrenheitButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapTemperature(to: .fahrenheit)
-            }.disposed(by: disposeBag)
-
-        meterPerSecondButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapWindSpeed(to: .metersPerSecond)
-            }.disposed(by: disposeBag)
-
-        kiloMeterPerHourButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapWindSpeed(to: .kilometersPerHour)
-            }.disposed(by: disposeBag)
-
-        milePerHoutButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapWindSpeed(to: .milesPerHour)
-            }.disposed(by: disposeBag)
     }
 
     // 라이트모드/다크모드 적용
@@ -249,21 +244,15 @@ class SettingsViewController: UIViewController {
         }
     }
 
-    // 풍속 설정 UI 반영
-    private func updateWindSpeedUnit(_ unit: WindSpeedUnit) {
-        switch unit {
-        case .metersPerSecond:
-            meterPerSecondButton.backgroundColor = .systemCyan
-            kiloMeterPerHourButton.backgroundColor = .systemGray4
-            milePerHoutButton.backgroundColor = .systemGray4
-        case .kilometersPerHour:
-            meterPerSecondButton.backgroundColor = .systemGray4
-            kiloMeterPerHourButton.backgroundColor = .systemCyan
-            milePerHoutButton.backgroundColor = .systemGray4
-        case .milesPerHour:
-            meterPerSecondButton.backgroundColor = .systemGray4
-            kiloMeterPerHourButton.backgroundColor = .systemGray4
-            milePerHoutButton.backgroundColor = .systemCyan
+    // 동물 설정 UI 반영
+    private func updatePetType(_ type: PetType) {
+        switch type {
+        case .dog:
+            dogButton.backgroundColor = .systemCyan
+            catButton.backgroundColor = .systemGray4
+        case .cat:
+            dogButton.backgroundColor = .systemGray4
+            catButton.backgroundColor = .systemCyan
         }
     }
 
@@ -276,6 +265,8 @@ class SettingsViewController: UIViewController {
             $0.centerY.equalTo(button.snp.centerY)
         }
     }
+    
+    // MARK: - 셋업 메서드
 
     // 네비바 셋업
     private func setNavigationBar() {
@@ -289,9 +280,8 @@ class SettingsViewController: UIViewController {
             windSpeedLabel,
             celsiusButton,
             fahrenheitButton,
-            meterPerSecondButton,
-            kiloMeterPerHourButton,
-            milePerHoutButton,
+            dogButton,
+            catButton,
             underLineView,
             modeLabel,
             lightModeButton,
@@ -323,29 +313,22 @@ class SettingsViewController: UIViewController {
             $0.leading.equalTo(temperatureLabel.snp.leading)
         }
 
-        meterPerSecondButton.snp.makeConstraints {
+        dogButton.snp.makeConstraints {
             $0.top.equalTo(windSpeedLabel.snp.bottom).offset(10)
             $0.leading.equalTo(temperatureLabel.snp.leading)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
 
-        kiloMeterPerHourButton.snp.makeConstraints {
-            $0.top.equalTo(meterPerSecondButton.snp.top)
-            $0.leading.equalTo(meterPerSecondButton.snp.trailing).offset(10)
-            $0.width.equalTo(85)
-            $0.height.equalTo(35)
-        }
-
-        milePerHoutButton.snp.makeConstraints {
-            $0.top.equalTo(meterPerSecondButton.snp.top)
-            $0.leading.equalTo(kiloMeterPerHourButton.snp.trailing).offset(10)
+        catButton.snp.makeConstraints {
+            $0.top.equalTo(dogButton.snp.top)
+            $0.leading.equalTo(dogButton.snp.trailing).offset(10)
             $0.width.equalTo(85)
             $0.height.equalTo(35)
         }
 
         underLineView.snp.makeConstraints {
-            $0.top.equalTo(meterPerSecondButton.snp.bottom).offset(20)
+            $0.top.equalTo(dogButton.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(15)
             $0.height.equalTo(2)
         }

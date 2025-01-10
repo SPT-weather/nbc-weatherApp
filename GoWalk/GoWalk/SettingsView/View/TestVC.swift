@@ -23,6 +23,12 @@ class TestViewController: UIViewController {
         return label
     }()
     
+    private let petImageView: UIImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleAspectFit
+        return image
+    }()
+    
     private let buttons: UIButton = {
         let button = UIButton()
         button.setTitle("테스트버튼", for: .normal)
@@ -48,15 +54,22 @@ class TestViewController: UIViewController {
     private func setupUI() {
        [
             temperatureLabel,
+            petImageView,
             buttons
        ].forEach { view.addSubview($0) }
 
-        temperatureLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        temperatureLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(UIScreen.main.bounds.height / 3)
+        }
+        petImageView.snp.makeConstraints {
+            $0.top.equalTo(temperatureLabel.snp.bottom).offset(10)
+            $0.centerX.equalTo(temperatureLabel.snp.centerX)
+            $0.width.height.equalTo(150)
         }
         
         buttons.snp.makeConstraints {
-            $0.top.equalTo(temperatureLabel.snp.bottom).offset(20)
+            $0.top.equalTo(petImageView.snp.bottom).offset(20)
             $0.centerX.equalTo(temperatureLabel.snp.centerX)
             $0.width.equalTo(120)
             $0.height.equalTo(30)
@@ -71,6 +84,18 @@ class TestViewController: UIViewController {
                 let convertedTemperature = SettingsManager.shared.convertTemperature(self.currentTemperature)
                 self.temperatureLabel.text = "현재 온도: \(convertedTemperature) \(unit == .celsius ? "°C" : "°F")"
             }).disposed(by: disposeBag)
+        
+        SettingsManager.shared.petType
+            .map { petType -> UIImage? in
+                switch petType {
+                case .dog:
+                    return UIImage(systemName: "pawprint") // 강아지 이미지
+                case .cat:
+                    return UIImage(systemName: "tortoise") // 고양이 이미지
+                }
+            }
+            .bind(to: petImageView.rx.image)
+            .disposed(by: disposeBag)
         
     }
 }

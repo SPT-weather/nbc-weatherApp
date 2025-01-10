@@ -7,11 +7,15 @@
 
 import Foundation
 
+//  UserDefaults에 저장된 값을 읽고 쓸 수 있도록 하는 extension
+//  get 접근자로 UserDefaults에 저장된 정수 값을 읽고 해당 값을 커스텀 타입(ThemeMode, TemperatureUnit, PetType)으로 반환
+//  set 접근자로 커스텀 타입의 값을 받아, 이를 정수 값으로 변환하여 UserDefaults에 저장
+
 extension UserDefaults {
     private enum Keys {
         static let themeMode = "themeMode"
         static let temperatureUnit = "temperatureUnit"
-        static let windSpeedUnit = "windSpeedUnit"
+        static let petType = "petType"
     }
 
     var themeMode: ThemeMode {
@@ -34,13 +38,28 @@ extension UserDefaults {
         }
     }
 
-    var windSpeedUnit: WindSpeedUnit {
+    var petType: PetType {
         get {
-            let rawValue = integer(forKey: Keys.windSpeedUnit)
-            return WindSpeedUnit(rawValue: rawValue) ?? .metersPerSecond
+            let rawValue = integer(forKey: Keys.petType)
+            return PetType(rawValue: rawValue) ?? .dog
         }
         set {
-            set(newValue.rawValue, forKey: Keys.windSpeedUnit)
+            set(newValue.rawValue, forKey: Keys.petType)
         }
     }
+}
+
+enum TemperatureUnit: Int {
+    case celsius = 0
+    case fahrenheit
+}
+
+enum PetType: Int {
+    case dog = 0
+    case cat
+}
+
+enum ThemeMode: Int {
+    case light = 0
+    case dark
 }
