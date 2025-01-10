@@ -21,5 +21,5 @@ extension Location {
 
 }
 
-extension Location : Identifiable {
+extension Location: Identifiable {
 }
