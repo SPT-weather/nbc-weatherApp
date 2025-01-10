@@ -83,11 +83,13 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         return formatter
     }()
         
-    func configure(with model: DummyDetailModel) {
+    func configure(with model: DetailWeather.Weekly) {
         dateLabel.text = Self.dateFormatter.string(from: model.date)
         iconImageView.image = model.icon
-        maxTemperatureLabel.text = "최고: \(model.maxTemperature)"
-        minTemperatureLabel.text = "최저: \(model.minTemperature)"
+//        maxTemperatureLabel.text = "최고: \(model.maxTemperature)"
+//        minTemperatureLabel.text = "최저: \(model.minTemperature)"
+        maxTemperatureLabel.text =   model.maxTemperature
+        minTemperatureLabel.text = model.minTemperature
         
     }
 }

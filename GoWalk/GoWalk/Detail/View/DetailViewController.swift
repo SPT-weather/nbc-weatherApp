@@ -113,20 +113,24 @@ extension DummyDetailModel {
 
 extension DetailViewController {
     private func bind() {
-        Observable<[DummyDetailModel]>
-            .just(DummyDetailModel.dummy)
+        Observable.just(DetailWeather.dummyHourly)
             .debug()
             .observe(on: MainScheduler.instance)
-            .bind(to: hourlyCollectionView.rx.items(cellIdentifier: HourlyCollectionViewCell.identifier)) { (indexPath, item, cell: HourlyCollectionViewCell) in
+            .bind(to: hourlyCollectionView.rx.items(
+                cellIdentifier: HourlyCollectionViewCell.identifier,
+                cellType: HourlyCollectionViewCell.self
+            )) { _, item, cell in
                 cell.configure(with: item)
             }
             .disposed(by: disposeBag)
         
-        Observable<[DummyDetailModel]>
-            .just(DummyDetailModel.dummy)
+        Observable.just(DetailWeather.dummyWeekly)
             .debug()
             .observe(on: MainScheduler.instance)
-            .bind(to: weeklyCollectionView.rx.items(cellIdentifier: WeeklyCollectionViewCell.identifier)) { (indexPath, item, cell: WeeklyCollectionViewCell) in
+            .bind(to: weeklyCollectionView.rx.items(
+                cellIdentifier: WeeklyCollectionViewCell.identifier,
+                cellType: WeeklyCollectionViewCell.self
+            )) { _, item, cell in
                 cell.configure(with: item)
             }
             .disposed(by: disposeBag)
@@ -167,32 +171,32 @@ extension DetailViewController {
     }
 }
 
-extension DetailViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == hourlyCollectionView {
-            return 10
-        } else if collectionView == weeklyCollectionView {
-            return 7
-        }
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == hourlyCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.identifier, for: indexPath)
-                    as? HourlyCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            //cell.timeLabel.text = "오후 \(indexPath.item + 1)시"
-            //cell.temperatureLabel.text = "\(indexPath.item)도"
-            return cell
-        } else if collectionView == weeklyCollectionView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeeklyCollectionViewCell.identifier, for: indexPath)
-            return cell
-        }
-        return UICollectionViewCell()
-    }
-}
+//extension DetailViewController: UICollectionViewDataSource {
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        if collectionView == hourlyCollectionView {
+//            return 10
+//        } else if collectionView == weeklyCollectionView {
+//            return 7
+//        }
+//        return 0
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        if collectionView == hourlyCollectionView {
+//            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.identifier, for: indexPath)
+//                    as? HourlyCollectionViewCell else {
+//                return UICollectionViewCell()
+//            }
+//            //cell.timeLabel.text = "오후 \(indexPath.item + 1)시"
+//            //cell.temperatureLabel.text = "\(indexPath.item)도"
+//            return cell
+//        } else if collectionView == weeklyCollectionView {
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeeklyCollectionViewCell.identifier, for: indexPath)
+//            return cell
+//        }
+//        return UICollectionViewCell()
+//    }
+//}
 
 extension DetailViewController: UICollectionViewDelegate {
 

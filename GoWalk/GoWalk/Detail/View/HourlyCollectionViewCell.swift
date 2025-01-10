@@ -63,7 +63,7 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(with model: DummyDetailModel) {
+    func configure(with model: DetailWeather.Hourly) {
         timeLabel.text = model.time
         temperatureLabel.text = model.temperature
         iconImageView.image = model.icon
