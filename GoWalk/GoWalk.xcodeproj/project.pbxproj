@@ -11,6 +11,7 @@
 		F9FB02DB2D2D13540005563A /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = F9FB02DA2D2D13540005563A /* RxRelay */; };
 		F9FB02DD2D2D13540005563A /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F9FB02DC2D2D13540005563A /* RxSwift */; };
 		F9FB02E02D2D13610005563A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F9FB02DF2D2D13610005563A /* SnapKit */; };
+		F9FB42272D2E724D00D68C6C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F9FB42262D2E724D00D68C6C /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9FB42272D2E724D00D68C6C /* Alamofire in Frameworks */,
 				F9FB02DD2D2D13540005563A /* RxSwift in Frameworks */,
 				F9FB02E02D2D13610005563A /* SnapKit in Frameworks */,
 				F9FB02DB2D2D13540005563A /* RxRelay in Frameworks */,
@@ -94,6 +96,7 @@
 				F9FB02DA2D2D13540005563A /* RxRelay */,
 				F9FB02DC2D2D13540005563A /* RxSwift */,
 				F9FB02DF2D2D13610005563A /* SnapKit */,
+				F9FB42262D2E724D00D68C6C /* Alamofire */,
 			);
 			productName = GoWalk;
 			productReference = F9FB02BC2D2D132A0005563A /* GoWalk.app */;
@@ -127,6 +130,7 @@
 				F9FB02D72D2D13540005563A /* XCRemoteSwiftPackageReference "RxSwift" */,
 				F9FB02DE2D2D13610005563A /* XCRemoteSwiftPackageReference "SnapKit" */,
 				F9FB02E12D2D13770005563A /* XCRemoteSwiftPackageReference "SwiftLint" */,
+				F9FB42252D2E724D00D68C6C /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F9FB02BD2D2D132A0005563A /* Products */;
@@ -397,6 +401,14 @@
 				minimumVersion = 0.57.1;
 			};
 		};
+		F9FB42252D2E724D00D68C6C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -424,6 +436,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F9FB02E12D2D13770005563A /* XCRemoteSwiftPackageReference "SwiftLint" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		F9FB42262D2E724D00D68C6C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F9FB42252D2E724D00D68C6C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
