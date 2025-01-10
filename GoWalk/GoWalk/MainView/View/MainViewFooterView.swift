@@ -20,16 +20,19 @@ final class MainViewFooterView: UIView {
         label.text = "날씨"
         return label
     }()
+
     private let microDustTitleLabel: UILabel = {
         let label = footerLabel()
         label.text = "초미세먼지"
         return label
     }()
+
     private let dustTitleLabel: UILabel = {
         let label = footerLabel()
         label.text = "미세먼지"
         return label
     }()
+
     private let temperatureValueStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -38,60 +41,71 @@ final class MainViewFooterView: UIView {
         stackView.spacing = 1
         return stackView
     }()
+
+    private let temperatureSeperateLabel: UILabel = {
+        let label = valueLabel()
+        label.text = "/"
+        return label
+    }()
+
     let highestTemperatureLabel: UILabel = {
         let label = valueLabel()
         label.textColor = .systemRed
         label.text = "10º"
         return label
     }()
-    private let temperatureSeperateLabel: UILabel = {
-        let label = valueLabel()
-        label.text = "/"
-        return label
-    }()
+
     let lowestTemperatureLabel: UILabel = {
         let label = valueLabel()
         label.textColor = .systemBlue
         label.text = "10º"
         return label
     }()
+
     let microDustValueLabel: UILabel = {
         let label = valueLabel()
         label.text = "10"
         label.textColor = labelColor
         return label
     }()
-    let dustValueLabel: UILabel = {
+
+    let fineDustValueLabel: UILabel = {
         let label = valueLabel()
         label.text = "10"
         label.textColor = labelColor
         return label
     }()
+
     let weatherStringLabel: UILabel = {
         let label = footerLabel()
         label.text = "맑음"
         return label
     }()
+
     private let microDustMarkLabel: UILabel = {
         let label = footerLabel()
         label.text = "㎍/㎥"
         return label
     }()
+
     private let dustMarkLabel: UILabel = {
         let label = footerLabel()
         label.text = "㎍/㎥"
         return label
     }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         addStackView()
         layer.cornerRadius = 20
     }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     private func configureUI() {
-        [temperatureValueStackView, microDustValueLabel, dustValueLabel]
+        [temperatureValueStackView, microDustValueLabel, fineDustValueLabel]
             .forEach {
             $0.snp.makeConstraints {
                 $0.height.equalTo(40)
@@ -112,7 +126,7 @@ final class MainViewFooterView: UIView {
                 $0.leading.trailing.equalToSuperview()
             }
         }
-        let width = (UIScreen.main.bounds.width - 60)/3
+        let width = (UIScreen.main.bounds.width - 60) / 3
         weatherStackView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.leading.equalToSuperview().inset(30)
@@ -136,6 +150,7 @@ final class MainViewFooterView: UIView {
             $0.height.equalTo(120)
         }
     }
+
     private func addStackView() {
         [highestTemperatureLabel,
          temperatureSeperateLabel,
@@ -150,7 +165,7 @@ final class MainViewFooterView: UIView {
          microDustMarkLabel]
             .forEach { microDustStackView.addArrangedSubview($0) }
         [dustTitleLabel,
-         dustValueLabel,
+         fineDustValueLabel,
          dustMarkLabel]
             .forEach { dustStackView.addArrangedSubview($0) }
         [weatherStackView,
@@ -159,6 +174,7 @@ final class MainViewFooterView: UIView {
             .forEach { addSubview($0) }
         configureUI()
     }
+
 }
 
 // MARK: - 재사용 뷰 생성 메서드

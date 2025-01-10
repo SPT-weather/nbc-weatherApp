@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-
+// 새로고침한 시간 표시 라벨
 private let labelColor = UIColor.label
 private let backgroundColor = UIColor.systemBackground
 
@@ -19,7 +19,15 @@ class MainViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let viewDidLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
+    private let refreshLocationPublisher = PublishSubject<Void>()
 
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        let bounds = UIScreen.main.bounds
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        return scrollView
+    }()
     private let navigationView: UIView = {
         let view = UIView()
         return view
@@ -40,9 +48,15 @@ class MainViewController: UIViewController {
         return button
     }()
     private let weatherSimpleView = WeatherSimpleView()
+    private let refreshDateLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .lightGray
+        label.font = .systemFont(ofSize: 14)
+        label.textAlignment = .center
+        return label
+    }()
     private let puppyImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
         imageView.contentMode = .scaleAspectFill
         imageView.image = .puppy
         return imageView
@@ -52,22 +66,36 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
-        refreshPublisher.onNext(())
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureUI()
-        setTappedAction()
+    override func loadView() {
+        super.loadView()
         bind()
     }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        viewDidLoadPublisher.onNext(())
+        configureUI()
+        setTappedAction()
+        setRefreshController()
+    }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.isNavigationBarHidden = false
+    }
     private func configureUI() {
         view.backgroundColor = backgroundColor
+
         [mapButton, locationButton, settingButton]
             .forEach { navigationView.addSubview($0) }
-        [navigationView, weatherSimpleView, puppyImageView, footerView]
+        [weatherSimpleView, refreshDateLabel, puppyImageView]
+            .forEach { scrollView.addSubview($0) }
+        [scrollView, navigationView, footerView]
             .forEach { view.addSubview($0) }
+
+        scrollView.snp.makeConstraints {
+            $0.top.bottom.leading.trailing.equalToSuperview()
+        }
         navigationView.snp.makeConstraints {
             $0.leading.trailing.top.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(80)
@@ -91,11 +119,17 @@ class MainViewController: UIViewController {
         weatherSimpleView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(navigationView.snp.bottom).offset(5)
-            $0.height.equalTo(100)
+            $0.height.equalTo(90)
+        }
+        refreshDateLabel.snp.makeConstraints {
+            $0.top.equalTo(weatherSimpleView.snp.bottom).offset(5)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(200)
         }
         puppyImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(40)
-            $0.top.equalTo(weatherSimpleView.snp.bottom).offset(30)
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(refreshDateLabel.snp.bottom).offset(30)
             $0.bottom.equalTo(footerView.snp.top)
         }
         footerView.snp.makeConstraints {
@@ -116,41 +150,21 @@ class MainViewController: UIViewController {
     private func bind() {
         let viewDidLoad = viewDidLoadPublisher.asObservable()
         let refresh = refreshPublisher.asObservable()
+        let refreshLocation = refreshLocationPublisher
+            .asObservable()
 
         let output = viewModel.transform(.init(viewDidLoad: viewDidLoad,
-                                               refresh: refresh))
+                                               refreshWeather: refresh,
+                                               refreshLocation: refreshLocation))
 
         [
-            output.weather
-                .map { $0.location }
-                .bind(to: self.weatherSimpleView.locationLabel.rx.text ),
-            output.weather
-                .compactMap { WeatherAssetTranslator.resourceImage(from: $0.weather) }
-                .bind(to: self.weatherSimpleView.weatherImageView.rx.image),
-            output.weather
-                .map { $0.weather.korean }
-                .bind(to: self.footerView.weatherStringLabel.rx.text)
-        ].forEach { $0.disposed(by: disposeBag) }
-
-        [
-            output.temperature
-                .map { $0.current }
-                .bind(to: self.weatherSimpleView.currentTemperatureLabel.rx.text),
-            output.temperature
-                .map { $0.highest }
-                .bind(to: self.footerView.highestTemperatureLabel.rx.text),
-            output.temperature
-                .map { $0.lowest }
-                .bind(to: self.footerView.lowestTemperatureLabel.rx.text)
-        ].forEach { $0.disposed(by: disposeBag) }
-
-        [
-            output.dust
-                .map { String($0.micro) }
-                .bind(to: self.footerView.microDustValueLabel.rx.text),
-            output.dust
-                .map { String($0.fine) }
-                .bind(to: self.footerView.dustValueLabel.rx.text)
+            output.location.bind(to: weatherSimpleView.locationLabel.rx.text),
+            output.currentTemperature.bind(to: weatherSimpleView.currentTemperatureLabel.rx.text),
+            output.highestTemperature.bind(to: footerView.highestTemperatureLabel.rx.text),
+            output.lowestTemperature.bind(to: footerView.lowestTemperatureLabel.rx.text),
+            output.microDust.bind(to: footerView.microDustValueLabel.rx.text),
+            output.fineDust.bind(to: footerView.fineDustValueLabel.rx.text),
+            output.refreshDate.bind(to: refreshDateLabel.rx.text)
         ].forEach { $0.disposed(by: disposeBag) }
     }
 
@@ -166,7 +180,7 @@ class MainViewController: UIViewController {
                                 for: .touchUpInside)
 
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(footerViewTapped))
-        self.view.addGestureRecognizer(gestureRecognizer)
+        self.footerView.addGestureRecognizer(gestureRecognizer)
     }
 
     @objc
@@ -177,7 +191,7 @@ class MainViewController: UIViewController {
 
     @objc
     private func refreshButtonTapped(_ sender: UIButton) {
-        refreshPublisher.onNext(())
+        refreshLocationPublisher.onNext(())
     }
 
     @objc
@@ -189,18 +203,33 @@ class MainViewController: UIViewController {
     @objc
     private func footerViewTapped(_ gestureRecognizer: UITapGestureRecognizer) {
         guard gestureRecognizer.state == .ended else { return }
-        print("11")
         let detailViewController = ViewController()
         detailViewController.view.layer.cornerRadius = 30
         if let sheet = detailViewController.sheetPresentationController {
             sheet.detents = [.custom(resolver: { _ in
                 let bottomY = self.weatherSimpleView.frame.maxY
-                let height = UIScreen.main.bounds.height
+                let height = self.view.layer.frame.maxY
                 print(bottomY, height, height - bottomY)
-                return height - bottomY - 40 })]
+                // 특정 좌표를 기준으로 잡아야할 필요성이 있음
+                return height - (bottomY + 100) })]
         }
         present(detailViewController, animated: true)
+    }
+
+    private func setRefreshController() {
+        let refreshController = UIRefreshControl()
+        self.scrollView.refreshControl = refreshController
+        refreshController.addTarget(self, action: #selector(refreshScroll), for: .valueChanged)
+    }
+
+    @objc
+    private func refreshScroll() {
+        refreshPublisher.onNext(())
+        DispatchQueue.main.async {
+            self.scrollView.refreshControl?.endRefreshing()
+        }
     }
 }
 
 // 푸터 뷰 선택 액션 연결만 남음
+// 뷰모델 로직 수정 중 2시까지 PR 예정
