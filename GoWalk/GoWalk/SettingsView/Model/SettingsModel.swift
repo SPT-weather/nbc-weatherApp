@@ -67,7 +67,7 @@ class SettingsModel {
         petTypeRelay.accept(type)
     }
     
-    // 온도 단위 변환 클래스
+    // 온도 단위 변환 메서드
     func convertTemperature(_ value: Double) -> String {
         let currentUnit = temperatureUnitRelay.value
         switch currentUnit {
