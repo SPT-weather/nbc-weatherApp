@@ -1,3 +1,4 @@
+// swiftlint:disable trailing_whitespace
 //
 //  SettingsViewController.swift
 //  GoWalk
@@ -143,70 +144,40 @@ class SettingsViewController: UIViewController {
     
     // 바인딩 메서드
     private func bind() {
-        // MARK: - 버튼 탭 이벤트 처리
-        // 각각의 버튼 탭 이벤트를 구독하여 적절한 뷰모델의 메서드 호출
         
-        // 라이트 모드 버튼 탭 이벤트를 구독하여 모드를 라이트로 변경
-        lightModeButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.toggleMode(to: .light)
-            }.disposed(by: disposeBag)
+        // input 생성
+        let input = SettingsViewModel.Input(
+            toggleMode: Observable.merge(
+                lightModeButton.rx.tap.map { ThemeMode.light },
+                darkModeButton.rx.tap.map { ThemeMode.dark }
+            ),
+            tapTemperature: Observable.merge(
+                celsiusButton.rx.tap.map { TemperatureUnit.celsius },
+                fahrenheitButton.rx.tap.map { TemperatureUnit.fahrenheit }
+            ),
+            tapPetType: Observable.merge(
+                dogButton.rx.tap.map { PetType.dog },
+                catButton.rx.tap.map { PetType.cat }
+            )
+        )
         
-        // 다크 모드 버튼 탭 이벤트를 구독하여 모드를 다크로 변경
-        darkModeButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.toggleMode(to: .dark)
-            }.disposed(by: disposeBag)
+        // output 생성
+        let output = viewModel.transform(input)
         
-        // 섭씨 단위 버튼 탭 이벤트를 구독하여 온도 단위를 섭씨로 변경
-        celsiusButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapTemperature(to: .celsius)
-            }.disposed(by: disposeBag)
-        
-        // 화씨 단위 버튼 탭 이벤트를 구독하여 온도 단위를 화씨로 변경
-        fahrenheitButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapTemperature(to: .fahrenheit)
-            }.disposed(by: disposeBag)
-        
-        // 강아지 버튼 탭 이벤트를 구독하여 동물 타입을 강아지로 변경
-        dogButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapPetType(to: .dog)
-            }.disposed(by: disposeBag)
-        
-        // 고양이 버튼 탭 이벤트를 구독하여 동물 타입을 고양이로 변경
-        catButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.tapPetType(to: .cat)
-            }.disposed(by: disposeBag)
-        
-        // MARK: -  뷰모델의 BehaviorRelay를 옵저빙하여 UI 업데이트
-        // 각각의 BehaviorRelay를 구독하여 값이 변경될 때마다 UI 업데이트 메서드 호출
-        
-        // 테마 모드 변경 사항을 구독하여 업데이트
-        viewModel.themeMode
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] mode in
-                guard let self = self else { return }
-                self.updateMode(mode)
+        // output 구독하여 UI 업데이트
+        output.themeMode
+            .drive(onNext: { [weak self] mode in
+                self?.updateMode(mode)
             }).disposed(by: disposeBag)
         
-        // 온도 단위 변경 사항을 구독하여 업데이트
-        viewModel.temperatureUnit
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] unit in
-                guard let self = self else { return }
-                self.updateTemperatureUnit(unit)
+        output.temperatureUnit
+            .drive(onNext: { [weak self] unit in
+                self?.updateTemperatureUnit(unit)
             }).disposed(by: disposeBag)
         
-        // 동물 타입 변경 사항을 구독하여 업데이트
-        viewModel.petType
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] type in
-                guard let self = self else { return }
-                self.updatePetType(type)
+        output.petType
+            .drive(onNext: { [weak self] type in
+                self?.updatePetType(type)
             }).disposed(by: disposeBag)
     }
     

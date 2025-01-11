@@ -15,6 +15,8 @@ class TestViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let currentTemperature = 12.3
     
+    private let viewModel = SettingsViewModel()
+    
     // UI 컴포넌트 선언
     private let temperatureLabel: UILabel = {
         let label = UILabel()
@@ -78,6 +80,61 @@ class TestViewController: UIViewController {
     
     // ViewModel 바인딩
     private func bind() {
+        // Input 생성
+        let input = SettingsViewModel.Input(
+            toggleMode: .empty(), // 입력 이벤트 없음
+            tapTemperature: .empty(), // 입력 이벤트 없음
+            tapPetType: .empty() // 입력 이벤트 없음
+        )
+        
+        // Output 생성
+        let output = viewModel.transform(input)
+        
+        // Output을 구독하여 UI 업데이트
+        output.temperatureUnit
+            .drive(onNext: { [weak self] unit in
+                guard let self = self else { return }
+                let convertedTemperature = SettingsModel.shared.convertTemperature(self.currentTemperature)
+                self.temperatureLabel.text = "현재 온도: \(convertedTemperature) \(unit == .celsius ? "°C" : "°F")"
+            }).disposed(by: disposeBag)
+        
+        output.petType
+            .drive(onNext: { [weak self] petType in
+                guard let self = self else { return }
+                let petImage: UIImage?
+                switch petType {
+                case .dog:
+                    petImage = UIImage(systemName: "pawprint") // 강아지 이미지
+                case .cat:
+                    petImage = UIImage(systemName: "tortoise") // 고양이 이미지
+                }
+                self.petImageView.image = petImage
+            }).disposed(by: disposeBag)
+        
+        output.themeMode
+            .drive(onNext: { mode in
+                switch mode {
+                case .light:
+                    UIApplication.shared.connectedScenes
+                        .compactMap { $0 as? UIWindowScene }
+                        .forEach { windowScene in
+                            windowScene.windows.forEach { window in
+                                window.overrideUserInterfaceStyle = .light
+                            }
+                        }
+                case .dark:
+                    UIApplication.shared.connectedScenes
+                        .compactMap { $0 as? UIWindowScene }
+                        .forEach { windowScene in
+                            windowScene.windows.forEach { window in
+                                window.overrideUserInterfaceStyle = .dark
+                            }
+                        }
+                }
+            }).disposed(by: disposeBag)
+    }
+    /*
+    private func bind() {
         // 온도 단위 레이블 바인딩
         SettingsManager.shared.temperatureUnitSubject
             .subscribe(onNext: { unit in
@@ -121,4 +178,5 @@ class TestViewController: UIViewController {
             
         
     }
+     */
 }
