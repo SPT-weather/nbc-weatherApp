@@ -13,7 +13,7 @@ import RxCocoa
 
 class SettingsViewController: UIViewController {
     
-    let viewModel = SettingsViewModel()
+    let viewModel: SettingsViewModel = .init(settingsModel: SettingsModel())
     let disposeBag = DisposeBag()
     
     // MARK: - UI 컴포넌트 선언

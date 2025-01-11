@@ -28,8 +28,12 @@ class SettingsViewModel {
         let petType: Driver<PetType> // 현재 선택된 동물 이미지 종류
     }
     
-    private let settingsModel = SettingsModel.shared
+    private let settingsModel: SettingsModel
     private let disposeBag = DisposeBag()
+    
+    init(settingsModel: SettingsModel) {
+        self.settingsModel = settingsModel
+    }
     
     // transform 메서드: Input의 이벤트를 구독하고, 데이터 업데이트해서 Output으로 반환하는 역할
     // Input: View에서 발생한 이벤트(toggleMode, tapTempurature, tapPetType)
