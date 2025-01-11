@@ -15,16 +15,4 @@ extension Double {
     func toCelsius() -> Double {
         return (self - 32) * 5 / 9
     }
-
-    func toKilometersPerHour() -> Double {
-        return self * 3.6
-    }
-
-    func toMilesPerHour() -> Double {
-        return self * 2.23694
-    }
-
-    func toMetersPerSecond() -> Double {
-        return self / 3.6
-    }
 }
