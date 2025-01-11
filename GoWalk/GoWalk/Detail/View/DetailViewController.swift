@@ -76,38 +76,12 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named:"ModalBgColor")
         
-        //hourlyCollectionView.dataSource = self
         hourlyCollectionView.delegate = self
         
-        //weeklyCollectionView.dataSource = self
         weeklyCollectionView.delegate = self
         
         setupUI()
         bind()
-    }
-}
-
-struct DummyDetailModel {
-    let time: String
-    let temperature: String
-    let icon: UIImage
-    let date: Date
-    let minTemperature: String
-    let maxTemperature: String
-}
-
-extension DummyDetailModel {
-    static var dummy: [DummyDetailModel] {
-        return [
-            DummyDetailModel(time: "오후 1시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 2시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 3시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 4시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 5시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 6시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 7시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃"),
-            DummyDetailModel(time: "오후 8시", temperature: "11도", icon: UIImage(resource: .dummyWeather).withTintColor(.label), date: Date(), minTemperature: "40℃", maxTemperature: "-0℃")
-        ]
     }
 }
 
@@ -141,28 +115,24 @@ extension DetailViewController {
          weeklyTitleLabel, weeklyCollectionView]
             .forEach { view.addSubview($0) }
         
-        view.addSubview(hourlyTitleLabel)
         hourlyTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
-        view.addSubview(hourlyCollectionView)
-
         let contentLayoutGuide = view.layoutMarginsGuide
-
+        
         hourlyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(hourlyTitleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(contentLayoutGuide)
             make.height.equalTo(120)
         }
-        view.addSubview(weeklyTitleLabel)
+        
         weeklyTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(hourlyCollectionView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
-        view.addSubview(weeklyCollectionView)
         weeklyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(weeklyTitleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(16)
@@ -170,33 +140,6 @@ extension DetailViewController {
         }
     }
 }
-
-//extension DetailViewController: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if collectionView == hourlyCollectionView {
-//            return 10
-//        } else if collectionView == weeklyCollectionView {
-//            return 7
-//        }
-//        return 0
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        if collectionView == hourlyCollectionView {
-//            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCollectionViewCell.identifier, for: indexPath)
-//                    as? HourlyCollectionViewCell else {
-//                return UICollectionViewCell()
-//            }
-//            //cell.timeLabel.text = "오후 \(indexPath.item + 1)시"
-//            //cell.temperatureLabel.text = "\(indexPath.item)도"
-//            return cell
-//        } else if collectionView == weeklyCollectionView {
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeeklyCollectionViewCell.identifier, for: indexPath)
-//            return cell
-//        }
-//        return UICollectionViewCell()
-//    }
-//}
 
 extension DetailViewController: UICollectionViewDelegate {
 
