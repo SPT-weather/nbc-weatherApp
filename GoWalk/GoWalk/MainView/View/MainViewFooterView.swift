@@ -1,5 +1,5 @@
 //
-//  MainViewFooterView.swift
+//  MainFooterView.swift
 //  GoWalk
 //
 //  Created by 0-jerry on 1/8/25.
@@ -11,7 +11,7 @@ import SnapKit
 private let labelColor = UIColor.label
 private let backgroundColor = UIColor.systemBackground
 
-final class MainViewFooterView: UIView {
+final class MainFooterView: UIView {
     private let weatherStackView: UIStackView = footerStackView()
     private let microDustStackView: UIStackView = footerStackView()
     private let dustStackView: UIStackView = footerStackView()
@@ -179,7 +179,7 @@ final class MainViewFooterView: UIView {
 
 // MARK: - 재사용 뷰 생성 메서드
 
-extension MainViewFooterView {
+extension MainFooterView {
     private static func footerStackView() -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical

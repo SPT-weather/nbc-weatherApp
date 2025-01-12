@@ -12,7 +12,7 @@ struct TestMockData {
     static let dust = TempDust(micro: 100,
                                fine: 100)
 
-    static let temperatureFormatter = TemperatureModel(currentTemperature: 13,
+    static let temperatureFormatter = TempTemperature(currentTemperature: 13,
                                                        highestTemperature: 15,
                                                        lowestTemperature: -11)
 

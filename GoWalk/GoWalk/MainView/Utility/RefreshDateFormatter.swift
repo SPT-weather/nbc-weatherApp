@@ -15,7 +15,7 @@ enum RefreshDateFormatter {
 
     private static func convert(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH시 mm분 ss초"
+        dateFormatter.dateFormat = "HH시 mm분"
         let description = dateFormatter.string(from: date)
         return description
     }

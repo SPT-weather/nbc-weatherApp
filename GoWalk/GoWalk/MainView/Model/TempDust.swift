@@ -11,5 +11,5 @@ struct TempDust {
     let micro: Int
     let fine: Int
 
-    static let `default` = TempDust(micro: 0, fine: 0)
+    static let failure = TempDust(micro: 0, fine: 0)
 }

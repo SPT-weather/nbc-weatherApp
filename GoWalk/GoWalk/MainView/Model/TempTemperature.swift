@@ -1,22 +1,13 @@
 //
-//  WeathetSimpleModel.swift
+//  TempTemperature.swift
 //  GoWalk
 //
-//  Created by 0-jerry on 1/8/25.
+//  Created by 0-jerry on 1/12/25.
 //
 
 import Foundation
 
-struct WeatherSimple {
-    let location: String
-    let weather: TemporaryWeather
-
-    static let `default` = WeatherSimple(location: "",
-                                         weather: .sunny)
-
-}
-
-struct TemperatureModel {
+struct TempTemperature {
     private let currentTemperature: Int
     private let highestTemperature: Int
     private let lowestTemperature: Int
@@ -39,7 +30,7 @@ struct TemperatureModel {
         self.lowestTemperature = lowestTemperature
     }
 
-    static let `default` = TemperatureModel(currentTemperature: 0,
+    static let failure = TempTemperature(currentTemperature: 0,
                                             highestTemperature: 0,
                                             lowestTemperature: 0)
 }
