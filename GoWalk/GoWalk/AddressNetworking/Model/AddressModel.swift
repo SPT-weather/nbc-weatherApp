@@ -6,6 +6,7 @@
 //
 import Foundation
 
+/// JSON 형태가 같으나 타입이 달라 제네릭으로 변경
 struct AddressModel<T: Codable>: Codable {
     let documents: [Data<T>]
 }

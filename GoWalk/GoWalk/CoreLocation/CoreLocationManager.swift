@@ -8,21 +8,6 @@
 import CoreLocation
 import UIKit
 
-/// 1.info.plist에 필요한 권한 추가 & Description 작성 [v]
-/// 2.import CoreLocation & CLLocation Manager 인스턴스 생성 [V]
-/// 3.사용자 디바이스의 위치 서비스가 활성화 상태인지 확인하는 메서드 추가
-/// 4.앱에 대한 위치 권한이 부여된 상태인지 확인하는 메서드 추가
-/// 5.Delegate설정 & Delegate Protocol 채택
-///
-/// coreLocation 추가
-/// 권한설정 요청
-/// cllocationmanger 초기화
-/// cllocationmanger의 메서드인 current location 요청
-/// cllocationmangerdelegate 위치를 업데이트
-/// 위도 경도 추출
-/// 정확도 선택
-///
-
 protocol CoreLocationAlertDelegate: AnyObject {
     func requestLocationServiceAlert(title: String, message: String, preferredStyle: UIAlertController.Style)
 }
@@ -44,12 +29,10 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     /// 사용자가 디바이스의 위치서비스를 활성화한 상태인지 확인
     /// 위치서비스가 활성화인지 확인 후 권한요청
     func checkUserDeviceLocationServiceAuthorizationStatus() {
-        /// 디바이스 전체 위치 서비스가 활성화 상태인지 확인
         if CLLocationManager.locationServicesEnabled() {
             print("위치 서비스가 활성화 상태입니다.")
             let authorizationStatus = locationManager.authorizationStatus
             checkUserCurrentLocationAuthorization(authorizationStatus)
-            
         } else {
             print("위치 서비스가 비활성화 상태입니다.") // 권한이 denied로 변경됨
         }
@@ -90,6 +73,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
             
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
+            // 테스트 코드(위,경도 -> 주소, 주소 -> 위경도)
             AddressNetworkManager.shared.fetchRegionData(127.1086228, 37.4012191)
             AddressNetworkManager.shared.fetchAddressData("구로")
         }

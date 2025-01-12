@@ -38,7 +38,7 @@ class TestViewController: UIViewController {
 
 extension TestViewController: CoreLocationAlertDelegate {
     
-    // 위치서비스 요청 알림(main 화면에서 사용)
+    // 위치서비스 요청 알림
     func requestLocationServiceAlert(title: String, message: String, preferredStyle: UIAlertController.Style) {
         let requestLocationAlert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
         let goSetting = UIAlertAction(title: "설정으로 이동", style: .destructive) { _ in
