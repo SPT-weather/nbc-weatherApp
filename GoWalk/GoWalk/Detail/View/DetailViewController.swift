@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 class DetailViewController: UIViewController {
-    
+    private let viewModel: DetailViewModel
     private var disposeBag = DisposeBag()
     
     private lazy var hourlyTitleLabel: UILabel = {
@@ -87,26 +87,42 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController {
     private func bind() {
-        Observable.just(DetailWeather.dummyHourly)
-            .debug()
-            .observe(on: MainScheduler.instance)
-            .bind(to: hourlyCollectionView.rx.items(
+        let input = DetailViewModel.Input(
+            viewDidLoad: Observable.just(()),  // 화면이 로드될 때 한 번만 발생
+            refresh: Observable.never()  // refresh 기능은 아직 미구현
+        )
+        
+        let output = viewModel.transform(input: input)
+        
+        output.hourlyWeather
+            .drive(hourlyCollectionView.rx.items(
                 cellIdentifier: HourlyCollectionViewCell.identifier,
-                cellType: HourlyCollectionViewCell.self
-            )) { _, item, cell in
+                cellType: HourlyCollectionViewCell.self)
+            ) { _, item, cell in
+                cell.configure(with: item) // 셀에 데이터를 전달하여 UI 업데이트
+            }
+            .disposed(by: disposeBag)
+        
+        output.weeklyWeather
+            .drive(weeklyCollectionView.rx.items(
+                cellIdentifier: WeeklyCollectionViewCell.identifier,
+                cellType: WeeklyCollectionViewCell.self)
+            ) { _, item, cell in
                 cell.configure(with: item)
             }
             .disposed(by: disposeBag)
         
-        Observable.just(DetailWeather.dummyWeekly)
-            .debug()
-            .observe(on: MainScheduler.instance)
-            .bind(to: weeklyCollectionView.rx.items(
-                cellIdentifier: WeeklyCollectionViewCell.identifier,
-                cellType: WeeklyCollectionViewCell.self
-            )) { _, item, cell in
-                cell.configure(with: item)
-            }
+        // 에러 처리 (임시)
+        output.error
+            .drive(onNext: { [weak self] (error: Error) in
+                let alert = UIAlertController(
+                    title: "Error",
+                    message: error.localizedDescription,
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                self?.present(alert, animated: true)
+            })
             .disposed(by: disposeBag)
     }
     
