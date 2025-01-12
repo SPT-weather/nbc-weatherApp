@@ -64,7 +64,8 @@ class DetailViewController: UIViewController {
         return collectionView
     }()
     
-    init() {
+    init(viewModel: DetailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
