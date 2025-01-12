@@ -66,6 +66,9 @@ class HourlyCollectionViewCell: UICollectionViewCell {
     func configure(with model: DetailWeather.Hourly) {
         timeLabel.text = model.time
         temperatureLabel.text = model.temperature
-        iconImageView.image = model.icon
+
+        WeatherImageLoader.loadImage(from: model.iconUrl) { [weak self] image in
+            self?.iconImageView.image = image
+        }
     }
 }

@@ -77,6 +77,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    // Date Formatter 추후 분리 예정
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/dd"
@@ -85,12 +86,12 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         
     func configure(with model: DetailWeather.Weekly) {
         dateLabel.text = Self.dateFormatter.string(from: model.date)
-        iconImageView.image = model.icon
-//        maxTemperatureLabel.text = "최고: \(model.maxTemperature)"
-//        minTemperatureLabel.text = "최저: \(model.minTemperature)"
-        maxTemperatureLabel.text =   model.maxTemperature
+        maxTemperatureLabel.text = model.maxTemperature
         minTemperatureLabel.text = model.minTemperature
         
+        WeatherImageLoader.loadImage(from: model.iconUrl) { [weak self] image in
+            self?.iconImageView.image = image
+        }
     }
 }
 
