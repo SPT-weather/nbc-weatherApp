@@ -6,15 +6,15 @@
 //
 import Foundation
 
-struct AddressModel: Codable {
-    let documents: [Data]
+struct AddressModel<T: Codable>: Codable {
+    let documents: [Data<T>]
 }
 
 extension AddressModel {
-    struct Data: Codable {
+    struct Data<T: Codable>: Codable {
         let addressName: String
-        let lat: String
-        let lon: String
+        let lat: T
+        let lon: T
         
         enum CodingKeys: String, CodingKey {
             case addressName = "address_name"

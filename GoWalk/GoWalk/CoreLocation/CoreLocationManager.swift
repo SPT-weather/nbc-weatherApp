@@ -71,7 +71,8 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
             print("restricted, denied")
             delegate?.requestLocationServiceAlert(
                 title: "위치 서비스 권한 필요",
-                message: "위치 서비스 권한을 허용해주세요.\n설정 > 앱 이름에서 위치 서비스를 허용해주세요.", preferredStyle: .alert
+                message: "위치 서비스 권한을 허용해주세요.\n설정 > 앱 이름에서 위치 서비스를 허용해주세요.",
+                preferredStyle: .alert
             )
         case .authorizedWhenInUse:
             print("authorizedWhenInUse")
@@ -89,6 +90,8 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
             
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
+            AddressNetworkManager.shared.fetchRegionData(127.1086228, 37.4012191)
+            AddressNetworkManager.shared.fetchAddressData("구로")
         }
     }
     
@@ -96,7 +99,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         delegate?.requestLocationServiceAlert(
             title: "위치 서비스 에러",
-            message: "위치 정보를 가져오는 중 문제가 발생했습니다: \(error.localizedDescription)\n위치 권한을 확인해주세요.",
+            message: "위치 정보를 가져오는 중 문제가 발생했습니다: \(error.localizedDescription)\n 위치 권한을 확인해주세요.",
             preferredStyle: .alert)
     }
 }
