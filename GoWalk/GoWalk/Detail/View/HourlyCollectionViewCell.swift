@@ -16,7 +16,6 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .label
-        label.text = "오후 1시"
         return label
     }()
     
@@ -24,7 +23,6 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.image = UIImage(resource: .dummyWeather).withTintColor(.label)
         return imageView
     }()
     
@@ -33,7 +31,6 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .label
-        label.text = "1도"
         return label
     }()
     

@@ -16,7 +16,6 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .label
-        label.text = "10/11"
         return label
     }()
     
@@ -33,7 +32,6 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .right
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .label
-        label.text = "최고: 0℃"
         return label
     }()
     
@@ -42,7 +40,6 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .right
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .label
-        label.text = "최저: -7℃"
         return label
     }()
     
