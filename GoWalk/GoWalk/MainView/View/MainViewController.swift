@@ -221,24 +221,24 @@ class MainViewController: UIViewController {
         navigationController?.pushViewController(viewController, animated: true)
     }
     private func footerViewTapped(_ gestureRecognizer: UITapGestureRecognizer) {
+    // 상세 뷰 모달 액션
+    func presentDetailViewModal(_ gestureRecognizer: UITapGestureRecognizer) {
         guard gestureRecognizer.state == .ended else { return }
-        let detailViewController = ViewController()
-        detailViewController.view.layer.cornerRadius = 30
-        if let sheet = detailViewController.sheetPresentationController {
-            sheet.detents = [.custom(resolver: { _ in
-                let targetView = self.weatherSimpleView
-                // 뷰의 좌표를 window 좌표계로 변환
-                if let window = targetView.window {
-                    let frame = targetView.convert(targetView.bounds, to: window)
-                    let bottomY = frame.maxY
-                    let screenHeight = UIScreen.main.bounds.height
-                    
-                    return screenHeight - bottomY
-                }
-                return 100 // 기본값
-            })]
+
+        let detailViewControllerModal = ViewController()
+        if let sheet = detailViewControllerModal.sheetPresentationController {
+            // 원하는 뷰의 높이를 계산
+            let targetHeight = weatherSimpleView.frame.maxY
+            let height = self.view.safeAreaLayoutGuide.layoutFrame.maxY - self.view.safeAreaLayoutGuide.layoutFrame.minY
+            let customDetent = UISheetPresentationController.Detent.custom { _ in
+                return height - targetHeight
+            }
+            sheet.detents = [customDetent]
         }
-        present(detailViewController, animated: true)
+        detailViewControllerModal.view.layer.cornerRadius = 30
+        detailViewControllerModal.view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+
+        present(detailViewControllerModal, animated: true)
     }
     private func refreshScroll() {
         DispatchQueue.main.async {
