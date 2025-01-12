@@ -7,8 +7,7 @@
 
 import Foundation
 
-/// 온도 형태 변환자
-///
+/// 온도 형태 변환
 enum TemperatureFormatter {
     // 현재 기온에 적합한 형태로 반환
     static func current(_ temperature: Int) -> String {

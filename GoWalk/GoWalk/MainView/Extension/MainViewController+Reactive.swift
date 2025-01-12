@@ -15,4 +15,10 @@ extension Reactive where Base: MainViewController {
         return methodInvoked(#selector(base.viewDidLoad))
             .map { _ in }
     }
+
+    var refreshDate: Binder<Date> {
+        return Binder(base) { [weak base] _, model in
+            base?.refreshDateLabel.text = RefreshDateFormatter.korean(model)
+        }
+    }
 }

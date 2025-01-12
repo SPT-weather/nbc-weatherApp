@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// 임시 미세먼지 모델
 struct TempDust {
     let micro: Int
     let fine: Int

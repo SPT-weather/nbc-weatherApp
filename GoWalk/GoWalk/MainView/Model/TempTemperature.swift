@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// 임시 온도 모델
 struct TempTemperature {
     private let currentTemperature: Int
     private let highestTemperature: Int

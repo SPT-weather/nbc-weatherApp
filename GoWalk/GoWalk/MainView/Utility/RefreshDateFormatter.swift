@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// 새로고침 시간 변환
 enum RefreshDateFormatter {
     static func korean(_ date: Date) -> String {
         let dateString = convert(date)

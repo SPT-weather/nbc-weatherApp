@@ -6,7 +6,7 @@
 //
 
 import UIKit.UIImage
-
+// 날씨 이미지 변환
 enum WeatherAssetTranslator {
     static func resourceImage(from weather: TempWeather) -> UIImage? {
         switch weather {

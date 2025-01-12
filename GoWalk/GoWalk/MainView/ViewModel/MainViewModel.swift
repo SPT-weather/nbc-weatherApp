@@ -19,10 +19,7 @@ class MainViewModel {
             .withUnretained(self)
             .subscribe(onNext: { owner, location in
                 owner.location = location
-                owner.fetchDust()
-                owner.fetchWeather()
-                owner.fetchTemperature()
-                owner.fetchRefreshDate()
+                owner.fetchAll()
             }).disposed(by: disposeBag)
         return locationRelay
     }()
@@ -31,9 +28,18 @@ class MainViewModel {
     private let dustRelay = PublishRelay<TempDust>()
     private let refreshDateRelay = PublishRelay<Date>()
     private let disposeBag = DisposeBag()
-    private var location: LocationPoint = LocationPoint(regionName: "서울특별시",
-                                                        latitude: 10,
-                                                        longitude: 10)
+    private var location: LocationPoint
+
+    init(location: LocationPoint) {
+        self.location = location
+    }
+    // 데이터 업데이트 ( 지역 제외 )
+    private func fetchAll() {
+        fetchDust()
+        fetchWeather()
+        fetchTemperature()
+        fetchRefreshDate()
+    }
 
     private func fetchDust() {
         let dust = TempDust(micro: Int.random(in: 10...20), fine: Int.random(in: 100...1000))
@@ -82,10 +88,7 @@ extension MainViewModel {
         input.refreshWeather
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.fetchDust()
-                owner.fetchWeather()
-                owner.fetchTemperature()
-                owner.fetchRefreshDate()
+                owner.fetchAll()
             }).disposed(by: disposeBag)
 
          input.refreshLocation
@@ -97,10 +100,7 @@ extension MainViewModel {
          input.viewDidLoad
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.fetchDust()
-                owner.fetchWeather()
-                owner.fetchTemperature()
-                owner.fetchRefreshDate()
+                owner.fetchAll()
             }).disposed(by: disposeBag)
 
         let temperature = temperatureRelay.asDriver(onErrorJustReturn: .failure)
