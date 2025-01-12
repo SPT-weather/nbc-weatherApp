@@ -13,7 +13,7 @@ import SwiftUI
 struct PreView: PreviewProvider {
     static var previews: some View {
         // 사용할 ViewController 로 수정 후 사용
-        ViewController().toPreview()
+        SettingsViewController().toPreview()
     }
 }
 
