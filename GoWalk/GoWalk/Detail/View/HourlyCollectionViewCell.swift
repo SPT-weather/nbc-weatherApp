@@ -58,6 +58,11 @@ class HourlyCollectionViewCell: UICollectionViewCell {
         stackView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview().inset(8)
         }
+        
+        iconImageView.snp.makeConstraints { make in
+            make.width.equalTo(30)
+            make.height.equalTo(iconImageView.snp.width)
+        }
     }
     
     func configure(with model: DetailWeather.Hourly) {

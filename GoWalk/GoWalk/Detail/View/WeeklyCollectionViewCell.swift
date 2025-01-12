@@ -27,28 +27,55 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let maxTemperatureLabel: UILabel = {
+    private let maxTemperatureTitleLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .right
+        label.textAlignment = .center
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .label
+        label.text = "최고: "
+        return label
+    }()
+    
+    private let maxTemperatureLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.font = .systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .label
+        return label
+    }()
+    
+    private let minTemperatureTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .label
+        label.text = "최저: "
         return label
     }()
     
     private let minTemperatureLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .right
+        label.textAlignment = .left
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.textColor = .label
         return label
     }()
     
-    private lazy var stackView = {
-        let stackView = UIStackView(arrangedSubviews: [dateLabel, iconImageView, maxTemperatureLabel, minTemperatureLabel])
+    private lazy var temperatureStackView = {
+        let stackView = UIStackView(arrangedSubviews: [maxTemperatureTitleLabel,maxTemperatureLabel, minTemperatureTitleLabel, minTemperatureLabel])
         stackView.axis = .horizontal
         stackView.spacing = 10
         stackView.alignment = .center
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fillEqually
+        return stackView
+    }()
+    
+    private lazy var stackView = {
+        let stackView = UIStackView(arrangedSubviews: [dateLabel, iconImageView, temperatureStackView, minTemperatureLabel])
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        stackView.alignment = .center
+        stackView.distribution = .fill
         return stackView
     }()
     
@@ -65,12 +92,24 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(stackView)
         
         stackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.trailing.equalToSuperview().inset(15)
             make.top.bottom.equalToSuperview().inset(10)
         }
         
         iconImageView.snp.makeConstraints { make in
             make.width.height.equalTo(30)
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.width.equalTo(50)
+        }
+        
+        maxTemperatureLabel.snp.makeConstraints { make in
+            make.width.greaterThanOrEqualTo(80)
+        }
+        
+        minTemperatureLabel.snp.makeConstraints { make in
+            make.width.greaterThanOrEqualTo(80)
         }
     }
     
