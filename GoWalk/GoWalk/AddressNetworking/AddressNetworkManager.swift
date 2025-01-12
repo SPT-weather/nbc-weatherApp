@@ -33,7 +33,10 @@ class AddressNetworkManager {
     
     // MARK: - 입력값으로 주소 api요청 메서드
     func fetchAddressData(_ inputData: String) {
-        guard let url = URL(string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)") else { return }
+        guard let url = URL(string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)") else {
+            print("url 빌드 오류")
+            return
+        }
         let header: HTTPHeaders = ["Authorization": "KakaoAK 430b247857c9b16b87d3f1a7a31d5888"]
         fetchData(url, header)
             .subscribe { (event: SingleEvent<AddressModel>) in
