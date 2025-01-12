@@ -24,7 +24,9 @@ class TestModalViewController: UIViewController {
     }
     
     @objc private func showModal() {
-        let detailVC = DetailViewController()
+        let viewModel = DetailViewModel()
+        let detailVC = DetailViewController(viewModel: viewModel)
+        
         detailVC.modalPresentationStyle = .pageSheet
         detailVC.isModalInPresentation = false
         
