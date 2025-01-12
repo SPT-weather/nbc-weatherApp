@@ -30,7 +30,7 @@ class MainViewModel {
     private let disposeBag = DisposeBag()
     private var location: LocationPoint
 
-    init(location: LocationPoint) {
+    init(location: LocationPoint = TestMockData.seoul) {
         self.location = location
     }
     // 데이터 업데이트 ( 지역 제외 )
