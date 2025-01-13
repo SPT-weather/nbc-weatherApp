@@ -15,7 +15,7 @@ import UIKit
 
 enum WeatherCellType {
     case coreData(locationName: String, temperature: Double?, icon: UIImage?)
-    case searchResult(locationName: String)
+    case searchResult(locationName: String, latitude: Double, longitude: Double)
 }
 
 struct WeatherCellData {
@@ -58,12 +58,18 @@ class SearchLocationViewModel {
                 } else {
                     // addressList 초기화
                     AddressNameInfo.shared.clearAddresses()
-
+                    
                     // api에서 데이터 가져오기
                     return Observable<[WeatherCellData]>.create { observer in
                         AddressNetworkManager.shared.fetchAddressData(query) {
                             let addressList = AddressNameInfo.shared.addressList.map { addressData in
-                                WeatherCellData(cellType: .searchResult(locationName: addressData.addressName))
+                                WeatherCellData(
+                                    cellType: .searchResult(
+                                        locationName: addressData.addressName,
+                                        latitude: Double(addressData.lat) ?? 0.0,
+                                        longitude: Double(addressData.lon) ?? 0.0
+                                    )
+                                )
                             }
                             observer.onNext(addressList)
                             observer.onCompleted()
@@ -77,9 +83,5 @@ class SearchLocationViewModel {
         
         return Output(tableViewData: weatherRelay.asDriver(onErrorJustReturn: []),
                       selectedLocation: selectedLocationRelay)
-    }
-    
-    func selectLocation(_ location: LocationPoint) {
-        selectedLocationRelay.accept(location)
     }
 }

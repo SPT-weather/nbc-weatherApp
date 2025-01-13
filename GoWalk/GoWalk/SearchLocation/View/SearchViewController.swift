@@ -85,8 +85,8 @@ final class SearchViewController: UIViewController {
                     switch cellData.cellType {
                     case .coreData(let locationName, let temperature, let icon):
                         cell.configureForCoreData(locationName, temperature, icon)
-                    case .searchResult(let locationName):
-                        cell.configureForSearchResult(locationName)
+                    case .searchResult(let locationName, let latitude, let longitude):
+                        cell.configureForSearchResult(locationName, latitude, longitude)
                     }
                 }
                 .disposed(by: disposeBag)
@@ -104,9 +104,15 @@ final class SearchViewController: UIViewController {
                         self.delegate?.didSelectLocation(location)
                         self.navigationController?.popViewController(animated: true)
                     }
-                case .searchResult(let locationName):
+                case .searchResult(let regionName, let latitude, let longitude):
                     // 검색 결과를 코어데이터에 저장
-                    let newLocation = LocationPoint(regionName: locationName, latitude: 37.5665, longitude: 126.9780) // lat/lon은 예시
+                    let newLocation = LocationPoint(
+                        regionName: regionName,
+                        latitude: latitude,
+                        longitude: longitude
+                    )
+                    print("newLocation: \(newLocation)")
+                    // 코어데이터에 저장
                     CoreDataStack.shared.addLocation(at: newLocation)
                     
                     // 델리게이트로 전달

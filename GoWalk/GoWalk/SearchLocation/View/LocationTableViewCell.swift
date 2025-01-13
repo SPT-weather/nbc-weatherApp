@@ -92,7 +92,7 @@ class LocationTableViewCell: UITableViewCell {
         
     }
     
-    func configureForSearchResult(_ locationName: String) {
+    func configureForSearchResult(_ locationName: String, _ latitude: Double, _ longitude: Double) {
         locationLabel.text = locationName
         locationLabel.font = UIFont.systemFont(ofSize: 22, weight: .regular)
         // 온도 레이블 및 아이콘 숨기기
