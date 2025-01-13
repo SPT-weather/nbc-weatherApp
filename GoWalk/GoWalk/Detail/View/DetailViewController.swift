@@ -14,7 +14,7 @@ class DetailViewController: UIViewController {
     private let viewModel: DetailViewModel
     private var disposeBag = DisposeBag()
 
-    private lazy var hourlyTitleLabel: UILabel = {
+    private var hourlyTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textColor = .label
@@ -23,7 +23,7 @@ class DetailViewController: UIViewController {
         return label
     }()
 
-    private lazy var weeklyTitleLabel: UILabel = {
+    private var weeklyTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textColor = .label
