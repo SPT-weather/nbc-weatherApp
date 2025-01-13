@@ -46,11 +46,11 @@ class MainViewController: UIViewController {
         return button
     }()
     // 날씨 아이콘, 지역, 현재온도 뷰
-    private let weatherSimpleView = WeatherSimpleView()
+    private let weatherSimpleView = MainWeatherView()
     // 새로고침 기준 시간 라벨
     let refreshDateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .lightGray
+        label.textColor = .darkGray
         label.font = .systemFont(ofSize: 14)
         label.backgroundColor = .clear
         label.textAlignment = .center
@@ -66,8 +66,7 @@ class MainViewController: UIViewController {
     // 푸터 뷰
     private let footerView = {
         let footerView = MainFooterView()
-        footerView.layer.cornerRadius = 30
-        footerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        footerView.layer.cornerRadius = 40
         return footerView
     }()
     // Life Cycle
@@ -125,6 +124,7 @@ class MainViewController: UIViewController {
         weatherSimpleView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(navigationView.snp.bottom).offset(5)
+            $0.width.equalToSuperview().multipliedBy(0.7)
             $0.height.equalTo(90)
         }
         refreshDateLabel.snp.makeConstraints {
@@ -140,7 +140,7 @@ class MainViewController: UIViewController {
         }
         footerView.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(180)
+            $0.height.equalToSuperview().multipliedBy(0.2)
         }
     }
     // 메인 뷰 버튼

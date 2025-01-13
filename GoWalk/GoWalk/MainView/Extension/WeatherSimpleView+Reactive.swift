@@ -9,10 +9,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-extension Reactive where Base: WeatherSimpleView {
+extension Reactive where Base: MainWeatherView {
     var temperatrue: Binder<TempTemperature> {
         return Binder(base) { [weak base] _, model in
-            base?.currentTemperatureLabel.text = model.current
+            base?.temperatureLabel.text = model.current
         }
     }
 

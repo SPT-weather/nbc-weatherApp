@@ -13,7 +13,7 @@ struct TempTemperature {
     private let lowestTemperature: Int
 
     var current: String {
-        return "현재온도: " + TemperatureFormatter.current(currentTemperature)
+        return TemperatureFormatter.current(currentTemperature)
     }
     var highest: String {
         return TemperatureFormatter.simple(highestTemperature)
