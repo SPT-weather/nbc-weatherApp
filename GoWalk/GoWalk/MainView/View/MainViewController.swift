@@ -226,7 +226,7 @@ class MainViewController: UIViewController {
     }
     // 지역 목록 버튼 액션
     private func locationListButtonTapped() {
-        let viewController = SearchViewController()
+        let viewController = ViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
     // 설정 버튼 액션

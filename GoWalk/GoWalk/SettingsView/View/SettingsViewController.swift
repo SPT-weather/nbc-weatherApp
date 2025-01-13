@@ -341,15 +341,15 @@ class SettingsViewController: UIViewController {
             $0.height.equalTo(30)
         }
         
-        darkModeButton.snp.makeConstraints {
+        lightModeButton.snp.makeConstraints {
             $0.top.equalTo(systemModeButton.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
             $0.height.equalTo(30)
         }
         
-        lightModeButton.snp.makeConstraints {
-            $0.top.equalTo(systemModeButton.snp.bottom).offset(10)
+        darkModeButton.snp.makeConstraints {
+            $0.top.equalTo(lightModeButton.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
             $0.height.equalTo(30)
