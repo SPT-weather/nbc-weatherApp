@@ -24,7 +24,7 @@ struct HourlyWeather: Decodable {
 }
 
 struct DailyWeather: Decodable {
-    let temp: Double
+    let temp: DailyTemperature
     let weather: [Weather]
 }
 
@@ -35,31 +35,29 @@ struct Weather: Decodable {
     let icon: String // 날씨 아이콘 이름
 }
 
-struct DailyTemperature {
+struct DailyTemperature: Decodable {
     let min: Double // 최저
     let max: Double // 최고
-    let day: Double // 낮
-    let night: Double // 밤
-    let eve: Double // 저녁
-    let morn: Double // 아침
 }
 
 // MARK: - 미세먼지용 구조체
 
-struct AirPollutionResponse {
-    let list: [PollutionData]
+struct AirPollutionResponse: Decodable {
+    let list: [PollutionData]?
 }
 
-struct PollutionData {
+struct PollutionData: Decodable {
     let main: MainPollution
     let components: PollutionComponents
 }
 
-struct MainPollution {
-    let aqi: Int // Air Quality Index  대기질 지수
+struct MainPollution: Decodable {
+    let aqi: Int // Air Quality Index  대기질 지수(Good, Fair, Moderate, Poor, Very Poor)
 }
 
-struct PollutionComponents {
+// swiftlint:disable identifier_name
+struct PollutionComponents: Decodable {
     let pm2_5: Double // 초 미세먼지
     let pm10: Double // 미세먼지
 }
+// swiftlint: enable identifier_name

@@ -60,15 +60,15 @@ struct KakaoAPI: API {
 struct OpenWeatherAPI: API {
     var baseURL: String = "https://api.openweathermap.org"
     enum Path: APIPath {
-        case oneCall
-        case freeModel
-        
+        case weather
+        case airPollution
+
         var path: String {
             switch self {
-            case .oneCall:
+            case .weather:
                 return "/data/3.0/onecall"
-            case .freeModel:
-                return "/data/2.5/weather"
+            case .airPollution:
+                return "/data/2.5/air_pollution"
             }
         }
     }
@@ -107,17 +107,19 @@ struct OpenWeatherAPI: API {
         case daily // 7일간의 하루별 예보
         case alerts // 날씨 경보
     }
-    
+
     // 섭씨, 화씨 단위. 기본은 켈빈
     enum Units: String {
         case standard
         case metric
         case imperial
     }
-    
+
+    // swiftlint: disable identifier_name
     // 언어
     enum Language: String {
         case kr
         case en
     }
+    // swiftlint: enable identifier_name
 }

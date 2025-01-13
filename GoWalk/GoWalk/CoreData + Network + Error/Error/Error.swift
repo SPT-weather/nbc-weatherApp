@@ -18,6 +18,7 @@ enum AppError: Error {
 
     enum NetworkError: Error {
         case failedToBuildURL(url: String)
+        case failedToMapping
     }
 }
 
@@ -39,6 +40,8 @@ extension AppError: LocalizedError {
             switch error {
             case .failedToBuildURL(let url):
                 return "URL 생성 실패. 시도한 URL: \(url)"
+            case .failedToMapping:
+                return "응답 데이터 매핑 실패"
             }
         }
     }

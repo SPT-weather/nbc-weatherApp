@@ -11,33 +11,33 @@ class URLBuilder<APIType: API> {
     private var baseURL: String
     private var paths: [APIType.Path] = []
     private var quertyItems: [APIType.QueryItem] = []
-    
+
     init (api: APIType) {
         self.baseURL = api.baseURL
     }
-    
+
     func addPath(_ path: APIType.Path) -> Self {
         paths.append(path)
         return self
     }
-    
+
     func addQueryItem(_ item: APIType.QueryItem) -> Self {
         quertyItems.append(item)
         return self
     }
-    
+
     func build() -> Result<URL, AppError> {
         guard var components = URLComponents(string: self.baseURL) else {
             return .failure(AppError.network(.failedToBuildURL(url: self.baseURL)))
         }
-        
+
         components.path = paths.map { $0.path }.joined()
         components.queryItems = quertyItems.map { $0.queryItem }
-        
+
         guard let url = components.url else {
             return .failure(AppError.network(.failedToBuildURL(url: components.url?.absoluteString ?? "Unknown url")))
         }
-        
+
         return .success(url)
     }
 }
@@ -53,13 +53,3 @@ extension Result {
         }
     }
 }
-/* 사용 예시
-var url: URL? = {
-    let builder = URLBuilder(api: KakaoAPI())
-    return builder
-        .addPath(.defaultPath)
-        .addQueryItem(.query("adress"))
-        .build()
-        .get() // rx스위프트에서 타입을 체이닝 한 것과 같음
-}()
-*/
