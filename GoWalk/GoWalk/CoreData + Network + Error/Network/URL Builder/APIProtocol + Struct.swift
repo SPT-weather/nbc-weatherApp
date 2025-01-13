@@ -30,20 +30,20 @@ struct KakaoAPI: API {
     enum Path: APIPath {
         case defaultPath
         case adress
-        case keyword
+        case region
 
         var path: String {
             switch self {
             case .defaultPath:
-                return "/v2/local/search"
+                return "/v2/local"
             case .adress:
                 return "/search/address.json"
-            case .keyword:
+            case .region:
                 return "/local/geo/coord2regioncode.json"
             }
         }
     }
-
+//swiftlint: disable identifier_name
     enum QueryItem: APIQueryItem {
         case query(String)
         case x(String)
@@ -61,6 +61,7 @@ struct KakaoAPI: API {
         }
     }
 }
+//swiftlint: enable idetifier_name
 
 // 날씨 api
 struct OpenWeatherAPI: API {

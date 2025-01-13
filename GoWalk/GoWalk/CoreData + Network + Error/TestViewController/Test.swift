@@ -4,33 +4,19 @@
 //
 //  Created by 박진홍 on 1/13/25.
 //
+//
 import UIKit
 import RxSwift
+import RxCocoa
 
 class Test: UIViewController {
-    // MARK: - UI 요소
-    private let weatherLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.text = "Fetching weather data..."
-        return label
-    }()
-
-    private let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.hidesWhenStopped = true
-        return indicator
-    }()
-
-    // MARK: - 네트워크 매니저 및 DisposeBag
-    private let networkManager: AbstractNetworkManager
     private let disposeBag = DisposeBag()
+    private let networkManager: AbstractNetworkManager
 
-    // MARK: - 생성자
+    // UI Components
+    private let kakaoCoordinatesLabel = UILabel()
+    private let weatherLabel = UILabel()
+
     init(networkManager: AbstractNetworkManager) {
         self.networkManager = networkManager
         super.init(nibName: nil, bundle: nil)
@@ -40,70 +26,100 @@ class Test: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - 생명주기
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        fetchWeather()
+        fetchKakaoData()
+        fetchWeatherData()
     }
 
-    // MARK: - UI 설정
     private func setupUI() {
         view.backgroundColor = .white
-        view.addSubview(weatherLabel)
-        view.addSubview(activityIndicator)
+
+        kakaoCoordinatesLabel.numberOfLines = 0
+        weatherLabel.numberOfLines = 0
+
+        let stackView = UIStackView(arrangedSubviews: [kakaoCoordinatesLabel, weatherLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            weatherLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            weatherLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            weatherLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            weatherLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.topAnchor.constraint(equalTo: weatherLabel.bottomAnchor, constant: 20)
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
 
-    // MARK: - 날씨 데이터 요청
-    private func fetchWeather() {
-        activityIndicator.startAnimating()
+    private func fetchKakaoData() {
+        let kakaoAPIKey = "KakaoAK 430b247857c9b16b87d3f1a7a31d5888"
+        let kakaoHeaders = ["Authorization": kakaoAPIKey]
+        let kakaoURL = URLBuilder(api: KakaoAPI())
+            .addPath(.defaultPath)
+            .addPath(.adress)
+            .addQueryItem(.query("강서구"))
+            .build()
+            .get()
+        
+        print("\(kakaoURL?.absoluteString)")
+        guard let kakaoRequestURL = kakaoURL else {
+            kakaoCoordinatesLabel.text = "Failed to build Kakao API URL"
+            return
+        }
 
-        // URLBuilder로 URL 생성
-        let urlBuilder = URLBuilder(api: OpenWeatherAPI())
-        guard let url = urlBuilder
+        networkManager.fetchAddressData(url: kakaoRequestURL, header: kakaoHeaders)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] result in
+                switch result {
+                case .success(let addressDTO):
+                    if let location = addressDTO.locationPoint.first {
+                        self?.kakaoCoordinatesLabel.text = """
+                        Kakao Coordinates:
+                        Latitude: \(location.latitude)
+                        Longitude: \(location.longitude)
+                        """
+                    } else {
+                        self?.kakaoCoordinatesLabel.text = "No results found"
+                    }
+                case .failure(let error):
+                    self?.kakaoCoordinatesLabel.text = "Kakao API Error: \(error.localizedDescription)"
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+
+    private func fetchWeatherData() {
+        let weatherURL = URLBuilder(api: OpenWeatherAPI())
             .addPath(.weather)
-            .addQueryItem(.latitude(37.5665))
-            .addQueryItem(.longitude(126.9780))
+            .addQueryItem(.latitude(37.5665)) // 서울 위도
+            .addQueryItem(.longitude(126.9780)) // 서울 경도
             .addQueryItem(.appid("902a70addad3e4cfd087a1b95fe85b06"))
             .addQueryItem(.units(.metric))
             .build()
-            .get() else {
-                weatherLabel.text = "Failed to build URL"
-                activityIndicator.stopAnimating()
-                return
-            }
+            .get()
 
-        // 네트워크 요청
-        networkManager.fetchWeatherData(url: url)
-        .subscribe(onNext: { [weak self] result in
-            DispatchQueue.main.async {
-                self?.activityIndicator.stopAnimating()
+        guard let weatherRequestURL = weatherURL else {
+            weatherLabel.text = "Failed to build OpenWeather API URL"
+            return
+        }
+
+        networkManager.fetchWeatherData(url: weatherRequestURL)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] result in
                 switch result {
-                case .success(let dto):
-                    self?.updateUI(with: dto)
+                case .success(let weatherDTO):
+                    self?.weatherLabel.text = """
+                    Weather in Seoul:
+                    Temperature: \(weatherDTO.current.temp)°C
+                    Description: \(weatherDTO.current.description)
+                    """
                 case .failure(let error):
-                    self?.weatherLabel.text = "Error: \(error.localizedDescription)"
+                    self?.weatherLabel.text = "Weather API Error: \(error.localizedDescription)"
                 }
-            }
-        }).disposed(by: disposeBag)
-    }
-
-    // MARK: - UI 업데이트
-    private func updateUI(with weatherDTO: TotalWeatherDTO) {
-        weatherLabel.text = """
-        Current Temperature: \(weatherDTO.current.temp)°C
-        Weather: \(weatherDTO.current.main)
-        Description: \(weatherDTO.current.description)
-        """
+            })
+            .disposed(by: disposeBag)
     }
 }
