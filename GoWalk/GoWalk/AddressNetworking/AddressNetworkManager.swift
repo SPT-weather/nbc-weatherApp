@@ -13,7 +13,7 @@ class AddressNetworkManager {
     static let shared = AddressNetworkManager()
     private init() {}
     let disposeBag = DisposeBag()
-    
+
     //MARK: - 네트워크 요청
     func fetchData<T: Decodable> (_ url: URL, _ header: HTTPHeaders) -> Single<T> {
         return Single<T>.create { single in
@@ -30,7 +30,7 @@ class AddressNetworkManager {
             return Disposables.create()
         }
     }
-    
+
     // MARK: - 입력값으로 주소 api요청 메서드
     func fetchAddressData(_ inputData: String) {
         guard let url = URL(string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)") else { return }
