@@ -19,7 +19,7 @@ final class WeatherImageLoader {
             }
 
             DispatchQueue.main.async {
-                completion(image)
+                completion(image.withRenderingMode(.alwaysOriginal).withTintColor(.label))
             }
         }
     }
