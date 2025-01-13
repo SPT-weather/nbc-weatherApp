@@ -37,6 +37,12 @@ class SearchViewController: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        applyTheme()
+    }
+    
     // 네비바 셋업
     private func setNavigationBar() {
         navigationItem.title = "Today"
@@ -78,6 +84,19 @@ class SearchViewController: UIViewController {
             $0.top.equalTo(searchBar.snp.bottom).offset(10)
             $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading)
             $0.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing)
+        }
+    }
+    
+    // 화면 테마모드 적용
+    private func applyTheme() {
+        let theme = SettingsManager.shared.themeMode
+        switch theme {
+        case .light:
+            overrideUserInterfaceStyle = .light
+        case .dark:
+            overrideUserInterfaceStyle = .dark
+        case .system:
+            overrideUserInterfaceStyle = .unspecified
         }
     }
     

@@ -14,7 +14,7 @@ import UIKit
 // 검색어가 있을 때: AddressNetworkManager.shared.fetchData()를 사용해서 API 호출 데이터 가져오기
 
 enum WeatherCellType {
-    case coreData(locationName: String, temperature: String?, icon: UIImage?)
+    case coreData(locationName: String, temperature: Double?, icon: UIImage?)
     case searchResult(locationName: String)
 }
 

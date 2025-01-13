@@ -77,9 +77,13 @@ class LocationTableViewCell: UITableViewCell {
         }
     }
     
-    func configureForCoreData(_ locationName: String, _ temperature: String?, _ icon: UIImage?) {
+    func configureForCoreData(_ locationName: String, _ temperature: Double?, _ icon: UIImage?) {
         locationLabel.text = locationName
-        temperatureLabel.text = temperature ?? "N/A"
+        if let temperatureValue = temperature {
+            temperatureLabel.text = SettingsManager.shared.convertedTemperature(temperatureValue)
+        } else {
+            temperatureLabel.text = "N/A"
+        }
         weatherIconImageVIew.image = icon ?? UIImage(systemName: "sun.fill")
         // 온도 레이블 및 아이콘 보이기
         temperatureLabel.isHidden = false
