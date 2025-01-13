@@ -73,9 +73,6 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
             
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
-            // 테스트 코드(위,경도 -> 주소, 주소 -> 위경도)
-            AddressNetworkManager.shared.fetchRegionData(127.1086228, 37.4012191)
-            AddressNetworkManager.shared.fetchAddressData("구로")
         }
     }
     
