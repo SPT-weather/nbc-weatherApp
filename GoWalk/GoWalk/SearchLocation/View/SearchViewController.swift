@@ -67,7 +67,7 @@ final class SearchViewController: UIViewController {
    
     // 바인딩 메서드
     private func bind() {
-        let searchTextRelay = PublishRelay<String>()
+        let searchTextRelay = BehaviorRelay<String>(value: "")
         
         // searchBar 텍스트 바인딩
         searchBar.rx.text.orEmpty

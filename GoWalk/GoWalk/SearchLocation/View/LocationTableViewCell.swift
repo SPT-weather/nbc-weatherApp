@@ -59,13 +59,13 @@ class LocationTableViewCell: UITableViewCell {
         locationLabel.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(42)
             $0.leading.equalTo(contentView.snp.leading).offset(16)
-            $0.width.equalTo(100)
+            $0.trailing.equalTo(temperatureLabel.snp.leading).offset(-20)
             $0.height.equalTo(30)
         }
         
         temperatureLabel.snp.makeConstraints {
             $0.top.equalTo(locationLabel.snp.top)
-            $0.leading.equalTo(locationLabel.snp.trailing).offset(195)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(60)
             $0.width.equalTo(50)
             $0.height.equalTo(locationLabel.snp.height)
         }

@@ -24,7 +24,7 @@ final class CoreDataStack {
     private init() {}
 
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "Location")
+        let container = NSPersistentContainer(name: "GoWalk")
         container.loadPersistentStores { _, error in
             if let error = error {
                 print(AppError.data(.failedToMakePersistentContainer).localizedDescription)
