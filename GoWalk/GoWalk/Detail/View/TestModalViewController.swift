@@ -8,13 +8,13 @@ class TestModalViewController: UIViewController {
         button.addTarget(self, action: #selector(showModal), for: .touchUpInside)
         return button
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupUI()
     }
-    
+
     private func setupUI() {
         view.addSubview(button)
         button.snp.makeConstraints { make in
@@ -22,17 +22,17 @@ class TestModalViewController: UIViewController {
             make.centerX.equalToSuperview()
         }
     }
-    
+
     @objc private func showModal() {
         let viewModel = DetailViewModel()
         let detailVC = DetailViewController(viewModel: viewModel)
-        
+
         detailVC.modalPresentationStyle = .pageSheet
         detailVC.isModalInPresentation = false
-        
+
         if let sheet = detailVC.sheetPresentationController {
-            sheet.detents = [ //detents를 사용하여 커스텀
-                .custom { [weak self] context in
+            sheet.detents = [ // detents를 사용하여 커스텀
+                .custom { [weak self] _ in
                     guard let self = self else { return 500 }
                     let buttonFrame = self.button.convert(self.button.bounds, to: self.view)
                     return self.view.frame.height - buttonFrame.maxY - 10
@@ -41,7 +41,7 @@ class TestModalViewController: UIViewController {
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
             sheet.preferredCornerRadius = 20
         }
-        
+
         present(detailVC, animated: true)
     }
 }

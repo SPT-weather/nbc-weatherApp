@@ -17,7 +17,7 @@ final class WeatherImageLoader {
                 }
                 return
             }
-            
+
             DispatchQueue.main.async {
                 completion(image)
             }

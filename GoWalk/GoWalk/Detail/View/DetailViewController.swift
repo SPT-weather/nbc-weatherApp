@@ -13,7 +13,7 @@ import RxCocoa
 class DetailViewController: UIViewController {
     private let viewModel: DetailViewModel
     private var disposeBag = DisposeBag()
-    
+
     private lazy var hourlyTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -40,7 +40,8 @@ class DetailViewController: UIViewController {
         layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(HourlyCollectionViewCell.self, forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
+        collectionView.register(HourlyCollectionViewCell.self,
+                                forCellWithReuseIdentifier: HourlyCollectionViewCell.identifier)
         collectionView.backgroundColor = UIColor(named: "SectionBgColor")
         collectionView.layer.cornerRadius = 16
         collectionView.showsHorizontalScrollIndicator = false
@@ -56,7 +57,8 @@ class DetailViewController: UIViewController {
         layout.sectionInset = UIEdgeInsets(top: 16, left: 10, bottom: 0, right: 10)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(WeeklyCollectionViewCell.self, forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
+        collectionView.register(WeeklyCollectionViewCell.self,
+                                forCellWithReuseIdentifier: WeeklyCollectionViewCell.identifier)
         collectionView.backgroundColor = UIColor(named: "SectionBgColor")
         collectionView.layer.cornerRadius = 16
         collectionView.showsVerticalScrollIndicator = false
@@ -75,7 +77,7 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named:"ModalBgColor")
+        view.backgroundColor = UIColor(named: "ModalBgColor")
         setupUI()
         bind()
     }

@@ -13,7 +13,7 @@ struct DetailWeather {
         let temperature: String
         let iconUrl: URL
     }
-    
+
     struct Weekly { // 주간 날씨
         let date: Date
         let iconUrl: URL
