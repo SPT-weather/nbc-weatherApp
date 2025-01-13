@@ -90,9 +90,7 @@ class Test: UIViewController {
                 self?.activityIndicator.stopAnimating()
                 switch result {
                 case .success(let dto):
-                    if let weatherDTO = dto as? TotalWeatherDTO {
-                        self?.updateUI(with: weatherDTO)
-                    }
+                    self?.updateUI(with: dto)
                 case .failure(let error):
                     self?.weatherLabel.text = "Error: \(error.localizedDescription)"
                 }
