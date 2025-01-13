@@ -5,49 +5,29 @@
 //  Created by 박진홍 on 1/13/25.
 //
 
+protocol Mappable: Decodable {
+    associatedtype ResponseType: Decodable
+    static func map(from response: ResponseType) -> Result<Self, AppError>
+}
+
 // MARK: - 날씨, 미세먼지 DTO
 
-struct TotalWeatherDTO {
+struct TotalWeatherDTO: Mappable {
     let current: WeatherDTO
     let hourly: [WeatherDTO]
     let daily: [DailyWeatherDTO]
-}
 
-struct WeatherDTO {
-    let temp: Double // 온도
-    let id: Int // 날씨 상태 id
-    let main: String // 날씨 그룹( Rain, Clear 등)
-    let description: String // 더 상세한 날씨( light rain 등)
-    let icon: String // 날씨 아이콘 이름
-}
-
-struct DailyWeatherDTO {
-    let minTemp: Double // 최저
-    let maxTemp: Double // 최고
-    let id: Int // 날씨 상태 id
-    let main: String // 날씨 그룹( Rain, Clear 등)
-    let description: String // 더 상세한 날씨( light rain 등)
-    let icon: String // 날씨 아이콘 이름
-}
-
-struct AirPollutionDTO {
-    let aqi: Int
-    let pmTwoPointFive: Double // pm2.5
-    let pmTen: Double // pm10
-}
-
-// MARK: - DTO 매핑
-
-class DTOMapper {
-    static func mapToWeatherDTO(from response: WeatherResponse) -> Result<TotalWeatherDTO, AppError> {
+    static func map(from response: WeatherResponse) -> Result<TotalWeatherDTO, AppError> {
         guard let current = response.current,
               let hourly = response.hourly,
               let daily = response.daily
         else { return .failure(AppError.network(.failedToMapping))}
 
         // current weahter mapping
-        guard let currentWeather = current.weather.first
-        else { return .failure(AppError.network(.failedToMapping))}
+        guard let currentWeather = current.weather.first else {
+            return .failure(AppError.network(.failedToMapping))
+        }
+        
         let currentDTO: WeatherDTO = WeatherDTO(
             temp: current.temp,
             id: currentWeather.id,
@@ -56,6 +36,7 @@ class DTOMapper {
             icon: currentWeather.icon
         )
 
+        //TODO: 하나의 do 구문으로 묶어서 간결하게 리팩터링
         // houlry weather mapping
         let hourlyDTO: [WeatherDTO]
         do {
@@ -65,6 +46,7 @@ class DTOMapper {
                 }
                 return WeatherDTO(
                     temp: hourlyWeather.temp,
+
                     id: weather.id,
                     main: weather.main,
                     description: weather.description,
@@ -98,7 +80,32 @@ class DTOMapper {
         return .success(TotalWeatherDTO(current: currentDTO, hourly: hourlyDTO, daily: dailyDTO))
     }
 
-    static func mapToAirPollutionDTO(from response: AirPollutionResponse) -> Result<AirPollutionDTO, AppError> {
+}
+
+struct WeatherDTO: Decodable {
+    let temp: Double // 온도
+    let id: Int // 날씨 상태 id
+    let main: String // 날씨 그룹( Rain, Clear 등)
+    let description: String // 더 상세한 날씨( light rain 등)
+    let icon: String // 날씨 아이콘 이름
+}
+
+struct DailyWeatherDTO: Decodable {
+    let minTemp: Double // 최저
+    let maxTemp: Double // 최고
+    let id: Int // 날씨 상태 id
+    let main: String // 날씨 그룹( Rain, Clear 등)
+    let description: String // 더 상세한 날씨( light rain 등)
+    let icon: String // 날씨 아이콘 이름
+}
+
+// MARK: - 대기질 DTO 매퍼
+struct AirPollutionDTO: Mappable {
+    let aqi: Int
+    let pmTwoPointFive: Double // pm2.5
+    let pmTen: Double // pm10
+    
+    static func map(from response: AirPollutionResponse) -> Result<AirPollutionDTO, AppError> {
         guard let data = response.list?.first else {
             return .failure(AppError.network(.failedToMapping))
         }

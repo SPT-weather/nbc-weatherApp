@@ -9,17 +9,21 @@ import Foundation
 import RxSwift
 
 protocol AbstractNetworkManager {
-    // TODO: 추상화 고민해보기
+    func fetchData<DTO: Mappable>(
+        url: URL,
+        responseType: DTO.ResponseType.Type
+    ) -> Observable<Result<DTO, AppError>>
+    func fetchWeatherData(url: URL) -> Observable<Result<TotalWeatherDTO, AppError>>
+    func fetchAirPollutionData(url: URL) -> Observable<Result<AirPollutionDTO, AppError>>
 }
 
 class RXNetworkManager: AbstractNetworkManager {
     private let successRange: Range = (200..<300)
 
-    func fetchData<ResponseType: Decodable, DTOType> (
+    func fetchData<DTO: Mappable> (
         url: URL,
-        responseType: ResponseType.Type,
-        dtoMapper: @escaping (ResponseType) -> Result<DTOType, AppError>
-    ) -> Observable<Result<DTOType, AppError>> {
+        responseType: DTO.ResponseType.Type
+    ) -> Observable<Result<DTO, AppError>> {
         return Observable.create { observer in
             let request: URLRequest = URLRequest(url: url)
 
@@ -49,8 +53,8 @@ class RXNetworkManager: AbstractNetworkManager {
                 }
 
                 do {
-                    let decodedData: ResponseType = try JSONDecoder().decode(ResponseType.self, from: data)
-                    let result = dtoMapper(decodedData)
+                    let decodedData: DTO.ResponseType = try JSONDecoder().decode(DTO.ResponseType.self, from: data)
+                    let result = DTO.map(from: decodedData)
                     observer.onNext(result)
                 } catch {
                     observer.onNext(.failure(.network(.failedToMapping)))
@@ -61,4 +65,13 @@ class RXNetworkManager: AbstractNetworkManager {
             return Disposables.create()
         }
     }
+
+    func fetchWeatherData(url: URL) -> Observable<Result<TotalWeatherDTO, AppError>> {
+        return fetchData(url: url, responseType: TotalWeatherDTO.ResponseType.self)
+    }
+
+    func fetchAirPollutionData(url: URL) -> Observable<Result<AirPollutionDTO, AppError>> {
+        return fetchData(url: url, responseType: AirPollutionDTO.ResponseType.self)
+    }
+
 }
