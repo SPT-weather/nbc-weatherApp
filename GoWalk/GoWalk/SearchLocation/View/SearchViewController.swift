@@ -41,6 +41,7 @@ final class SearchViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .systemBackground
         tableView.showsVerticalScrollIndicator = false
+        tableView.rowHeight = 70
         tableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.id)
         return tableView
     }()
@@ -64,10 +65,10 @@ final class SearchViewController: UIViewController {
     private func setNavigationBar() {
         navigationItem.title = "Today"
     }
-   
+    
+    let searchTextRelay = BehaviorRelay<String>(value: "")
     // 바인딩 메서드
     private func bind() {
-        let searchTextRelay = BehaviorRelay<String>(value: "")
         
         // searchBar 텍스트 바인딩
         searchBar.rx.text.orEmpty
@@ -84,8 +85,10 @@ final class SearchViewController: UIViewController {
                 cellType: LocationTableViewCell.self)) { index, cellData, cell in
                     switch cellData.cellType {
                     case .coreData(let locationName, let temperature, let icon):
+                        // 코어데이터 바인딩
                         cell.configureForCoreData(locationName, temperature, icon)
                     case .searchResult(let locationName, let latitude, let longitude):
+                        // api 검색 결과 데이터 바인딩
                         cell.configureForSearchResult(locationName, latitude, longitude)
                     }
                 }
@@ -115,9 +118,9 @@ final class SearchViewController: UIViewController {
                     // 코어데이터에 저장
                     CoreDataStack.shared.addLocation(at: newLocation)
                     
-                    // 델리게이트로 전달
-                    self.delegate?.didSelectLocation(newLocation)
-                    self.navigationController?.popViewController(animated: true)
+                    // 검색 텍스트 초기화
+                    self.searchBar.text = ""
+                    self.searchTextRelay.accept("")
                 }
             })
             .disposed(by: disposeBag)

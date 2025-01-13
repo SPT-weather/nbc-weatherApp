@@ -28,7 +28,7 @@ class LocationTableViewCell: UITableViewCell {
         label.text = "10°C"
         label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         label.textAlignment = .center
-        label.textColor = .white
+        label.textColor = .label
         return label
     }()
     
@@ -57,34 +57,44 @@ class LocationTableViewCell: UITableViewCell {
         ].forEach { contentView.addSubview($0) }
         
         locationLabel.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(42)
-            $0.leading.equalTo(contentView.snp.leading).offset(16)
+            $0.centerY.equalTo(contentView.snp.centerY)
+            $0.leading.equalTo(contentView.snp.leading).offset(10)
             $0.trailing.equalTo(temperatureLabel.snp.leading).offset(-20)
             $0.height.equalTo(30)
         }
         
         temperatureLabel.snp.makeConstraints {
-            $0.top.equalTo(locationLabel.snp.top)
-            $0.trailing.equalTo(contentView.snp.trailing).offset(60)
+            $0.centerY.equalTo(contentView.snp.centerY)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-70)
             $0.width.equalTo(50)
             $0.height.equalTo(locationLabel.snp.height)
         }
         
         weatherIconImageVIew.snp.makeConstraints {
-            $0.top.equalTo(locationLabel.snp.top)
+            $0.centerY.equalTo(contentView.snp.centerY)
             $0.leading.equalTo(temperatureLabel.snp.trailing).offset(12)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-16)
             $0.width.height.equalTo(30)
         }
     }
     
+    // 코어데이터 로드시 ui 재설정
     func configureForCoreData(_ locationName: String, _ temperature: Double?, _ icon: UIImage?) {
         locationLabel.text = locationName
         if let temperatureValue = temperature {
             temperatureLabel.text = SettingsManager.shared.convertedTemperature(temperatureValue)
+            temperatureLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         } else {
             temperatureLabel.text = "N/A"
         }
+        
+        locationLabel.snp.makeConstraints {
+            $0.centerY.equalTo(contentView.snp.centerY)
+            $0.leading.equalTo(contentView.snp.leading).offset(10)
+            $0.trailing.equalTo(temperatureLabel.snp.leading).offset(-20)
+            $0.height.equalTo(30)
+        }
+        
         weatherIconImageVIew.image = icon ?? UIImage(systemName: "sun.fill")
         // 온도 레이블 및 아이콘 보이기
         temperatureLabel.isHidden = false
@@ -92,6 +102,7 @@ class LocationTableViewCell: UITableViewCell {
         
     }
     
+    // api 데이터 로드시 ui 재설정
     func configureForSearchResult(_ locationName: String, _ latitude: Double, _ longitude: Double) {
         locationLabel.text = locationName
         locationLabel.font = UIFont.systemFont(ofSize: 22, weight: .regular)
@@ -101,8 +112,8 @@ class LocationTableViewCell: UITableViewCell {
         
         // 검색 결과 상태의 제약조건으로 업데이트
         locationLabel.snp.remakeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(42)
-            $0.leading.equalTo(contentView.snp.leading).offset(16)
+            $0.centerY.equalTo(contentView.snp.centerY)
+            $0.leading.equalTo(contentView.snp.leading).offset(10)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-16)
             $0.height.equalTo(30)
         }
