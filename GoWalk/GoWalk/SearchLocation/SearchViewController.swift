@@ -18,8 +18,11 @@ class SearchViewController: UIViewController {
     private let viewModel = SearchLocationViewModel()
     
     private let disposeBag = DisposeBag()
-    private var location = [Location]()
+    
+    private let searchTextRelay = PublishRelay<String>()
+    
     private let searchBar = UISearchBar()
+    
     private lazy var locationTableVIew: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .systemBackground
@@ -40,7 +43,21 @@ class SearchViewController: UIViewController {
    
     // 바인딩 메서드
     private func bind() {
+        let input = SearchLocationViewModel.Input(searchText: searchTextRelay.asObservable())
+        let output = viewModel.transform(input)
         
+        output.tableViewData
+            .drive(locationTableVIew.rx.items(
+                cellIdentifier: "LocationCell",
+                cellType: LocationTableViewCell.self)) { index, cellData, cell in
+                    switch cellData.cellType {
+                    case .coreData(let locationName, let temperature, let icon):
+                        cell.configureForCoreData(locationName: locationName, temperature: temperature, icon: icon)
+                    case .searchResult(let locationName):
+                        cell.configureForSearchResult(locationName: locationName)
+                    }
+                }
+                .disposed(by: disposeBag)
     }
     
     // UI 셋업 메서드
