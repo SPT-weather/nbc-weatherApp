@@ -58,7 +58,6 @@ class Test: UIViewController {
         let kakaoAPIKey = "KakaoAK 430b247857c9b16b87d3f1a7a31d5888"
         let kakaoHeaders = ["Authorization": kakaoAPIKey]
         let kakaoURL = URLBuilder(api: KakaoAPI())
-            .addPath(.defaultPath)
             .addPath(.adress)
             .addQueryItem(.query("강서구"))
             .build()

@@ -28,18 +28,15 @@ protocol APIQueryItem {
 struct KakaoAPI: API {
     var baseURL: String = "https://dapi.kakao.com"
     enum Path: APIPath {
-        case defaultPath
         case adress
         case region
 
         var path: String {
             switch self {
-            case .defaultPath:
-                return "/v2/local"
             case .adress:
-                return "/search/address.json"
+                return "/v2/local/search/address.json"
             case .region:
-                return "/local/geo/coord2regioncode.json"
+                return "/v2/local/local/geo/coord2regioncode.json"
             }
         }
     }
