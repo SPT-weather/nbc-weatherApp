@@ -25,8 +25,8 @@ class LocationUserDefaults {
 ///         AddressLocationInfo.shared.lon
 ///     )
 ///
-/// 위치 정보 불러오기 
-///        UserDefaults.standard.string(forKey: "addressName")
+/// 위치 정보 불러오기
+///        UserDefaults.standard.string(forKey: "addressName") // 옵셔널로 반환이 됩니다.
 ///        UserDefaults.standard.double(forKey: "lat")
 ///        UserDefaults.standard.double(forKey: "lon")
 
