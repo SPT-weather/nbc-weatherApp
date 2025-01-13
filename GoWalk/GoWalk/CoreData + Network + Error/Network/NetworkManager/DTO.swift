@@ -27,7 +27,7 @@ struct TotalWeatherDTO: Mappable {
         guard let currentWeather = current.weather.first else {
             return .failure(AppError.network(.failedToMapping))
         }
-        
+
         let currentDTO: WeatherDTO = WeatherDTO(
             temp: current.temp,
             id: currentWeather.id,
@@ -36,7 +36,7 @@ struct TotalWeatherDTO: Mappable {
             icon: currentWeather.icon
         )
 
-        //TODO: 하나의 do 구문으로 묶어서 간결하게 리팩터링
+        // TODO: 하나의 do 구문으로 묶어서 간결하게 리팩터링
         // houlry weather mapping
         let hourlyDTO: [WeatherDTO]
         do {
@@ -104,7 +104,7 @@ struct AirPollutionDTO: Mappable {
     let aqi: Int
     let pmTwoPointFive: Double // pm2.5
     let pmTen: Double // pm10
-    
+
     static func map(from response: AirPollutionResponse) -> Result<AirPollutionDTO, AppError> {
         guard let data = response.list?.first else {
             return .failure(AppError.network(.failedToMapping))
