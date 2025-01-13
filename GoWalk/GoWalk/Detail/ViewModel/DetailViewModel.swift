@@ -41,7 +41,7 @@ class DetailViewModel {
                 let hourlyData = (1...8).map { hour in
                     let date = Calendar.current.date(bySettingHour: hour + 12, minute: 0, second: 0, of: Date())!
                     return DetailWeather.Hourly(
-                        time: date,
+                        time: Int(date.timeIntervalSince1970), //timeStamp로 변환
                         temperature: "11°C",
                         iconUrl: URL(string: "https://velog.velcdn.com/images/soycong/post/d1d8f6c2-cf93-480a-8bf4-a58b55cfc407/image.png")!
                     )
@@ -52,7 +52,7 @@ class DetailViewModel {
                 let weeklyData = (0...6).map { dayOffset in
                     let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: Date())!
                     return DetailWeather.Weekly(
-                        date: date,
+                        date: Int(date.timeIntervalSince1970),
                         iconUrl: URL(string: "https://velog.velcdn.com/images/soycong/post/d1d8f6c2-cf93-480a-8bf4-a58b55cfc407/image.png")!,
                         minTemperature: " -7°C",
                         maxTemperature: "11°C"
