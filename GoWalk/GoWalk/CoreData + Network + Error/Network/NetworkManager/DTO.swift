@@ -12,6 +12,7 @@ struct TotalWeatherDTO {
     let hourly: [WeatherDTO]
     let daily: [DailyWeatherDTO]
 }
+
 struct WeatherDTO {
     let temp: Double // 온도
     let id: Int // 날씨 상태 id
@@ -87,7 +88,8 @@ class DTOMapper {
                     id: weather.id,
                     main: weather.main,
                     description: weather.description,
-                    icon: weather.icon)
+                    icon: weather.icon
+                )
             }
         } catch {
             return .failure(AppError.network(.failedToMapping))
@@ -101,6 +103,12 @@ class DTOMapper {
             return .failure(AppError.network(.failedToMapping))
         }
 
-        return .success(AirPollutionDTO(aqi: data.main.aqi, pmTwoPointFive: data.components.pm2_5, pmTen: data.components.pm10))
+        return .success(
+            AirPollutionDTO(
+                aqi: data.main.aqi,
+                pmTwoPointFive: data.components.pm2_5,
+                pmTen: data.components.pm10
+            )
+        )
     }
 }

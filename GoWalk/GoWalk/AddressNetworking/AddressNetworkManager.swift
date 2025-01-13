@@ -14,7 +14,8 @@ class AddressNetworkManager {
     private init() {}
     let disposeBag = DisposeBag()
 
-    //MARK: - 네트워크 요청
+    // MARK: - 네트워크 요청
+
     func fetchData<T: Decodable> (_ url: URL, _ header: HTTPHeaders) -> Single<T> {
         return Single<T>.create { single in
             AF.request(url, headers: header).responseDecodable(of: T.self) { respones in
@@ -32,8 +33,11 @@ class AddressNetworkManager {
     }
 
     // MARK: - 입력값으로 주소 api요청 메서드
+
     func fetchAddressData(_ inputData: String) {
-        guard let url = URL(string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)") else { return }
+        guard let url = URL(
+            string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)"
+        ) else { return }
         let header: HTTPHeaders = ["Authorization": "KakaoAK 430b247857c9b16b87d3f1a7a31d5888"]
         fetchData(url, header)
             .subscribe { (event: SingleEvent<AddressModel>) in
