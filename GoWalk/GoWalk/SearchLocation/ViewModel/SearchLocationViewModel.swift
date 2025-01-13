@@ -54,21 +54,25 @@ class SearchLocationViewModel {
                     }
                     return Observable.just(cells)
                 } else {
+                    // addressList 초기화
+                    AddressNameInfo.shared.clearAddresses()
+
                     // api에서 데이터 가져오기
-                    AddressNetworkManager.shared.fetchAddressData(query)
-                        .map { addressData in
-                            addressData.map { (name, _, _) in
-                                WeatherCellData(
-                                    cellType: .searchResult(locationName: name)
-                                )
+                    return Observable<[WeatherCellData]>.create { observer in
+                        AddressNetworkManager.shared.fetchAddressData(query) {
+                            let addressList = AddressNameInfo.shared.addressList.map { addressData in
+                                WeatherCellData(cellType: .searchResult(locationName: addressData.addressName))
                             }
+                            observer.onNext(addressList)
+                            observer.onCompleted()
                         }
-                        .catchAndReturn([])
+                        return Disposables.create()
+                    }
                 }
             }
             .bind(to: weatherRelay)
             .disposed(by: disposeBag)
         
-        return Output(tableViewData: weatherRelay.asDriver(onErrorRecover: []))
+        return Output(tableViewData: weatherRelay.asDriver(onErrorJustReturn: []))
     }
 }

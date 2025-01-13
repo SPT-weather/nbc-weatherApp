@@ -19,9 +19,17 @@ class SearchViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    private let searchTextRelay = PublishRelay<String>()
-    
-    private let searchBar = UISearchBar()
+    private var searchBar : UISearchBar = {
+        let search = UISearchBar()
+        search.searchBarStyle = .minimal
+        search.searchTextField.backgroundColor = .white
+        search.searchTextField.borderStyle = .none
+        search.searchTextField.layer.cornerRadius = 16
+        search.searchTextField.layer.borderColor = UIColor.gray.cgColor
+        search.searchTextField.layer.borderWidth = 1.0
+        search.searchTextField.layer.masksToBounds = true
+        return search
+    }()
     
     private lazy var locationTableVIew: UITableView = {
         let tableView = UITableView()
@@ -33,15 +41,18 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            return traitCollection.userInterfaceStyle == .dark ? .black : .white
+        }
+        setNavigationBar()
         setupUI()
+        bind()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        applyTheme()
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        applyTheme()
+//    }
     
     // 네비바 셋업
     private func setNavigationBar() {
@@ -50,6 +61,12 @@ class SearchViewController: UIViewController {
    
     // 바인딩 메서드
     private func bind() {
+        let searchTextRelay = PublishRelay<String>()
+        
+        searchBar.rx.text.orEmpty
+            .bind(to: searchTextRelay)
+            .disposed(by: disposeBag)
+        
         let input = SearchLocationViewModel.Input(searchText: searchTextRelay.asObservable())
         let output = viewModel.transform(input)
         
@@ -75,7 +92,7 @@ class SearchViewController: UIViewController {
         ].forEach { view.addSubview($0) }
         
         searchBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(10)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(10)
             $0.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-10)
         }
@@ -84,6 +101,7 @@ class SearchViewController: UIViewController {
             $0.top.equalTo(searchBar.snp.bottom).offset(10)
             $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading)
             $0.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
     

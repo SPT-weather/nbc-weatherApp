@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class LocationTableViewCell: UITableViewCell {
     
@@ -16,8 +17,8 @@ class LocationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.text = "서울"
         label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
-        label.textAlignment = .center
-        label.textColor = .white
+        label.textAlignment = .left
+        label.textColor = .label
         return label
     }()
     
@@ -58,7 +59,7 @@ class LocationTableViewCell: UITableViewCell {
         locationLabel.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).offset(42)
             $0.leading.equalTo(contentView.snp.leading).offset(16)
-            $0.width.equalTo(80)
+            $0.width.equalTo(100)
             $0.height.equalTo(30)
         }
         
@@ -88,6 +89,7 @@ class LocationTableViewCell: UITableViewCell {
         // 온도 레이블 및 아이콘 보이기
         temperatureLabel.isHidden = false
         weatherIconImageVIew.isHidden = false
+        
     }
     
     func configureForSearchResult(_ locationName: String) {
@@ -96,5 +98,14 @@ class LocationTableViewCell: UITableViewCell {
         // 온도 레이블 및 아이콘 숨기기
         temperatureLabel.isHidden = true
         weatherIconImageVIew.isHidden = true
+        
+        // 검색 결과 상태의 제약조건으로 업데이트
+        locationLabel.snp.remakeConstraints {
+            $0.top.equalTo(contentView.snp.top).offset(42)
+            $0.leading.equalTo(contentView.snp.leading).offset(16)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-16)
+            $0.height.equalTo(30)
+        }
+        
     }
 }

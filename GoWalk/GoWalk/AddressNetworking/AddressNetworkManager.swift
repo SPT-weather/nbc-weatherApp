@@ -48,8 +48,8 @@ class AddressNetworkManager {
                             lat: info.lat,
                             lon: info.lon
                         )
-                        completion()
                     }
+                    completion()
                     
                 case .failure(let error):
                     print("\(error.localizedDescription)")
