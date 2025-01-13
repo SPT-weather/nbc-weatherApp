@@ -36,11 +36,9 @@ struct TotalWeatherDTO: Mappable {
             icon: currentWeather.icon
         )
 
-        // TODO: 하나의 do 구문으로 묶어서 간결하게 리팩터링
-        // houlry weather mapping
-        let hourlyDTO: [WeatherDTO]
         do {
-            hourlyDTO = try hourly.map { hourlyWeather in
+            // houlry weather mapping
+            let hourlyDTO: [WeatherDTO] = try hourly.map { hourlyWeather in
                 guard let weather = hourlyWeather.weather.first else {
                     throw AppError.network(.failedToMapping)
                 }
@@ -53,14 +51,8 @@ struct TotalWeatherDTO: Mappable {
                     icon: weather.icon
                 )
             }
-        } catch {
-            return .failure(AppError.network(.failedToMapping))
-        }
-
-        // daily weather mapping
-        let dailyDTO: [DailyWeatherDTO]
-        do {
-            dailyDTO = try daily.map { dailyWeather in
+            // daily weather mapping
+            let dailyDTO: [DailyWeatherDTO] = try daily.map { dailyWeather in
                 guard let weather = dailyWeather.weather.first else {
                     throw AppError.network(.failedToMapping)
                 }
@@ -73,13 +65,11 @@ struct TotalWeatherDTO: Mappable {
                     icon: weather.icon
                 )
             }
+            return .success(TotalWeatherDTO(current: currentDTO, hourly: hourlyDTO, daily: dailyDTO))
         } catch {
             return .failure(AppError.network(.failedToMapping))
         }
-
-        return .success(TotalWeatherDTO(current: currentDTO, hourly: hourlyDTO, daily: dailyDTO))
     }
-
 }
 
 struct WeatherDTO: Decodable {
