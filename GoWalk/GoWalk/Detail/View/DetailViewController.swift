@@ -63,24 +63,19 @@ class DetailViewController: UIViewController {
         collectionView.clipsToBounds = true
         return collectionView
     }()
-    
+
     init(viewModel: DetailViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named:"ModalBgColor")
-        
-        hourlyCollectionView.delegate = self
-        
-        weeklyCollectionView.delegate = self
-        
         setupUI()
         bind()
     }
@@ -92,9 +87,9 @@ extension DetailViewController {
             viewDidLoad: Observable.just(()),  // 화면이 로드될 때 한 번만 발생
             refresh: Observable.never()  // refresh 기능은 아직 미구현
         )
-        
+
         let output = viewModel.transform(input: input)
-        
+
         output.hourlyWeather
             .drive(hourlyCollectionView.rx.items(
                 cellIdentifier: HourlyCollectionViewCell.identifier,
@@ -103,7 +98,7 @@ extension DetailViewController {
                 cell.configure(with: item) // 셀에 데이터를 전달하여 UI 업데이트
             }
             .disposed(by: disposeBag)
-        
+
         output.weeklyWeather
             .drive(weeklyCollectionView.rx.items(
                 cellIdentifier: WeeklyCollectionViewCell.identifier,
@@ -112,7 +107,7 @@ extension DetailViewController {
                 cell.configure(with: item)
             }
             .disposed(by: disposeBag)
-        
+
         // 에러 처리 (임시)
         output.error
             .drive(onNext: { [weak self] (error: Error) in
@@ -126,38 +121,34 @@ extension DetailViewController {
             })
             .disposed(by: disposeBag)
     }
-    
+
     private func setupUI() {
         [hourlyTitleLabel, hourlyCollectionView,
          weeklyTitleLabel, weeklyCollectionView]
             .forEach { view.addSubview($0) }
-        
+
         hourlyTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
-        
+
         let contentLayoutGuide = view.layoutMarginsGuide
-        
+
         hourlyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(hourlyTitleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(contentLayoutGuide)
             make.height.equalTo(120)
         }
-        
+
         weeklyTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(hourlyCollectionView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
-        
+
         weeklyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(weeklyTitleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().offset(-16)
         }
     }
-}
-
-extension DetailViewController: UICollectionViewDelegate {
-
 }
