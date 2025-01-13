@@ -24,6 +24,7 @@ protocol APIQueryItem {
 
 // MARK: - 구체적인 API URL 구성 정의
 
+// 카카오 api
 struct KakaoAPI: API {
     var baseURL: String = "https://dapi.kakao.com"
     enum Path: APIPath {
@@ -36,9 +37,9 @@ struct KakaoAPI: API {
             case .defaultPath:
                 return "/v2/local/search"
             case .adress:
-                return "address.json"
+                return "/address.json"
             case .keyword:
-                return "keyword.json"
+                return "/keyword.json"
             }
         }
     }
@@ -52,5 +53,49 @@ struct KakaoAPI: API {
                 return URLQueryItem(name: "query", value: value)
             }
         }
+    }
+}
+
+// 날씨 api
+struct OpenWeatherAPI: API {
+    var baseURL: String = "https://api.openweathermap.org"
+    enum Path: APIPath {
+        case defaultPath
+        
+        var path: String {
+            switch self {
+            case .defaultPath:
+                return "/data/3.0/onecall"
+            }
+        }
+    }
+    
+    enum QueryItem: APIQueryItem {
+        case latitude(Double)
+        case longitude(Double)
+        case exclude(ExcludeItem)
+        case appid(String)
+        
+        var queryItem: URLQueryItem {
+            switch self {
+            case .latitude(let value):
+                return URLQueryItem(name: "lat", value: String(value))
+            case .longitude(let value):
+                return URLQueryItem(name: "lon", value: String(value))
+            case .exclude(let item):
+                return URLQueryItem(name: "exclude", value: item.rawValue)
+            case .appid(let value):
+                return URLQueryItem(name: "appid", value: value)
+            }
+        }
+    }
+    
+    // 제외할 응답 정보를 선택하여 추가적인 성능 최적화 가능
+    enum ExcludeItem: String {
+        case current // 현재 날씨 정보
+        case minutely // 1시간 동안의 분단위 예보
+        case houly // 48시간 동안의 1시간 단위 예보
+        case daily // 7일간의 하루별 예보
+        case alerts // 날씨 경보
     }
 }
