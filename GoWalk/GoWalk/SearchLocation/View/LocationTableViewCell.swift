@@ -1,0 +1,96 @@
+//
+//  LocationTableViewCell.swift
+//  GoWalk
+//
+//  Created by t2023-m0072 on 1/13/25.
+//
+
+import UIKit
+
+class LocationTableViewCell: UITableViewCell {
+    
+    static let id = "LocationCell"
+    
+    // 지명 레이블
+    private let locationLabel: UILabel = {
+        let label = UILabel()
+        label.text = "서울"
+        label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        label.textAlignment = .center
+        label.textColor = .white
+        return label
+    }()
+    
+    // 온도 레이블
+    private let temperatureLabel: UILabel = {
+        let label = UILabel()
+        label.text = "10°C"
+        label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        label.textAlignment = .center
+        label.textColor = .white
+        return label
+    }()
+    
+    // 날씨 아이콘 이미지뷰
+    private let weatherIconImageVIew: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .systemBackground
+        return imageView
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupUI() {
+        [
+            locationLabel,
+            temperatureLabel,
+            weatherIconImageVIew
+        ].forEach { contentView.addSubview($0) }
+        
+        locationLabel.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top).offset(42)
+            $0.leading.equalTo(contentView.snp.leading).offset(16)
+            $0.width.equalTo(80)
+            $0.height.equalTo(30)
+        }
+        
+        temperatureLabel.snp.makeConstraints {
+            $0.top.equalTo(locationLabel.snp.top)
+            $0.leading.equalTo(locationLabel.snp.trailing).offset(195)
+            $0.width.equalTo(50)
+            $0.height.equalTo(locationLabel.snp.height)
+        }
+        
+        weatherIconImageVIew.snp.makeConstraints {
+            $0.top.equalTo(locationLabel.snp.top)
+            $0.leading.equalTo(temperatureLabel.snp.trailing).offset(12)
+            $0.trailing.equalTo(contentView.snp.trailing).offset(-16)
+            $0.width.height.equalTo(30)
+        }
+    }
+    
+    func configureForCoreData(_ locationName: String, _ temperature: String?, _ icon: UIImage?) {
+        locationLabel.text = locationName
+        temperatureLabel.text = temperature ?? "N/A"
+        weatherIconImageVIew.image = icon ?? UIImage(systemName: "sun.fill")
+        // 온도 레이블 및 아이콘 보이기
+        temperatureLabel.isHidden = false
+        weatherIconImageVIew.isHidden = false
+    }
+    
+    func configureForSearchResult(_ locationName: String) {
+        locationLabel.text = locationName
+        locationLabel.font = UIFont.systemFont(ofSize: 22, weight: .regular)
+        // 온도 레이블 및 아이콘 숨기기
+        temperatureLabel.isHidden = true
+        weatherIconImageVIew.isHidden = true
+    }
+}

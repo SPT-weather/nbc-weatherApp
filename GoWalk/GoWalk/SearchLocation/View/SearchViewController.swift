@@ -27,6 +27,7 @@ class SearchViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .systemBackground
         tableView.showsVerticalScrollIndicator = false
+        tableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.id)
         return tableView
     }()
     
@@ -48,13 +49,13 @@ class SearchViewController: UIViewController {
         
         output.tableViewData
             .drive(locationTableVIew.rx.items(
-                cellIdentifier: "LocationCell",
+                cellIdentifier: LocationTableViewCell.id,
                 cellType: LocationTableViewCell.self)) { index, cellData, cell in
                     switch cellData.cellType {
                     case .coreData(let locationName, let temperature, let icon):
-                        cell.configureForCoreData(locationName: locationName, temperature: temperature, icon: icon)
+                        cell.configureForCoreData(locationName, temperature, icon)
                     case .searchResult(let locationName):
-                        cell.configureForSearchResult(locationName: locationName)
+                        cell.configureForSearchResult(locationName)
                     }
                 }
                 .disposed(by: disposeBag)
