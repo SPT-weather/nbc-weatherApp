@@ -30,7 +30,7 @@ struct KakaoAPI: API {
         case defaultPath
         case adress
         case keyword
-        
+
         var path: String {
             switch self {
             case .defaultPath:
@@ -42,10 +42,10 @@ struct KakaoAPI: API {
             }
         }
     }
-    
+
     enum QueryItem: APIQueryItem {
         case query(String)
-        
+
         var queryItem: URLQueryItem {
             switch self {
             case .query(let value):
@@ -54,5 +54,3 @@ struct KakaoAPI: API {
         }
     }
 }
-
-
