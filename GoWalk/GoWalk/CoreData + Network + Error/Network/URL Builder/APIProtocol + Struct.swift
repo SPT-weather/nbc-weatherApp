@@ -37,20 +37,26 @@ struct KakaoAPI: API {
             case .defaultPath:
                 return "/v2/local/search"
             case .adress:
-                return "/address.json"
+                return "/search/address.json"
             case .keyword:
-                return "/keyword.json"
+                return "/local/geo/coord2regioncode.json"
             }
         }
     }
 
     enum QueryItem: APIQueryItem {
         case query(String)
-
+        case x(String)
+        case y(String)
+        
         var queryItem: URLQueryItem {
             switch self {
             case .query(let value):
                 return URLQueryItem(name: "query", value: value)
+            case .x(let value):
+                return URLQueryItem(name: "x", value: value)
+            case .y(let value):
+                return URLQueryItem(name: "y", value: value)
             }
         }
     }

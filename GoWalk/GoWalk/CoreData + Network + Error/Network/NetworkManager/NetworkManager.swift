@@ -84,11 +84,11 @@ class RXNetworkManager: AbstractNetworkManager {
     func fetchAirPollutionData(url: URL) -> Observable<Result<AirPollutionDTO, AppError>> {
         return fetchData(url: url, responseType: AirPollutionDTO.ResponseType.self)
     }
-    
+
     func fetchAddressData(url: URL, header: [String: String]) -> Observable<Result<AddressDTO, AppError>> {
         return fetchData(url: url, responseType: AddressDTO.ResponseType.self)
     }
-    
+
     func fetchRegionData(url: URL, header: [String: String]) -> Observable<Result<RegionDTO, AppError>> {
         return fetchData(url: url, responseType: RegionDTO.ResponseType.self)
     }
