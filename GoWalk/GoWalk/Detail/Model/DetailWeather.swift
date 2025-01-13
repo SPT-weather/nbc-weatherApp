@@ -9,7 +9,7 @@ import UIKit
 
 struct DetailWeather {
     struct Hourly { // 시간별 날씨
-        let time: String
+        let time: Date
         let temperature: String
         let iconUrl: URL
     }

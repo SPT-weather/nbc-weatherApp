@@ -39,8 +39,9 @@ class DetailViewModel {
             .subscribe(onNext: { [weak self] _ in
                 // 시간별 날씨 더미 데이터
                 let hourlyData = (1...8).map { hour in
-                    DetailWeather.Hourly(
-                        time: "오후 \(hour)시",
+                    let date = Calendar.current.date(bySettingHour: hour + 12, minute: 0, second: 0, of: Date())!
+                    return DetailWeather.Hourly(
+                        time: date,
                         temperature: "11°C",
                         iconUrl: URL(string: "https://velog.velcdn.com/images/soycong/post/d1d8f6c2-cf93-480a-8bf4-a58b55cfc407/image.png")!
                     )
