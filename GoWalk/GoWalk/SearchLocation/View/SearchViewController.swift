@@ -13,16 +13,22 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-class SearchViewController: UIViewController {
+protocol SearchViewControllerDelegate: AnyObject {
+    func didSelectLocation(_ location: LocationPoint)
+}
+
+final class SearchViewController: UIViewController {
     
     private let viewModel = SearchLocationViewModel()
     
     private let disposeBag = DisposeBag()
+    private weak var delegate: SearchViewControllerDelegate?
     
-    private var searchBar : UISearchBar = {
+    private var searchBar: UISearchBar = {
         let search = UISearchBar()
         search.searchBarStyle = .minimal
         search.searchTextField.backgroundColor = .white
+        search.searchTextField.textColor = .black
         search.searchTextField.borderStyle = .none
         search.searchTextField.layer.cornerRadius = 16
         search.searchTextField.layer.borderColor = UIColor.gray.cgColor
@@ -49,10 +55,10 @@ class SearchViewController: UIViewController {
         bind()
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        applyTheme()
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        applyTheme()
+    }
     
     // 네비바 셋업
     private func setNavigationBar() {
@@ -63,6 +69,7 @@ class SearchViewController: UIViewController {
     private func bind() {
         let searchTextRelay = PublishRelay<String>()
         
+        // searchBar 텍스트 바인딩
         searchBar.rx.text.orEmpty
             .bind(to: searchTextRelay)
             .disposed(by: disposeBag)
@@ -70,6 +77,7 @@ class SearchViewController: UIViewController {
         let input = SearchLocationViewModel.Input(searchText: searchTextRelay.asObservable())
         let output = viewModel.transform(input)
         
+        // 테이블뷰 데이터 바인딩
         output.tableViewData
             .drive(locationTableVIew.rx.items(
                 cellIdentifier: LocationTableViewCell.id,
@@ -82,6 +90,31 @@ class SearchViewController: UIViewController {
                     }
                 }
                 .disposed(by: disposeBag)
+        
+        // 셀 선택 이벤트 처리
+        locationTableVIew.rx.modelSelected(WeatherCellData.self)
+            .subscribe(onNext: { [weak self] cellData in
+                guard let self = self else { return }
+                switch cellData.cellType {
+                case .coreData(let locationName, _, _):
+                    // 코어데이터에서 locationName에 해당하는 LocationPoint 찾기
+                    if let location = CoreDataStack.shared.fetchLocationPointList()
+                        .first(where: { $0.regionName == locationName }) {
+                        // 델리게이트를 통해 메인 뷰에 데이터 전달
+                        self.delegate?.didSelectLocation(location)
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                case .searchResult(let locationName):
+                    // 검색 결과를 코어데이터에 저장
+                    let newLocation = LocationPoint(regionName: locationName, latitude: 37.5665, longitude: 126.9780) // lat/lon은 예시
+                    CoreDataStack.shared.addLocation(at: newLocation)
+                    
+                    // 델리게이트로 전달
+                    self.delegate?.didSelectLocation(newLocation)
+                    self.navigationController?.popViewController(animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     // UI 셋업 메서드

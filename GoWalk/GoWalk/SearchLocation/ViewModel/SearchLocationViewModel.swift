@@ -30,9 +30,11 @@ class SearchLocationViewModel {
     // 하나의 테이블 뷰를 활용할 예정이라 하나의 Output을 사용
     struct Output {
         let tableViewData: Driver<[WeatherCellData]>
+        let selectedLocation: PublishRelay<LocationPoint> // 선택된 지역 데이터
     }
     
     private let weatherRelay = PublishRelay<[WeatherCellData]>()
+    private let selectedLocationRelay = PublishRelay<LocationPoint>()
     private let disposeBag = DisposeBag()
     
     func transform(_ input: Input) -> Output {
@@ -73,6 +75,11 @@ class SearchLocationViewModel {
             .bind(to: weatherRelay)
             .disposed(by: disposeBag)
         
-        return Output(tableViewData: weatherRelay.asDriver(onErrorJustReturn: []))
+        return Output(tableViewData: weatherRelay.asDriver(onErrorJustReturn: []),
+                      selectedLocation: selectedLocationRelay)
+    }
+    
+    func selectLocation(_ location: LocationPoint) {
+        selectedLocationRelay.accept(location)
     }
 }
