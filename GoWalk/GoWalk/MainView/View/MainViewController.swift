@@ -14,7 +14,11 @@ private let labelColor = UIColor.label
 private let backgroundColor = UIColor.systemBackground
 
 final class MainViewController: UIViewController {
-    private let viewModel = MainViewModel()
+    private lazy var viewModel: MainViewModel = {
+        let coreLocationManager = CoreLocationManager.shared
+        coreLocationManager.delegate = self
+        return MainViewModel(coreLocationManager: coreLocationManager)
+    }()
     private let disposeBag = DisposeBag()
     // 새로고침 컨트롤러
     private let refreshController = UIRefreshControl()
@@ -25,23 +29,11 @@ final class MainViewController: UIViewController {
     // 설정 버튼
     private let settingButton: UIButton = mainViewButton(UIImage(systemName: "gearshape"))
     // 날씨 아이콘, 지역, 현재온도 뷰
-    private let weatherSimpleView = MainWeatherView()
-    // 새로고침 기준 시간 라벨
-    let refreshDateLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .darkGray
-        label.font = .systemFont(ofSize: 14)
-        label.backgroundColor = .clear
-        label.textAlignment = .center
-        return label
-    }()
-=======
     private let weatherView = MainWeatherView()
     // 새로고침 기준 시간 라벨
     let refreshDateLabel = dateLabel()
->>>>>>> Stashed changes
     // 동물 이미지 뷰.
-    private let animalImageView: UIImageView = {
+    let animalImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.image = .puppy
@@ -58,6 +50,7 @@ final class MainViewController: UIViewController {
 // MARK: - Life Cycle + configureUI
 
 extension MainViewController {
+    
     override func loadView() {
         super.loadView()
         bind()
@@ -83,7 +76,7 @@ extension MainViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.refreshControl = refreshController
-
+        
         [locationListButton, refreshLocationButton, settingButton]
             .forEach { navigationView.addSubview($0) }
         [weatherView, animalImageView]
@@ -137,7 +130,6 @@ extension MainViewController {
         footerView.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.2)
->>>>>>> Stashed changes
         }
     }
 }
@@ -147,47 +139,31 @@ extension MainViewController {
 extension MainViewController {
     // viewModel 바인드
     private func bind() {
-        let viewDidLoad = rx.viewUpdate
+        let viewUpdate = rx.viewUpdate
         let refresh = refreshController.rx.controlEvent(.valueChanged).asObservable()
         let refreshLocation = refreshLocationButton.rx.tap.asObservable()
-        let output = viewModel.transform(.init(viewDidLoad: viewDidLoad,
-                                               refreshWeather: refresh,
-                                               refreshLocation: refreshLocation))
-        output.location
-            .drive(weatherView.rx.location)
-            .disposed(by: disposeBag)
-        output.dust
-            .drive(footerView.rx.dust)
-            .disposed(by: disposeBag)
-        output.refreshDate
-            .drive(rx.refreshDate)
-            .disposed(by: disposeBag)
-        output.temperature
-            .drive(weatherView.rx.temperatrue)
-            .disposed(by: disposeBag)
-        output.temperature
-            .drive(footerView.rx.temperature)
-            .disposed(by: disposeBag)
-        output.weather
-            .drive(weatherView.rx.weather)
-            .disposed(by: disposeBag)
-        output.weather
-            .drive(footerView.rx.weather)
-            .disposed(by: disposeBag)
-        output.weather
-            .map { WeatherAnimalAssetTraslator.transform($0) }
-            .drive(animalImageView.rx.image)
-            .disposed(by: disposeBag)
+        let input = MainViewModel.Input(viewUpdate: viewUpdate,
+                                        refreshWeather: refresh,
+                                        refreshLocation: refreshLocation)
+        let output = viewModel.transform(input)
+        
+        output.weather.drive(rx.weather).disposed(by: disposeBag)
+        output.refreshDate.drive(rx.refreshDate).disposed(by: disposeBag)
+        
+        output.location.drive(weatherView.rx.location).disposed(by: disposeBag)
+        output.weather.drive(weatherView.rx.weather).disposed(by: disposeBag)
+        
+        output.dailyWeather.drive(footerView.rx.dailyWeather).disposed(by: disposeBag)
+        output.airPollution.drive(footerView.rx.airPollution).disposed(by: disposeBag)
+        
         // 전체 요청 응답에 대한 구독
-        Observable.merge(output.weather.asObservable().map { _ in () },
-                         output.temperature.asObservable().map { _ in () },
-                         output.dust.asObservable().map { _ in () },
-                         output.refreshDate.asObservable().map { _ in () })
-        .subscribe(on: MainScheduler.instance)
-        .withUnretained(self)
-        .subscribe { owner, _ in
-            owner.updateComplete()
-        }.disposed(by: disposeBag)
+        //        Observable.merge(output.weather.asObservable().map { _ in () },
+        //                         output.dailyWeather.asObservable().map { _ in () },
+        //                         output.airPollution.asObservable().map { _ in () },
+        //                         output.refreshDate.asObservable().map { _ in () })
+        //        .subscribe(on: MainScheduler.instance)
+        //        .withUnretained(self).subscribe(onNext: { self.re })
+        //        }.disposed(by: disposeBag)
     }
 }
 
@@ -272,5 +248,23 @@ extension MainViewController {
         label.textAlignment = .center
         label.text = text
         return label
+    }
+}
+
+extension MainViewController: CoreLocationAlertDelegate {
+    // 위치서비스 요청 알림
+    func requestLocationServiceAlert(title: String, message: String, preferredStyle: UIAlertController.Style) {
+        let requestLocationAlert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
+        let goSetting = UIAlertAction(title: "설정으로 이동", style: .destructive) { _ in
+            if let appSetting = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSetting)
+            }
+        }
+        let cancel = UIAlertAction(title: "취소", style: .default) { _ in
+            print("cancel")
+        }
+        requestLocationAlert.addAction(cancel)
+        requestLocationAlert.addAction(goSetting)
+        present(requestLocationAlert, animated: true)
     }
 }

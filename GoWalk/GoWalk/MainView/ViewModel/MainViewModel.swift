@@ -10,67 +10,69 @@ import Foundation
 import RxSwift
 import RxRelay
 import RxCocoa
-
-enum MainViewType {
-    case `default`
-    case selected
-}
 /*
  위치 불러오기 -> 위도 경도를 통해 빌더로 URL 생성 후 데이터 요청
- 
+ SearchViewControllerDelegate MainViewController 에서 채택? or MainViewModel 에서 채택?
  */
-
 // 위치 새로고침에 대해 로직 수정 필요
 class MainViewModel {
-    private lazy var locationRelay: BehaviorRelay<LocationPoint> = {
-        let locationRelay = BehaviorRelay<LocationPoint>(value: location)
+    private lazy var locationRelay: PublishRelay<LocationPoint> = {
+        let locationRelay = PublishRelay<LocationPoint>()
         locationRelay
             .withUnretained(self)
             .subscribe(onNext: { owner, location in
                 owner.location = location
-                owner.fetchAll()
+                owner.fetchAll(location)
             }).disposed(by: disposeBag)
         return locationRelay
     }()
-    private var location: LocationPoint
-    private let weatherRelay = PublishRelay<DailyWeatherDTO>()
+    // coreLocationManager 통해서 로케이션 바로 로드
+    private lazy var location: LocationPoint? = .init(regionName: "", latitude: 1.1, longitude: 1.1)
+    private let dailyWeatherRelay = PublishRelay<DailyWeatherDTO>()
+    private let weatherRelay = PublishRelay<WeatherDTO>()
     private let airPoulltionRelay = PublishRelay<AirPollutionDTO>()
     private let refreshTimeRelay = PublishRelay<Date>()
     private let errorRelay = PublishRelay<Error>()
     private let disposeBag = DisposeBag()
-    
-    init(location: LocationPoint = TestMockData.seoul) {
-        self.location = location
+    private let coreLocationManager: CoreLocationManager
+
+    init(coreLocationManager: CoreLocationManager) {
+        self.coreLocationManager = coreLocationManager
     }
     // 데이터 업데이트 ( 지역 제외 )
-    private func fetchAll() {
-        fetchWeather()
-        fetchAirPollution()
+    private func fetchAll(_ location: LocationPoint) {
+        fetchWeather(location)
+        fetchDailyWeather(location)
+        fetchAirPollution(location)
         fetchRefreshDate()
-    }
-    
-    private func fetchSelectedLocation() {
-        
     }
     private func fetchRefreshLocation() {
         // 현 위치 불러오기
-        let location = LocationPoint(regionName: "작동확인",
+        let location = LocationPoint(regionName: "작동확인 \(Int.random(in: 1...100))",
                                      latitude: 10,
                                      longitude: 10)
         locationRelay.accept(location)
     }
-    private func fetchWeather() {
-        let weatherDTO = DailyWeatherDTO(minTemp: 0,
-                                         maxTemp: 0,
+    private func fetchWeather(_ location: LocationPoint) {
+        let weatherDTO = WeatherDTO(temp: 10,
+                                    id: 1,
+                                    main: "main",
+                                    description: "description",
+                                    icon: "01")
+        weatherRelay.accept(weatherDTO)
+    }
+    private func fetchDailyWeather(_ location: LocationPoint) {
+        let dailyWeatherDTO = DailyWeatherDTO(minTemp: 10,
+                                         maxTemp: -10,
                                          id: 1,
                                          main: "정상",
                                          description: "날씨 상세",
                                          icon: "01")
-        weatherRelay.accept(weatherDTO)
+        dailyWeatherRelay.accept(dailyWeatherDTO)
     }
-    private func fetchAirPollution() {
+    private func fetchAirPollution(_ location: LocationPoint) {
         // 현재 날씨 불러오기
-        let airPollution = AirPollutionDTO(aqi: 0, pmTwoPointFive: 0, pmTen: 0  )
+        let airPollution = AirPollutionDTO(aqi: 0, pmTwoPointFive: 100, pmTen: 20 )
         airPoulltionRelay.accept(airPollution)
     }
     private func fetchRefreshDate() {
@@ -82,14 +84,15 @@ class MainViewModel {
 extension MainViewModel {
 
     struct Input {
-        let viewDidLoad: Observable<Void>
+        let viewUpdate: Observable<Void>
         let refreshWeather: Observable<Void>
-        let refreshLocation: Observable<Void>?
+        let refreshLocation: Observable<Void>
     }
 
     struct Output {
         let location: Driver<LocationPoint>
-        let weather: Driver<DailyWeatherDTO>
+        let weather: Driver<WeatherDTO>
+        let dailyWeather: Driver<DailyWeatherDTO>
         let airPollution: Driver<AirPollutionDTO>
         let refreshDate: Driver<Date>
         let error: Driver<Error>
@@ -99,23 +102,25 @@ extension MainViewModel {
         input.refreshWeather
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.fetchAll()
+                guard let location = owner.location else { return }
+                owner.fetchAll(location)
             }).disposed(by: disposeBag)
 
-         input.refreshLocation?
+         input.refreshLocation
              .withUnretained(self)
              .subscribe(onNext: { owner, _ in
                  owner.fetchRefreshLocation()
              }).disposed(by: disposeBag)
 
-         input.viewDidLoad
+         input.viewUpdate
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.fetchRefreshLocation()
             }).disposed(by: disposeBag)
 
-        return Output(location: locationRelay.asDriver(),
+        return Output(location: locationRelay.asDriver(onErrorDriveWith: .empty()),
                       weather: weatherRelay.asDriver(onErrorDriveWith: .empty()),
+                      dailyWeather: dailyWeatherRelay.asDriver(onErrorDriveWith: .empty()),
                       airPollution: airPoulltionRelay.asDriver(onErrorDriveWith: .empty()),
                       refreshDate: refreshTimeRelay.asDriver(onErrorDriveWith: .empty()),
                       error: errorRelay.asDriver(onErrorDriveWith: .empty()))

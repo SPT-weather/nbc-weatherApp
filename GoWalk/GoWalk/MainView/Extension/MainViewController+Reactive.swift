@@ -25,4 +25,10 @@ extension Reactive where Base: MainViewController {
             base?.refreshDateLabel.text = WeatherDateFormatter.hhmm(model)
         }
     }
+    
+    var weather: Binder<WeatherDTO> {
+        return Binder(base) { [weak base] _, model in
+            base?.animalImageView.image = WeatherAnimalAssetTraslator.transform(model)
+        }
+    }
 }

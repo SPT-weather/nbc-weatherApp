@@ -10,21 +10,17 @@ import RxSwift
 import RxCocoa
 
 extension Reactive where Base: MainWeatherView {
-    var temperatrue: Binder<TempTemperature> {
-        return Binder(base) { [weak base] _, model in
-            base?.temperatureLabel.text = model.current
-        }
-    }
-
     var location: Binder<LocationPoint> {
         return Binder(base) { [weak base] _, model in
             base?.locationLabel.text = model.regionName
         }
     }
 
-    var weather: Binder<WeatherType> {
+    var weather: Binder<WeatherDTO> {
         return Binder(base) { [weak base] _, model in
-            base?.weatherImageView.image = WeatherAssetTranslator.resourceImage(from: model)
+            guard let weatherIcon = WeatherAssetTranslator.resourceIcon(from: model) else { return }
+            base?.temperatureLabel.text = TemperatureFormatter.current(Int(model.temp))
+            base?.weatherImageView.image = weatherIcon
         }
     }
 }

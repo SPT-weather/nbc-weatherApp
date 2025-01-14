@@ -84,7 +84,7 @@ extension MainWeatherView {
         label.numberOfLines = 1
         label.font = .systemFont(ofSize: 22, weight: .semibold)
         label.textColor = labelColor
-        label.text = "현재온도: " + TemperatureFormatter.current(10)
+        label.text = "현재온도: " + TemperatureFormatter.current(0)
         return label
     }
 }
