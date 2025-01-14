@@ -62,7 +62,8 @@ class DetailViewModel {
             .addQueryItem(.appid("902a70addad3e4cfd087a1b95fe85b06"))
             .addQueryItem(.units(.metric))
             .addQueryItem(.language(.kr))
-            .build().get() else {
+            .build()
+            .get() else {
             return .just(.failure(.network(.failedToBuildURL(url: "Weather API URL"))))
         }
 
