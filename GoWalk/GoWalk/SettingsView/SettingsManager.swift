@@ -14,14 +14,9 @@ class SettingsManager {
 
     // 변환된 온도 값을 반환
     func convertedTemperature(_ value: Double) -> String {
-        let unit = UserDefaults.standard.temperatureUnit
-        switch unit {
-        case .celsius:
-            return String(format: "%.1f", value) + "°C"
-        case .fahrenheit:
-            return String(format: "%.1f", value.toFahrenheit()) + "°F"
+            let unit = UserDefaults.standard.temperatureUnit
+            return "\(value.toRoundedTemperature(unit: unit))°\(unit == .celsius ? "C" : "F")"
         }
-    }
 
     // 현재 테마 모드 반환
     var themeMode: ThemeMode {
