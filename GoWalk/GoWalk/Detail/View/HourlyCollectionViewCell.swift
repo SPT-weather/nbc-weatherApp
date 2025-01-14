@@ -68,6 +68,6 @@ class HourlyCollectionViewCell: UICollectionViewCell {
     func configure(with model: DetailWeather.Hourly) {
         timeLabel.text = DetailDateFormatter.hourlyString(from: model.time)
         temperatureLabel.text = model.temperature
-        iconImageView.image = UIImage(named: "\(model.iconName).png")
+        iconImageView.image = UIImage(named: model.iconName)?.withTintColor(.label)
     }
 }
