@@ -66,7 +66,7 @@ final class LocationTableViewCell: UITableViewCell {
         temperatureLabel.snp.makeConstraints {
             $0.centerY.equalTo(contentView.snp.centerY)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-70)
-            $0.width.equalTo(50)
+            $0.width.equalTo(60)
             $0.height.equalTo(locationLabel.snp.height)
         }
         
