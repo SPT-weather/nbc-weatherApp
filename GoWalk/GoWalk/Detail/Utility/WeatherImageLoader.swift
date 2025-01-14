@@ -5,6 +5,7 @@
 //  Created by seohuibaek on 1/13/25.
 //
 
+// 삭제 예정
 import UIKit
 
 final class WeatherImageLoader {
