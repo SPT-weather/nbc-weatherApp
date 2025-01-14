@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class SettingsViewModel {
+final class SettingsViewModel {
     
     // Input: View에서 ViewModel로 전달되는 사용자 입력
     // 사용자가 버튼을 눌렀을 때 발생하는 이벤트를 관리하는 구조체
