@@ -96,6 +96,16 @@ class SettingsViewController: UIViewController {
         return label
     }()
     
+    // 시스템 설정 모드 버튼
+    private let systemModeButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("기기 설정 사용", for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        button.contentHorizontalAlignment = .left
+        return button
+    }()
+    
     // 라이트 모드 버튼
     private let lightModeButton: UIButton = {
         let button = UIButton()
@@ -148,6 +158,7 @@ class SettingsViewController: UIViewController {
         // input 생성
         let input = SettingsViewModel.Input(
             toggleMode: Observable.merge(
+                systemModeButton.rx.tap.map { ThemeMode.system},
                 lightModeButton.rx.tap.map { ThemeMode.light },
                 darkModeButton.rx.tap.map { ThemeMode.dark }
             ),
@@ -184,6 +195,16 @@ class SettingsViewController: UIViewController {
     // 라이트모드/다크모드 적용
     private func updateMode(_ mode: ThemeMode) {
         switch mode {
+        case .system:
+            UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .forEach { windowScene in
+                    windowScene.windows.forEach { window in
+                        window.overrideUserInterfaceStyle = .unspecified
+                    }
+                }
+            updateCheckMaker(systemModeButton)
+            
         case .light:
             UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
@@ -258,6 +279,7 @@ class SettingsViewController: UIViewController {
             catButton,
             underLineView,
             modeLabel,
+            systemModeButton,
             lightModeButton,
             darkModeButton,
             checkImageView
@@ -312,8 +334,15 @@ class SettingsViewController: UIViewController {
             $0.leading.equalTo(temperatureLabel.snp.leading)
         }
         
-        lightModeButton.snp.makeConstraints {
+        systemModeButton.snp.makeConstraints {
             $0.top.equalTo(modeLabel.snp.bottom).offset(10)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalTo(checkImageView.snp.leading)
+            $0.height.equalTo(30)
+        }
+        
+        lightModeButton.snp.makeConstraints {
+            $0.top.equalTo(systemModeButton.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalTo(checkImageView.snp.leading)
             $0.height.equalTo(30)
