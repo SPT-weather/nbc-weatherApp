@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class LocationTableViewCell: UITableViewCell {
+final class LocationTableViewCell: UITableViewCell {
     
     static let id = "LocationCell"
     
