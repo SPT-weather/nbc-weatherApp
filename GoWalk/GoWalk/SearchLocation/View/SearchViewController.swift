@@ -22,7 +22,7 @@ final class SearchViewController: UIViewController {
     private let viewModel = SearchLocationViewModel()
     
     private let disposeBag = DisposeBag()
-    private weak var delegate: SearchViewControllerDelegate?
+    weak var delegate: SearchViewControllerDelegate?
     
     private var searchBar: UISearchBar = {
         let search = UISearchBar()
