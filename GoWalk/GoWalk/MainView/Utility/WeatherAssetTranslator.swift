@@ -8,12 +8,10 @@
 import UIKit.UIImage
 // 날씨 이미지 변환
 enum WeatherAssetTranslator {
-    static func resourceImage(from weather: TempWeather) -> UIImage? {
-        switch weather {
-        case .sunny:
-            return UIImage(systemName: "sun.max")
-        case .cloudy:
-            return UIImage(systemName: "cloud.fill")
+    static func resourceIcon(from weather: WeatherDTO) -> UIImage? {
+        guard let iconID = Int(weather.icon.filter { $0.isNumber }) else { return nil }
+        switch iconID {
+        default: return UIImage(systemName: "sun.max")
         }
     }
 }

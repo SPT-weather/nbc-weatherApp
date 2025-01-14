@@ -12,179 +12,78 @@ private let labelColor = UIColor.label
 private let backgroundColor = UIColor.systemBackground
 
 final class MainFooterView: UIView {
-    private let weatherStackView: UIStackView = footerStackView()
-    private let microDustStackView: UIStackView = footerStackView()
-    private let dustStackView: UIStackView = footerStackView()
-    private let weatherTitleLabel: UILabel = {
-        let label = footerLabel()
+    private let wholeStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
+        stackView.alignment = .center
+        stackView.layer.cornerRadius = 40
+        stackView.clipsToBounds = true
+        return stackView
+    }()
+    private lazy var weatherStackView = stackView(title: "날씨",
+                                                  valueView: temperatureLabel,
+                                                  footerView: weatherLabel)
+    private lazy var microDustStackView = stackView(title: "초미세먼지",
+                                                    valueView: microDustLabel,
+                                                    footerView: MainFooterView.titleLabel("㎍/㎥"))
+    private lazy var fineDustStackView = stackView(title: "미세먼지",
+                                                   valueView: fineDustLabel,
+                                                   footerView: MainFooterView.titleLabel("㎍/㎥"))
+    let temperatureLabel: UILabel = {
+        let label = valueLabel()
+        label.text = "10/10"
+        label.minimumScaleFactor = 15
+        return label
+    }()
+    let weatherLabel: UILabel = {
+        let label = MainFooterView.titleLabel("")
         label.text = "날씨"
         return label
     }()
-
-    private let microDustTitleLabel: UILabel = {
-        let label = footerLabel()
-        label.text = "초미세먼지"
-        return label
-    }()
-
-    private let dustTitleLabel: UILabel = {
-        let label = footerLabel()
-        label.text = "미세먼지"
-        return label
-    }()
-
-    private let temperatureValueStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.distribution = .fillProportionally
-        stackView.alignment = .center
-        stackView.spacing = 1
-        return stackView
-    }()
-
-    private let temperatureSeperateLabel: UILabel = {
+    let microDustLabel: UILabel = {
         let label = valueLabel()
-        label.text = "/"
+        label.text = "100"
         return label
     }()
-
-    let highestTemperatureLabel: UILabel = {
-        let label = valueLabel()
-        label.textColor = .systemRed
-        label.text = "10º"
-        return label
-    }()
-
-    let lowestTemperatureLabel: UILabel = {
-        let label = valueLabel()
-        label.textColor = .systemBlue
-        label.text = "10º"
-        return label
-    }()
-
-    let microDustValueLabel: UILabel = {
+    let fineDustLabel: UILabel = {
         let label = valueLabel()
         label.text = "10"
-        label.textColor = labelColor
         return label
     }()
-
-    let fineDustValueLabel: UILabel = {
-        let label = valueLabel()
-        label.text = "10"
-        label.textColor = labelColor
-        return label
-    }()
-
-    let weatherStringLabel: UILabel = {
-        let label = footerLabel()
-        label.text = "맑음"
-        return label
-    }()
-
-    private let microDustMarkLabel: UILabel = {
-        let label = footerLabel()
-        label.text = "㎍/㎥"
-        return label
-    }()
-
-    private let dustMarkLabel: UILabel = {
-        let label = footerLabel()
-        label.text = "㎍/㎥"
-        return label
-    }()
-
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addStackView()
-        layer.cornerRadius = 20
+        layer.cornerRadius = 40
+        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        configureUI()
     }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
     private func configureUI() {
-        [temperatureValueStackView, microDustValueLabel, fineDustValueLabel]
-            .forEach {
-            $0.snp.makeConstraints {
-                $0.height.equalTo(40)
-                $0.leading.trailing.equalToSuperview()
-            }
-        }
-        [highestTemperatureLabel, temperatureSeperateLabel, lowestTemperatureLabel]
-            .forEach {
-            $0.snp.makeConstraints {
-                $0.height.equalTo(40)
-            }
-        }
-        [weatherTitleLabel, weatherStringLabel, microDustTitleLabel, microDustMarkLabel, dustTitleLabel,
-         dustMarkLabel]
-            .forEach {
-            $0.snp.makeConstraints {
-                $0.height.equalTo(30)
-                $0.leading.trailing.equalToSuperview()
-            }
-        }
-        let width = (UIScreen.main.bounds.width - 60) / 3
-        weatherStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.leading.equalToSuperview().inset(30)
-            $0.width.equalTo(width)
-            $0.height.equalTo(120)
-        }
-        temperatureValueStackView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-        }
-        microDustStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.leading.equalTo(weatherStackView.snp.trailing)
-            $0.width.equalTo(width)
-            $0.height.equalTo(120)
-        }
-        dustStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.leading.equalTo(microDustStackView.snp.trailing)
-            $0.trailing.equalToSuperview().inset(30)
-            $0.width.equalTo(width)
-            $0.height.equalTo(120)
+        [weatherStackView, microDustStackView, fineDustStackView]
+            .forEach { wholeStackView.addArrangedSubview($0) }
+        addSubview(wholeStackView)
+        wholeStackView.snp.makeConstraints {
+            $0.top.leading.trailing.bottom.equalToSuperview().inset(20)
         }
     }
-
-    private func addStackView() {
-        [highestTemperatureLabel,
-         temperatureSeperateLabel,
-         lowestTemperatureLabel]
-            .forEach { temperatureValueStackView.addArrangedSubview($0) }
-        [weatherTitleLabel,
-         temperatureValueStackView,
-         weatherStringLabel]
-            .forEach { weatherStackView.addArrangedSubview($0) }
-        [microDustTitleLabel,
-         microDustValueLabel,
-         microDustMarkLabel]
-            .forEach { microDustStackView.addArrangedSubview($0) }
-        [dustTitleLabel,
-         fineDustValueLabel,
-         dustMarkLabel]
-            .forEach { dustStackView.addArrangedSubview($0) }
-        [weatherStackView,
-         microDustStackView,
-         dustStackView]
-            .forEach { addSubview($0) }
-        configureUI()
-    }
-
 }
 
 // MARK: - 재사용 뷰 생성 메서드
 
 extension MainFooterView {
-    private static func footerStackView() -> UIStackView {
-        let stackView = UIStackView()
+    private func stackView(title: String, valueView: UILabel, footerView: UILabel) -> UIStackView {
+        let titleLabel = MainFooterView.titleLabel(title)
+        let stackView = UIStackView(arrangedSubviews: [UIView(),
+                                                       titleLabel,
+                                                       valueView,
+                                                       footerView,
+                                                       UIView()])
         stackView.axis = .vertical
-        stackView.spacing = 5
-        stackView.distribution = .equalSpacing
+        stackView.spacing = 10
+        stackView.distribution = .equalCentering
         stackView.alignment = .center
         return stackView
     }
@@ -195,11 +94,12 @@ extension MainFooterView {
         label.numberOfLines = 1
         return label
     }
-    private static func footerLabel() -> UILabel {
+    private static func titleLabel(_ text: String) -> UILabel {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .regular)
         label.textAlignment = .center
         label.textColor = labelColor
+        label.text = text
         return label
     }
 }

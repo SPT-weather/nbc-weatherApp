@@ -16,6 +16,13 @@ class LocationUserDefaults {
         defaults.set(lat, forKey: "lat")
         defaults.set(lon, forKey: "lon")
     }
+    
+    func read() -> LocationPoint? {
+        guard let addressName = defaults.string(forKey: "addressName") else { return nil }
+        let lat = defaults.double(forKey: "lat")
+        let lon = defaults.double(forKey: "lon")
+        return LocationPoint(regionName: addressName, latitude: lat, longitude: lon)
+    }
 }
 
 /// 위치 정보 저장 saveUserLocation 메서드 이용
