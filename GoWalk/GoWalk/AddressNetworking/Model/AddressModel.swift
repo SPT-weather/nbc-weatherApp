@@ -19,8 +19,8 @@ extension AddressModel {
 
         enum CodingKeys: String, CodingKey {
             case addressName = "address_name"
-            case lat = "x"
-            case lon = "y"
+            case lat = "y"
+            case lon = "x"
         }
     }
 }

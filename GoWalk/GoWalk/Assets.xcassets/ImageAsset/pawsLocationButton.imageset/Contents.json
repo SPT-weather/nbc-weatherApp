@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "paws (1) 1.png",
+      "filename" : "PawsLocationButton.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Icon_arrow_forward_ios 6 1.png",
+      "filename" : "PawsLocationButtonDark.png",
       "idiom" : "universal",
       "scale" : "1x"
     },

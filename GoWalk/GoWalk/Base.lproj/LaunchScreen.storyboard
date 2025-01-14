@@ -19,7 +19,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="rw8-N0-1ix">
                                 <rect key="frame" x="40" y="400" width="313" height="298"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLabelImage" translatesAutoresizingMaskIntoConstraints="NO" id="Fvv-ds-C5T">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLabel" translatesAutoresizingMaskIntoConstraints="NO" id="Fvv-ds-C5T">
                                 <rect key="frame" x="60" y="199" width="293" height="260"/>
                             </imageView>
                         </subviews>
@@ -42,6 +42,6 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="300" height="298"/>
-        <image name="LaunchLabelImage" width="704" height="260"/>
+        <image name="LaunchLabel" width="704" height="260"/>
     </resources>
 </document>
