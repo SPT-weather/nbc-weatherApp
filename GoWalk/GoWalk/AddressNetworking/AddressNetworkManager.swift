@@ -13,8 +13,9 @@ class AddressNetworkManager {
     static let shared = AddressNetworkManager()
     private init() {}
     let disposeBag = DisposeBag()
-    
-    //MARK: - 네트워크 요청
+
+    // MARK: - 네트워크 요청
+
     func fetchData<T: Decodable> (_ url: URL, _ header: HTTPHeaders) -> Single<T> {
         return Single<T>.create { single in
             AF.request(url, headers: header).responseDecodable(of: T.self) { respones in
@@ -29,7 +30,6 @@ class AddressNetworkManager {
             return Disposables.create()
         }
     }
-    
     // MARK: - 입력값으로 주소 api요청 메서드(search page)
     func fetchAddressData(_ inputData: String, completion: @escaping () -> Void) {
         guard let url = URL(string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)") else {
@@ -56,7 +56,7 @@ class AddressNetworkManager {
                 }
             }.disposed(by: disposeBag)
     }
-    
+
     // MARK: - 위도,경도로 주소 api요청 메서드(main page)
     func fetchRegionData(_ lat: Double, _ lon: Double, completion: @escaping () -> Void) {
         guard let url = URL(string: "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=\(lat)&y=\(lon)") else {
@@ -68,11 +68,11 @@ class AddressNetworkManager {
             .subscribe { (event: SingleEvent<AddressModel<Double>>) in
                 switch event {
                 case .success(let data):
-                    if let documnet = data.documents.first {
+                    if let info = data.documents.first {
                         AddressLocationInfo.shared.update(
-                            addressName: documnet.addressName,
-                            lat: documnet.lat,
-                            lon: documnet.lon
+                            addressName: info.addressName,
+                            lat: info.lat,
+                            lon: info.lon
                         )
                         completion()
                     }

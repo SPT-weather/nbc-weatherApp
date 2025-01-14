@@ -9,7 +9,7 @@ import Foundation
 
 class SettingsManager {
     static let shared = SettingsManager()
-    
+
     private init() {}
 
     // 변환된 온도 값을 반환

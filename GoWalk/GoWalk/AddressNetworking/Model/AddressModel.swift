@@ -16,7 +16,7 @@ extension AddressModel {
         let addressName: String
         let lat: T
         let lon: T
-        
+
         enum CodingKeys: String, CodingKey {
             case addressName = "address_name"
             case lat = "x"

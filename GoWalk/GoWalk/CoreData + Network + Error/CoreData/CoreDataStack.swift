@@ -10,7 +10,7 @@ import CoreData
 // Core Location은 필요한 위, 경도 정보 외에 불필요한 정보 제공이 될 가능성, 많은 import가 필요하여 별개의 구조체 선언했습니다.
 // 2차적으로 이러한 DTO를 만드는 것이 NSManagedObject를 받아서 테이블 뷰에 사용하는 것보다 성능적으로 낫다고 합니다.(lazy-loading)
 // 그 외에도 context가 변경될 수 있다는 안정성 관련 문제 등도 있다고 합니다..
-struct LocationPoint {
+struct LocationPoint: Decodable {
     let regionName: String
     let latitude: Double
     let longitude: Double
