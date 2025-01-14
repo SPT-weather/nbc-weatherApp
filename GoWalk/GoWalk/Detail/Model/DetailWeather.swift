@@ -11,7 +11,7 @@ struct DetailWeather {
     struct Hourly { // 시간별 날씨
         let time: Int
         let rawTemperature: Int
-        let iconUrl: URL
+        let iconName: String
 
         var temperature: String {
             SettingsManager.shared.convertedTemperature(Double(rawTemperature))
@@ -20,7 +20,7 @@ struct DetailWeather {
 
     struct Weekly { // 주간 날씨
         let date: Int
-        let iconUrl: URL
+        let iconName: String
         let rawMinTemperature: Int
         let rawMaxTemperature: Int
 

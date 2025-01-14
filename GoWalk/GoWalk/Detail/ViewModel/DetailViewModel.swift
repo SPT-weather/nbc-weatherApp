@@ -81,6 +81,7 @@ class DetailViewModel {
                 guard let self = self else { return }
 
                 self.fetchWeatherData()
+                    .debug()
                     .observe(on: MainScheduler.instance)
                     .subscribe(onNext: { [weak self] result in
                         guard let self = self else { return }
@@ -96,7 +97,7 @@ class DetailViewModel {
                                 return DetailWeather.Hourly(
                                     time: Int(hourDate.timeIntervalSince1970),
                                     rawTemperature: Int(round(hourly.temp)),
-                                    iconUrl: URL(string: "https://openweathermap.org/img/wn/\(hourly.icon)@2x.png")!
+                                    iconName: hourly.icon
                                 )
                             }
                             self.hourlyWeatherRelay.accept(Array(hourlyData))
@@ -106,7 +107,7 @@ class DetailViewModel {
                                 let dayDate = calendar.date(byAdding: .day, value: index, to: now) ?? now
                                 return DetailWeather.Weekly(
                                     date: Int(dayDate.timeIntervalSince1970),
-                                    iconUrl: URL(string: "https://openweathermap.org/img/wn/\(daily.icon)@2x.png")!,
+                                    iconName: daily.icon,
                                     rawMinTemperature: Int(round(daily.minTemp)),
                                     rawMaxTemperature: Int(round(daily.maxTemp))
                                 )
