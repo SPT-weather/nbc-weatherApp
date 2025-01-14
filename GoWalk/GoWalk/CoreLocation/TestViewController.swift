@@ -101,6 +101,7 @@ class TestViewController: UIViewController {
         AddressNetworkManager.shared.fetchRegionData(126.889352949931, 37.5001236666572) {
             DispatchQueue.main.async {
                 self.label1.text = "\(AddressLocationInfo.shared.addressName),\n \(AddressLocationInfo.shared.lat),\n \(AddressLocationInfo.shared.lon)"
+                LocationUserDefaults.shared.saveUserLocation(AddressLocationInfo.shared.addressName, AddressLocationInfo.shared.lat, AddressLocationInfo.shared.lon)
             }
         }
     }
