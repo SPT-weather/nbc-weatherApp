@@ -16,8 +16,22 @@ extension UserDefaults {
         static let themeMode = "themeMode"
         static let temperatureUnit = "temperatureUnit"
         static let petType = "petType"
+        
+        static let addressName = "addressName"
+        static let lat = "lat"
+        static let lon = "lon"
     }
 
+//    var addressName: String {
+//        get {
+//            let rawValue = integer(forKey: Keys.addressName)
+//            return String(rawValue: rawValue) ?? "위치를 알 수 없습니다."
+//        }
+//        set {
+//            set(newValue.rawValue, forKey: Keys.addressName)
+//        }
+//    }
+    
     var themeMode: ThemeMode {
         get {
             let rawValue = integer(forKey: Keys.themeMode)

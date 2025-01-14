@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "wi-day-cloudy-gusts.svg",
+      "filename" : "제목_없는_아트워크 4.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "wi-day-cloudy-gusts 1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "wi-day-cloudy-gusts 2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
