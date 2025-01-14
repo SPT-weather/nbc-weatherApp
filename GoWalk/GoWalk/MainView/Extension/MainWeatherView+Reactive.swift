@@ -1,5 +1,5 @@
 //
-//  WeatherSimpleView.swift
+//  WeatherSimpleView+Reactive.swift
 //  GoWalk
 //
 //  Created by 0-jerry on 1/12/25.

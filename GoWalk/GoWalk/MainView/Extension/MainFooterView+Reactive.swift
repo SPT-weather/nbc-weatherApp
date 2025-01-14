@@ -24,10 +24,10 @@ extension Reactive where Base: MainFooterView {
             let attributedStr = NSMutableAttributedString(string: string)
             // NSMutableAttributedString 특정 범위에 대해 속성 설정
             attributedStr.addAttribute(.foregroundColor,
-                                       value: UIColor.systemRed,
+                                       value: UIColor.tempMax,
                                        range: highestRange)
             attributedStr.addAttribute(.foregroundColor,
-                                       value: UIColor.systemBlue,
+                                       value: UIColor.tempMin,
                                        range: lowestRange)
             attributedStr.addAttribute(.foregroundColor,
                                        value: UIColor.label,

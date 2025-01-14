@@ -28,7 +28,8 @@ extension Reactive where Base: MainViewController {
 
     var weather: Binder<WeatherDTO> {
         return Binder(base) { [weak base] _, model in
-            base?.animalImageView.image = WeatherAnimalAssetTraslator.transform(model)
+            base?.animalImageView.image = WeatherMainImageTraslator.animal()
+            base?.backgroundImageView.image = WeatherMainImageTraslator.background(model)
         }
     }
 }

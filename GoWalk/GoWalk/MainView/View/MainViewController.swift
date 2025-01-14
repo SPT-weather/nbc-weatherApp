@@ -36,14 +36,12 @@ final class MainViewController: UIViewController {
     let animalImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = .puppy
         return imageView
     }()
     // 배경 이미지 뷰
     let backgroundImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = .puppy
         return imageView
     }()
     // 푸터 뷰
@@ -57,7 +55,7 @@ final class MainViewController: UIViewController {
 // MARK: - Life Cycle + configureUI
 
 extension MainViewController {
-    
+
     override func loadView() {
         super.loadView()
         bind()
@@ -77,13 +75,13 @@ extension MainViewController {
     }
     // UI 설정
     private func configureUI() {
-        view.backgroundColor = UIColor.sectionBg
+        view.backgroundColor = UIColor.mainBackground
         let navigationView = UIView()
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.refreshControl = refreshController
-        
+
         [locationListButton, refreshLocationButton, settingButton]
             .forEach { navigationView.addSubview($0) }
         [weatherView, animalImageView, backgroundImageView]
@@ -162,14 +160,26 @@ extension MainViewController {
                                         refreshLocation: refreshLocation)
         let output = viewModel.transform(input)
 
-        output.weather.drive(rx.weather).disposed(by: disposeBag)
-        output.refreshDate.drive(rx.refreshDate).disposed(by: disposeBag)
+        output.weather
+            .drive(rx.weather)
+            .disposed(by: disposeBag)
+        output.refreshDate
+            .drive(rx.refreshDate)
+            .disposed(by: disposeBag)
 
-        output.location.drive(weatherView.rx.location).disposed(by: disposeBag)
-        output.weather.drive(weatherView.rx.weather).disposed(by: disposeBag)
+        output.location
+            .drive(weatherView.rx.location)
+            .disposed(by: disposeBag)
+        output.weather
+            .drive(weatherView.rx.weather)
+            .disposed(by: disposeBag)
 
-        output.dailyWeather.drive(footerView.rx.dailyWeather).disposed(by: disposeBag)
-        output.airPollution.drive(footerView.rx.airPollution).disposed(by: disposeBag)
+        output.dailyWeather
+            .drive(footerView.rx.dailyWeather)
+            .disposed(by: disposeBag)
+        output.airPollution
+            .drive(footerView.rx.airPollution)
+            .disposed(by: disposeBag)
 
         // 전체 요청 응답에 대한 구독
         Observable.merge(output.weather.asObservable().map { _ in () },
