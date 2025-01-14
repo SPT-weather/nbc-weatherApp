@@ -18,6 +18,11 @@ enum AppError: Error {
 
     enum NetworkError: Error {
         case failedToBuildURL(url: String)
+        case failedToMapping
+        case dataTaskError(error: Error)
+        case invalidResponse(code: Int)
+        case noResponse
+        case noData
     }
 }
 
@@ -39,6 +44,16 @@ extension AppError: LocalizedError {
             switch error {
             case .failedToBuildURL(let url):
                 return "URL 생성 실패. 시도한 URL: \(url)"
+            case .failedToMapping:
+                return "응답 데이터 매핑 실패"
+            case .dataTaskError(let error):
+                return "리퀘스트 에러. Task 에러: \(error.localizedDescription)"
+            case .invalidResponse(let code):
+                return "응답 상태 에러. 응답 코드: \(code)"
+            case .noResponse:
+                return "응답 상태 에러. HTTPResponse로 변환 실패"
+            case .noData:
+                return "데이터 없음"
             }
         }
     }
