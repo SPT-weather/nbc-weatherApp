@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 extension Reactive where Base: MainViewController {
-    var viewUpdate: Observable<Void> {
+    var viewDidLoad: Observable<Void> {
         // methodInvoked 특정 메서드의 호출을 관찰 rx.viewDidLoad 바인딩
         return methodInvoked(#selector(base.viewDidLoad))
             .map { _ in }
@@ -25,7 +25,7 @@ extension Reactive where Base: MainViewController {
             base?.refreshDateLabel.text = WeatherDateFormatter.hhmm(model)
         }
     }
-    
+
     var weather: Binder<WeatherDTO> {
         return Binder(base) { [weak base] _, model in
             base?.animalImageView.image = WeatherAnimalAssetTraslator.transform(model)

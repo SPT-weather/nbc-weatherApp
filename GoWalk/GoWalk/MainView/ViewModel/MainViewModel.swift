@@ -10,17 +10,9 @@ import Foundation
 import RxSwift
 import RxRelay
 import RxCocoa
-/*
- 위치 불러오기 -> 위도 경도를 통해 빌더로 URL 생성 후 데이터 요청
- SearchViewControllerDelegate MainViewController 에서 채택? or MainViewModel 에서 채택?
- */
-
-protocol MainViewModelDelegate: AnyObject {
-    func didSelectLocation(_ location: LocationPoint)
-}
 
 // 위치 새로고침에 대해 로직 수정 필요
-class MainViewModel {
+final class MainViewModel {
     private lazy var locationRelay: PublishRelay<LocationPoint> = {
         let locationRelay = PublishRelay<LocationPoint>()
         locationRelay
@@ -33,8 +25,8 @@ class MainViewModel {
     }()
     // coreLocationManager 통해서 로케이션 바로 로드
     private(set) var location: LocationPoint = .init(regionName: "서울 강남구",
-                                        latitude: 127.0495556,
-                                        longitude: 37.514575)
+                                                     latitude: 127.0495556,
+                                                     longitude: 37.514575)
     private let dailyWeatherRelay = PublishRelay<DailyWeatherDTO>()
     private let weatherRelay = PublishRelay<WeatherDTO>()
     private let airPoulltionRelay = PublishRelay<AirPollutionDTO>()
@@ -43,19 +35,17 @@ class MainViewModel {
     private let coreLocationManager: CoreLocationManager
     private let networkManager: AbstractNetworkManager = RXNetworkManager()
     private let disposeBag: DisposeBag
-    weak var delegate: MainViewModelDelegate?
     
     init(coreLocationManager: CoreLocationManager) {
         self.coreLocationManager = coreLocationManager
         let disposeBag = DisposeBag()
         self.disposeBag = disposeBag
-
-        coreLocationManager.locationRelay
+        
+        coreLocationManager.complete
             .withUnretained(self)
             .subscribe { owner, location in
-            owner.fetchRefreshLocation()
-                print(location, "메인뷰모델")
-        }.disposed(by: disposeBag)
+                owner.fetchRefreshLocation()
+            }.disposed(by: disposeBag)
     }
     // 데이터 업데이트 ( 지역 제외 )
     private func fetchAll(_ location: LocationPoint) {
@@ -69,7 +59,7 @@ class MainViewModel {
     // 지금의 형태라면 LocationUserDefaults 사용하지 않을수도 있음 Rx 로 통신
     private func fetchRefreshLocation() {
         // 현 위치 불러오기
-        guard let location = LocationUserDefaults.shared.read() else { return }
+        let location = LocationUserDefaults.shared.read()
         locationRelay.accept(location)
     }
     private func fetchWeather(_ location: LocationPoint) {
@@ -78,7 +68,7 @@ class MainViewModel {
         case .celsius: unit = .metric
         case .fahrenheit: unit = .imperial
         }
-
+        
         guard let weatherURL = URLBuilder(api: OpenWeatherAPI())
             .addPath(.weather)
             .addQueryItem(.latitude(location.latitude)) // 서울 위도
@@ -112,7 +102,7 @@ class MainViewModel {
             .addQueryItem(.appid("902a70addad3e4cfd087a1b95fe85b06"))
             .build()
             .get() else { return }
-            
+        
         networkManager.fetchAirPollutionData(url: airPollutionURL)
             .withUnretained(self)
             .subscribe { owner, result in
@@ -129,15 +119,13 @@ class MainViewModel {
         // 추가로 생각해본다면 요청시간을 통해 업데이트 or 응답 시간을 통해 업데이트
         refreshTimeRelay.accept(Date.now)
     }
-    func present() {
-        self.delegate?.didSelectLocation(location)
-    }
 }
 
 extension MainViewModel {
 
     struct Input {
-        let viewUpdate: Observable<Void>
+        let viewDidLoad: Observable<Void>
+        let viewWillAppear: Observable<Void>
         let refreshWeather: Observable<Void>
         let refreshLocation: Observable<Void>
     }
@@ -164,11 +152,15 @@ extension MainViewModel {
                  owner.saveCurrentLocation()
              }).disposed(by: disposeBag)
 
-         input.viewUpdate
+         input.viewDidLoad
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.fetchRefreshLocation()
             }).disposed(by: disposeBag)
+        
+        input.viewWillAppear.withUnretained(self).subscribe(onNext: { owner, _ in
+            owner.fetchRefreshLocation()
+        }).disposed(by: disposeBag)
 
         return Output(location: locationRelay.asDriver(onErrorDriveWith: .empty()),
                       weather: weatherRelay.asDriver(onErrorDriveWith: .empty()),

@@ -19,6 +19,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = UINavigationController(rootViewController: MainViewController())
         window.makeKeyAndVisible()
         self.window = window
-//        window.overrideUserInterfaceStyle = .dark
     }
 }

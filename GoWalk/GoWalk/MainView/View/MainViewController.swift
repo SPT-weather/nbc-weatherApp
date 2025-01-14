@@ -139,10 +139,12 @@ extension MainViewController {
 extension MainViewController {
     // viewModel 바인드
     private func bind() {
-        let viewUpdate = rx.viewUpdate
+        let viewDidLoad = rx.viewDidLoad
+        let viewWillAppear = rx.viewWillAppear
         let refresh = refreshController.rx.controlEvent(.valueChanged).asObservable()
         let refreshLocation = refreshLocationButton.rx.tap.asObservable()
-        let input = MainViewModel.Input(viewUpdate: viewUpdate,
+        let input = MainViewModel.Input(viewDidLoad: viewDidLoad,
+                                        viewWillAppear: viewWillAppear,
                                         refreshWeather: refresh,
                                         refreshLocation: refreshLocation)
         let output = viewModel.transform(input)

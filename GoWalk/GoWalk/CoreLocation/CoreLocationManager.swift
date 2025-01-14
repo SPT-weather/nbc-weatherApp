@@ -21,9 +21,8 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
     private var location: CLLocationCoordinate2D?
     weak var delegate: CoreLocationAlertDelegate?
-    let locationRelay = BehaviorRelay<LocationPoint>(value: LocationPoint(regionName: "서울 강남구",
-                                                                          latitude: 127.0495556,
-                                                                          longitude: 37.514575))
+    private let completeRelay = PublishRelay<Void>()
+    var complete: Observable<Void> { completeRelay.asObservable() }
     override init() {
         super.init()
         locationManager = CLLocationManager()
@@ -74,11 +73,9 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = manager.location?.coordinate
         if let locationInfo = location {
-
-            print(locationInfo)
             AddressNetworkManager.shared.fetchUserDefaultsRegionData(locationInfo.latitude,
                                                                      locationInfo.longitude,
-                                                                     completion: { [weak self] location in self?.locationRelay.accept(location) })
+                                                                     completion: { [weak self] in self?.completeRelay.accept(()) })
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
             
