@@ -15,4 +15,14 @@ extension Double {
     func toCelsius() -> Double {
         return (self - 32) * 5 / 9
     }
+
+    // 계산된 값 반올림 반환
+    func toRoundedTemperature(unit: TemperatureUnit) -> Int {
+        switch unit {
+        case .celsius:
+            return Int(self.rounded())
+        case .fahrenheit:
+            return Int(self.toFahrenheit().rounded())
+        }
+    }
 }

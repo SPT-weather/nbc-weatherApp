@@ -5,6 +5,7 @@
 //  Created by seohuibaek on 1/13/25.
 //
 
+// 삭제 예정
 import UIKit
 
 final class WeatherImageLoader {
@@ -19,7 +20,7 @@ final class WeatherImageLoader {
             }
 
             DispatchQueue.main.async {
-                completion(image)
+                completion(image.withRenderingMode(.alwaysOriginal).withTintColor(.label))
             }
         }
     }
