@@ -7,6 +7,9 @@
 
 import CoreLocation
 import UIKit
+import RxSwift
+import RxRelay
+
 
 protocol CoreLocationAlertDelegate: AnyObject {
     func requestLocationServiceAlert(title: String, message: String, preferredStyle: UIAlertController.Style)
@@ -18,7 +21,9 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
     private var location: CLLocationCoordinate2D?
     weak var delegate: CoreLocationAlertDelegate?
-
+    let locationRelay = BehaviorRelay<LocationPoint>(value: LocationPoint(regionName: "서울 강남구",
+                                                                          latitude: 127.0495556,
+                                                                          longitude: 37.514575))
     override init() {
         super.init()
         locationManager = CLLocationManager()
@@ -70,8 +75,9 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
         location = manager.location?.coordinate
         if let locationInfo = location {
             print(locationInfo)
-            AddressNetworkManager.shared.fetchUserDefaultsRegionData(locationInfo.latitude,                                                                     locationInfo.longitude,
-                                                                     completion: { print("현 위치 UserDefaults 저장 성공") })
+            AddressNetworkManager.shared.fetchUserDefaultsRegionData(locationInfo.latitude,
+                                                                     locationInfo.longitude,
+                                                                     completion: { [weak self] location in self?.locationRelay.accept(location) })
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
         }

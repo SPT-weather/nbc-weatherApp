@@ -146,24 +146,25 @@ extension MainViewController {
                                         refreshWeather: refresh,
                                         refreshLocation: refreshLocation)
         let output = viewModel.transform(input)
-        
+
         output.weather.drive(rx.weather).disposed(by: disposeBag)
         output.refreshDate.drive(rx.refreshDate).disposed(by: disposeBag)
-        
+
         output.location.drive(weatherView.rx.location).disposed(by: disposeBag)
         output.weather.drive(weatherView.rx.weather).disposed(by: disposeBag)
-        
+
         output.dailyWeather.drive(footerView.rx.dailyWeather).disposed(by: disposeBag)
         output.airPollution.drive(footerView.rx.airPollution).disposed(by: disposeBag)
-        
+
         // 전체 요청 응답에 대한 구독
-        //        Observable.merge(output.weather.asObservable().map { _ in () },
-        //                         output.dailyWeather.asObservable().map { _ in () },
-        //                         output.airPollution.asObservable().map { _ in () },
-        //                         output.refreshDate.asObservable().map { _ in () })
-        //        .subscribe(on: MainScheduler.instance)
-        //        .withUnretained(self).subscribe(onNext: { self.re })
-        //        }.disposed(by: disposeBag)
+        Observable.merge(output.weather.asObservable().map { _ in () },
+                         output.dailyWeather.asObservable().map { _ in () },
+                         output.airPollution.asObservable().map { _ in () },
+                         output.refreshDate.asObservable().map { _ in () })
+        .subscribe(on: MainScheduler.instance)
+        .withUnretained(self).subscribe(onNext: { owner, _ in
+            owner.updateComplete() })
+        .disposed(by: disposeBag)
     }
 }
 
@@ -209,9 +210,9 @@ extension MainViewController {
         guard gestureRecognizer.state == .ended else { return }
         let detailViewModel = DetailViewModel()
         let detailViewControllerModal = DetailViewController(viewModel: detailViewModel)
-//        viewModel.delegate = detailViewController
-//        viewModel.present()
-        
+        //        viewModel.delegate = detailViewController
+        //        viewModel.present()
+
         if let sheet = detailViewControllerModal.sheetPresentationController {
             // 원하는 뷰의 높이를 계산
             let targetHeight = weatherView.frame.maxY

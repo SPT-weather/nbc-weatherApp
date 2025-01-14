@@ -86,7 +86,7 @@ class AddressNetworkManager {
 
 extension AddressNetworkManager {
     
-    func fetchUserDefaultsRegionData(_ lat: Double, _ lon: Double, completion: @escaping () -> Void) {
+    func fetchUserDefaultsRegionData(_ lat: Double, _ lon: Double, completion: @escaping (LocationPoint) -> Void) {
         guard let url = URL(string: "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=\(lon)&y=\(lat)") else {
             print("url 빌드 오류")
             return
@@ -96,12 +96,11 @@ extension AddressNetworkManager {
             .subscribe { (event: SingleEvent<AddressModel<Double>>) in
                 switch event {
                 case .success(let data):
-//                    print(data)
                     guard let address = data.documents.first else { return }
-                    LocationUserDefaults.shared.saveUserLocation(address.addressName,
-                                                                 address.lat,
-                                                                 address.lon)
-                    print("유저디폴트 저장 성공: \(address) \(lat) \(lon)")
+                    let locationPoint = LocationPoint(regionName: address.addressName,
+                                                      latitude: address.lat,
+                                                      longitude: address.lon)
+                    completion(locationPoint)
                 case .failure(let error):
                     print("\(error.localizedDescription)")
                 }
