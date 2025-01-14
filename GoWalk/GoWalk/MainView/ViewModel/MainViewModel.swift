@@ -182,6 +182,6 @@ extension MainViewModel {
 extension MainViewModel: SearchViewControllerDelegate {
     func didSelectLocation(_ location: LocationPoint) {
         self.location = location
-        locationRelay.accept(locationΩ≈)
+        locationRelay.accept(location)
     }
 }
