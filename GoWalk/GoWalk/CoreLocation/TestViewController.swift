@@ -24,6 +24,12 @@ class TestViewController: UIViewController {
         return button
     }()
 
+    private let button3: UIButton = {
+        let button = UIButton()
+        button.setTitle("유저 정보 조회", for: .normal)
+        button.backgroundColor = .gray
+        return button
+    }()
     private let label1: UILabel = {
         let label = UILabel()
         label.text = "위도 검색 결과"
@@ -48,6 +54,7 @@ class TestViewController: UIViewController {
     func setupUi() {
         view.addSubview(button1)
         view.addSubview(button2)
+        view.addSubview(button3)
         view.addSubview(label1)
         view.addSubview(label2)
 
@@ -63,9 +70,15 @@ class TestViewController: UIViewController {
             make.height.equalTo(50)
         }
 
+        button3.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(button1.snp.top).offset(200)
+            make.height.equalTo(50)
+        }
+      
         label1.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(button2.snp.bottom).offset(30)
+            make.top.equalTo(button3.snp.bottom).offset(30)
             make.height.equalTo(70)
         }
 
@@ -78,15 +91,17 @@ class TestViewController: UIViewController {
 
         button1.addTarget(self, action: #selector(tappedButton1), for: .touchUpInside)
         button2.addTarget(self, action: #selector(tappedButton2), for: .touchUpInside)
+        button3.addTarget(self, action: #selector(tappedButton3), for: .touchUpInside)
     }
 
     @objc func tappedButton1() {
         CoreLocationManager.shared.locationManager.startUpdatingLocation()
 
         // 테스트 코드(위도,경도 -> 주소)
-        AddressNetworkManager.shared.fetchRegionData(129.148399576019, 35.1727271517264) {
+        AddressNetworkManager.shared.fetchRegionData(126.889352949931, 37.5001236666572) {
             DispatchQueue.main.async {
                 self.label1.text = "\(AddressLocationInfo.shared.addressName),\n \(AddressLocationInfo.shared.lat),\n \(AddressLocationInfo.shared.lon)"
+                LocationUserDefaults.shared.saveUserLocation(AddressLocationInfo.shared.addressName, AddressLocationInfo.shared.lat, AddressLocationInfo.shared.lon)
             }
         }
     }
@@ -95,11 +110,16 @@ class TestViewController: UIViewController {
         CoreLocationManager.shared.locationManager.startUpdatingLocation()
 
         // 테스트 코드(검색 -> 주소, 위도, 경도 )
-        AddressNetworkManager.shared.fetchAddressData("우동") {
+        AddressNetworkManager.shared.fetchAddressData("구로") {
             DispatchQueue.main.async {
                 self.label2.text = "\(AddressNameInfo.shared.addressList[0].addressName),\n\(AddressNameInfo.shared.addressList[1].addressName),\n\(AddressNameInfo.shared.addressList[2].addressName)"
             }
         }
+    }
+    
+    @objc func tappedButton3() {
+        // 저장된 유저 디폴츠값 불러오기
+        print("\(UserDefaults.standard.string(forKey: "addressName")), \n \(UserDefaults.standard.double(forKey: "lat")), \n \(UserDefaults.standard.double(forKey: "lon"))")
     }
 }
 
