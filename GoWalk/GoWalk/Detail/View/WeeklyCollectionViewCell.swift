@@ -23,7 +23,6 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.image = UIImage(resource: .dummyWeather).withTintColor(.label)
         return imageView
     }()
 
