@@ -21,7 +21,7 @@ extension UserDefaults {
     var themeMode: ThemeMode {
         get {
             let rawValue = integer(forKey: Keys.themeMode)
-            return ThemeMode(rawValue: rawValue) ?? .light
+            return ThemeMode(rawValue: rawValue) ?? .system
         }
         set {
             set(newValue.rawValue, forKey: Keys.themeMode)
@@ -60,6 +60,7 @@ enum PetType: Int {
 }
 
 enum ThemeMode: Int {
-    case light = 0
+    case system = 0
+    case light
     case dark
 }

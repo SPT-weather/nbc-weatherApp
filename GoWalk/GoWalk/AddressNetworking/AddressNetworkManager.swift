@@ -48,9 +48,9 @@ class AddressNetworkManager {
                             lat: info.lat,
                             lon: info.lon
                         )
-                        completion()
                     }
-
+                    completion()
+                    
                 case .failure(let error):
                     print("\(error.localizedDescription)")
                 }
@@ -68,11 +68,11 @@ class AddressNetworkManager {
             .subscribe { (event: SingleEvent<AddressModel<Double>>) in
                 switch event {
                 case .success(let data):
-                    if let documnet = data.documents.first {
+                    if let info = data.documents.first {
                         AddressLocationInfo.shared.update(
-                            addressName: documnet.addressName,
-                            lat: documnet.lat,
-                            lon: documnet.lon
+                            addressName: info.addressName,
+                            lat: info.lat,
+                            lon: info.lon
                         )
                         completion()
                     }
