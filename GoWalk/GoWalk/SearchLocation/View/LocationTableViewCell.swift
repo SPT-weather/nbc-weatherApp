@@ -79,7 +79,7 @@ class LocationTableViewCell: UITableViewCell {
     }
     
     // 코어데이터 로드시 ui 재설정
-    func configureForCoreData(_ locationName: String, _ temperature: Double?, _ icon: UIImage?) {
+    func configureForCoreData(_ locationName: String, _ temperature: Double?, _ icon: String?) {
         locationLabel.text = locationName
         if let temperatureValue = temperature {
             temperatureLabel.text = SettingsManager.shared.convertedTemperature(temperatureValue)
@@ -95,7 +95,7 @@ class LocationTableViewCell: UITableViewCell {
             $0.height.equalTo(30)
         }
         
-        weatherIconImageVIew.image = icon ?? UIImage(systemName: "sun.fill")
+        weatherIconImageVIew.image = UIImage(named: icon ?? "DummyWeather" )
         // 온도 레이블 및 아이콘 보이기
         temperatureLabel.isHidden = false
         weatherIconImageVIew.isHidden = false

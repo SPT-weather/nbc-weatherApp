@@ -22,7 +22,7 @@ final class SearchViewController: UIViewController {
     private let viewModel = SearchLocationViewModel()
     
     private let disposeBag = DisposeBag()
-    private weak var delegate: SearchViewControllerDelegate?
+    weak var delegate: SearchViewControllerDelegate?
     
     private var searchBar: UISearchBar = {
         let search = UISearchBar()
@@ -77,7 +77,12 @@ final class SearchViewController: UIViewController {
             .bind(to: searchTextRelay)
             .disposed(by: disposeBag)
         
-        let input = SearchLocationViewModel.Input(searchText: searchTextRelay.asObservable())
+        let deleteCell = locationTableVIew.rx.itemDeleted.asObservable()
+        
+        let input = SearchLocationViewModel.Input(
+            searchText: searchTextRelay.asObservable(),
+            deleteCell: deleteCell
+        )
         let output = viewModel.transform(input)
         
         // 테이블뷰 데이터 바인딩
@@ -87,10 +92,12 @@ final class SearchViewController: UIViewController {
                 cellType: LocationTableViewCell.self)) { index, cellData, cell in
                     switch cellData.cellType {
                     case .coreData(let locationName, let temperature, let icon):
+                        print("코어데이터에 저장된 데이터 - locationName: \(locationName), temperature: \(temperature), icon: \(icon)")
                         // 코어데이터 바인딩
                         cell.configureForCoreData(locationName, temperature, icon)
                     case .searchResult(let locationName, let latitude, let longitude):
                         // api 검색 결과 데이터 바인딩
+                        print("셀 검색시 데이터 - location: \(locationName), latitude: \(latitude), longitude: \(longitude)")
                         cell.configureForSearchResult(locationName, latitude, longitude)
                     }
                 }
