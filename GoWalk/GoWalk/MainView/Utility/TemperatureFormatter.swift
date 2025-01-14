@@ -18,14 +18,12 @@ enum TemperatureFormatter {
     }
     // 섭씨
     static func celsius(_ temperature: Int) -> String {
-        let temperatureStyle: TemperatureStyle = .celsius
-        let mark = temperatureStyle.mark
+        let mark = "℃"
         return String(format: "%d %@", temperature, mark)
     }
     // 화씨 형태
     static func fahrenheit(_ temperature: Int) -> String {
-        let temperatureStyle: TemperatureStyle = .fahrenheit
-        let mark = temperatureStyle.mark
+        let mark = "℉"
         return String(format: "%d %@", temperature, mark)
     }
     // 간단한 형태 00º
