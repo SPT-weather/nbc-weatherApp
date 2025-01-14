@@ -39,8 +39,6 @@ class SearchLocationViewModel {
     
     func transform(_ input: Input) -> Output {
         input.searchText
-            .debounce(.milliseconds(100), scheduler: MainScheduler.instance)
-            .distinctUntilChanged()
             .flatMapLatest { query -> Observable<[WeatherCellData]> in
                 if query.isEmpty {
                     // coreData에서 데이터 가져오기
