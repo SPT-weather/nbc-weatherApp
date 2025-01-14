@@ -98,12 +98,12 @@ class TestViewController: UIViewController {
         CoreLocationManager.shared.locationManager.startUpdatingLocation()
 
         // 테스트 코드(위도,경도 -> 주소)
-        AddressNetworkManager.shared.fetchRegionData(126.889352949931, 37.5001236666572) {
-            DispatchQueue.main.async {
-                self.label1.text = "\(AddressLocationInfo.shared.addressName),\n \(AddressLocationInfo.shared.lat),\n \(AddressLocationInfo.shared.lon)"
-                LocationUserDefaults.shared.saveUserLocation(AddressLocationInfo.shared.addressName, AddressLocationInfo.shared.lat, AddressLocationInfo.shared.lon)
-            }
-        }
+//        AddressNetworkManager.shared.fetchRegionData(locationInfo.latitude, locationInfo.longitude) {
+//            DispatchQueue.main.async {
+//                self.label1.text = "\(AddressLocationInfo.shared.addressName),\n \(AddressLocationInfo.shared.lat),\n \(AddressLocationInfo.shared.lon)"
+//                LocationUserDefaults.shared.saveUserLocation(AddressLocationInfo.shared.addressName, AddressLocationInfo.shared.lat, AddressLocationInfo.shared.lon)
+//            }
+//        }
     }
 
     @objc func tappedButton2() {

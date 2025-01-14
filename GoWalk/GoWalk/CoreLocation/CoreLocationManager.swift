@@ -71,6 +71,13 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
         if let locationInfo = location {
             print("사용자 위치: \(locationInfo.latitude), \(locationInfo.longitude)")
 
+            // 위치 데이터를 가지고 카카오api요청 받아온 값을 가지고 유저디폴츠 값에 추가
+            AddressNetworkManager.shared.fetchRegionData(locationInfo.latitude, locationInfo.longitude) {
+                print("호출")
+                "\(AddressLocationInfo.shared.addressName),\n \(AddressLocationInfo.shared.lat),\n \(AddressLocationInfo.shared.lon)"
+                LocationUserDefaults.shared.saveUserLocation(AddressLocationInfo.shared.addressName, AddressLocationInfo.shared.lat, AddressLocationInfo.shared.lon)
+            }
+            
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
         }
