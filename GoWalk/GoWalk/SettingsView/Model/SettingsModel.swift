@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class SettingsModel {
+final class SettingsModel {
     
     private let disposeBag = DisposeBag()
     

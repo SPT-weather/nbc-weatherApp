@@ -11,7 +11,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class SettingsViewController: UIViewController {
+final class SettingsViewController: UIViewController {
     
     let viewModel: SettingsViewModel = .init(settingsModel: SettingsModel())
     let disposeBag = DisposeBag()
