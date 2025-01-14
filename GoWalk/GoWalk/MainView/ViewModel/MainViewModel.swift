@@ -14,6 +14,11 @@ import RxCocoa
  위치 불러오기 -> 위도 경도를 통해 빌더로 URL 생성 후 데이터 요청
  SearchViewControllerDelegate MainViewController 에서 채택? or MainViewModel 에서 채택?
  */
+
+protocol MainViewModelDelegate: AnyObject {
+    func didSelectLocation(_ location: LocationPoint)
+}
+
 // 위치 새로고침에 대해 로직 수정 필요
 class MainViewModel {
     private lazy var locationRelay: PublishRelay<LocationPoint> = {
@@ -27,15 +32,18 @@ class MainViewModel {
         return locationRelay
     }()
     // coreLocationManager 통해서 로케이션 바로 로드
-    private lazy var location: LocationPoint? = .init(regionName: "", latitude: 1.1, longitude: 1.1)
+    private(set) var location: LocationPoint = .init(regionName: "서울 강남구",
+                                        latitude: 127.0495556,
+                                        longitude: 37.514575)
     private let dailyWeatherRelay = PublishRelay<DailyWeatherDTO>()
     private let weatherRelay = PublishRelay<WeatherDTO>()
     private let airPoulltionRelay = PublishRelay<AirPollutionDTO>()
     private let refreshTimeRelay = PublishRelay<Date>()
     private let errorRelay = PublishRelay<Error>()
-    private let disposeBag = DisposeBag()
     private let coreLocationManager: CoreLocationManager
-
+    private let disposeBag = DisposeBag()
+    weak var delegate: MainViewModelDelegate?
+    
     init(coreLocationManager: CoreLocationManager) {
         self.coreLocationManager = coreLocationManager
     }
@@ -79,6 +87,10 @@ class MainViewModel {
         // 추가로 생각해본다면 요청시간을 통해 업데이트 or 응답 시간을 통해 업데이트
         refreshTimeRelay.accept(Date.now)
     }
+    
+    func present() {
+        self.delegate?.didSelectLocation(location)
+    }
 }
 
 extension MainViewModel {
@@ -102,8 +114,7 @@ extension MainViewModel {
         input.refreshWeather
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                guard let location = owner.location else { return }
-                owner.fetchAll(location)
+                owner.fetchAll(owner.location)
             }).disposed(by: disposeBag)
 
          input.refreshLocation
@@ -124,5 +135,11 @@ extension MainViewModel {
                       airPollution: airPoulltionRelay.asDriver(onErrorDriveWith: .empty()),
                       refreshDate: refreshTimeRelay.asDriver(onErrorDriveWith: .empty()),
                       error: errorRelay.asDriver(onErrorDriveWith: .empty()))
+    }
+}
+
+extension MainViewModel: SearchViewControllerDelegate {
+    func didSelectLocation(_ location: LocationPoint) {
+        self.location = location
     }
 }

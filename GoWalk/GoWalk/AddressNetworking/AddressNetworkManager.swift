@@ -82,3 +82,29 @@ class AddressNetworkManager {
             }.disposed(by: disposeBag)
     }
 }
+
+
+extension AddressNetworkManager {
+    
+    func fetchUserDefaultsRegionData(_ lat: Double, _ lon: Double, completion: @escaping () -> Void) {
+        guard let url = URL(string: "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=\(lon)&y=\(lat)") else {
+            print("url 빌드 오류")
+            return
+        }
+        let header: HTTPHeaders = ["Authorization": "KakaoAK 430b247857c9b16b87d3f1a7a31d5888"]
+        fetchData(url, header)
+            .subscribe { (event: SingleEvent<AddressModel<Double>>) in
+                switch event {
+                case .success(let data):
+//                    print(data)
+                    guard let address = data.documents.first else { return }
+                    LocationUserDefaults.shared.saveUserLocation(address.addressName,
+                                                                 address.lat,
+                                                                 address.lon)
+                    print("유저디폴트 저장 성공: \(address) \(lat) \(lon)")
+                case .failure(let error):
+                    print("\(error.localizedDescription)")
+                }
+            }.disposed(by: disposeBag)
+    }
+}

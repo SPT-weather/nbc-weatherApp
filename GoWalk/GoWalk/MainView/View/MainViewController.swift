@@ -195,8 +195,9 @@ extension MainViewController {
     }
     // 지역 목록 버튼 액션
     private func locationListButtonTapped() {
-        let viewController = ViewController()
-        navigationController?.pushViewController(viewController, animated: true)
+        let searchViewController = SearchViewController()
+        searchViewController.delegate = viewModel
+        navigationController?.pushViewController(searchViewController, animated: true)
     }
     // 설정 버튼 액션
     private func settingButtonTapped() {
@@ -208,6 +209,9 @@ extension MainViewController {
         guard gestureRecognizer.state == .ended else { return }
         let detailViewModel = DetailViewModel()
         let detailViewControllerModal = DetailViewController(viewModel: detailViewModel)
+//        viewModel.delegate = detailViewController
+//        viewModel.present()
+        
         if let sheet = detailViewControllerModal.sheetPresentationController {
             // 원하는 뷰의 높이를 계산
             let targetHeight = weatherView.frame.maxY

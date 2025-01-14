@@ -12,12 +12,12 @@ import RxCocoa
 extension Reactive where Base: MainViewController {
     var viewUpdate: Observable<Void> {
         // methodInvoked 특정 메서드의 호출을 관찰 rx.viewDidLoad 바인딩
-        return Observable
-            .merge(
-                methodInvoked(#selector(base.viewDidLoad))
-                    .map { _ in },
-                methodInvoked(#selector(base.viewWillAppear))
-                    .map { _ in })
+        return methodInvoked(#selector(base.viewDidLoad))
+            .map { _ in }
+    }
+    
+    var viewWillAppear: Observable<Void> {
+        return methodInvoked(#selector(base.viewDidLoad)).map { _ in }
     }
 
     var refreshDate: Binder<Date> {

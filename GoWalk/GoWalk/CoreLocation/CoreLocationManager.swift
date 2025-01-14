@@ -69,8 +69,9 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = manager.location?.coordinate
         if let locationInfo = location {
-            print("사용자 위치: \(locationInfo.latitude), \(locationInfo.longitude)")
-
+            print(locationInfo)
+            AddressNetworkManager.shared.fetchUserDefaultsRegionData(locationInfo.latitude,                                                                     locationInfo.longitude,
+                                                                     completion: { print("현 위치 UserDefaults 저장 성공") })
             // 위치 데이터를 받으면 즉시 업데이트 중지
             locationManager.stopUpdatingLocation()
         }
