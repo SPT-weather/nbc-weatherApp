@@ -73,6 +73,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = manager.location?.coordinate
         if let locationInfo = location {
+            print(locationInfo)
             AddressNetworkManager.shared.fetchUserDefaultsRegionData(locationInfo.latitude,
                                                                      locationInfo.longitude,
                                                                      completion: { [weak self] in self?.completeRelay.accept(()) })

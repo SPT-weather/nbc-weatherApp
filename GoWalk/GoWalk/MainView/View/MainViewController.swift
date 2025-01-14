@@ -32,8 +32,15 @@ final class MainViewController: UIViewController {
     private let weatherView = MainWeatherView()
     // 새로고침 기준 시간 라벨
     let refreshDateLabel = dateLabel()
-    // 동물 이미지 뷰.
+    // 동물 이미지 뷰
     let animalImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.image = .puppy
+        return imageView
+    }()
+    // 배경 이미지 뷰
+    let backgroundImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.image = .puppy
@@ -79,7 +86,7 @@ extension MainViewController {
         
         [locationListButton, refreshLocationButton, settingButton]
             .forEach { navigationView.addSubview($0) }
-        [weatherView, animalImageView]
+        [weatherView, animalImageView, backgroundImageView]
             .forEach { view.addSubview($0) }
         [scrollView, navigationView, footerView]
             .forEach { view.addSubview($0) }
@@ -122,6 +129,12 @@ extension MainViewController {
             $0.centerX.equalToSuperview()
         }
         animalImageView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(40)
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(refreshDateLabel.snp.bottom).offset(30)
+            $0.bottom.equalTo(footerView.snp.top)
+        }
+        backgroundImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(40)
             $0.centerX.equalToSuperview()
             $0.top.equalTo(refreshDateLabel.snp.bottom).offset(30)
@@ -199,7 +212,6 @@ extension MainViewController {
     // 지역 목록 버튼 액션
     private func locationListButtonTapped() {
         let searchViewController = SearchViewController()
-        searchViewController.delegate = viewModel
         navigationController?.pushViewController(searchViewController, animated: true)
     }
     // 설정 버튼 액션
@@ -212,9 +224,6 @@ extension MainViewController {
         guard gestureRecognizer.state == .ended else { return }
         let detailViewModel = DetailViewModel()
         let detailViewControllerModal = DetailViewController(viewModel: detailViewModel)
-        //        viewModel.delegate = detailViewController
-        //        viewModel.present()
-
         if let sheet = detailViewControllerModal.sheetPresentationController {
             // 원하는 뷰의 높이를 계산
             let targetHeight = weatherView.frame.maxY

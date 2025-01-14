@@ -35,12 +35,12 @@ final class MainViewModel {
     private let coreLocationManager: CoreLocationManager
     private let networkManager: AbstractNetworkManager = RXNetworkManager()
     private let disposeBag: DisposeBag
-    
+
     init(coreLocationManager: CoreLocationManager) {
         self.coreLocationManager = coreLocationManager
         let disposeBag = DisposeBag()
         self.disposeBag = disposeBag
-        
+
         coreLocationManager.complete
             .withUnretained(self)
             .subscribe { owner, location in
@@ -68,13 +68,14 @@ final class MainViewModel {
         case .celsius: unit = .metric
         case .fahrenheit: unit = .imperial
         }
-        
+
         guard let weatherURL = URLBuilder(api: OpenWeatherAPI())
             .addPath(.weather)
             .addQueryItem(.latitude(location.latitude)) // 서울 위도
             .addQueryItem(.longitude(location.longitude)) // 서울 경도
             .addQueryItem(.appid("902a70addad3e4cfd087a1b95fe85b06"))
             .addQueryItem(.units(unit))
+            .addQueryItem(.language(.kr))
             .build()
             .get() else { return }
         
@@ -102,7 +103,7 @@ final class MainViewModel {
             .addQueryItem(.appid("902a70addad3e4cfd087a1b95fe85b06"))
             .build()
             .get() else { return }
-        
+
         networkManager.fetchAirPollutionData(url: airPollutionURL)
             .withUnretained(self)
             .subscribe { owner, result in
@@ -155,10 +156,12 @@ extension MainViewModel {
          input.viewDidLoad
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.fetchRefreshLocation()
+                owner.saveCurrentLocation()
             }).disposed(by: disposeBag)
-        
-        input.viewWillAppear.withUnretained(self).subscribe(onNext: { owner, _ in
+
+        input.viewWillAppear
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
             owner.fetchRefreshLocation()
         }).disposed(by: disposeBag)
 
@@ -168,12 +171,5 @@ extension MainViewModel {
                       airPollution: airPoulltionRelay.asDriver(onErrorDriveWith: .empty()),
                       refreshDate: refreshTimeRelay.asDriver(onErrorDriveWith: .empty()),
                       error: errorRelay.asDriver(onErrorDriveWith: .empty()))
-    }
-}
-
-extension MainViewModel: SearchViewControllerDelegate {
-    func didSelectLocation(_ location: LocationPoint) {
-        self.location = location
-        locationRelay.accept(location)
     }
 }

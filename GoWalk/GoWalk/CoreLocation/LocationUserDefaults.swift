@@ -18,7 +18,7 @@ class LocationUserDefaults {
     }
 
     func read() -> LocationPoint {
-        guard let addressName = defaults.string(forKey: "addressName") else { return LocationPoint(regionName: "서울 강남구", latitude: 127.0495556, longitude: 37.514575) }
+        guard let addressName = defaults.string(forKey: "addressName") else { return LocationPoint(regionName: "서울 강남구", latitude: 37.514575, longitude: 127.0495556) }
         let lat = defaults.double(forKey: "lat")
         let lon = defaults.double(forKey: "lon")
         return LocationPoint(regionName: addressName, latitude: lat, longitude: lon)

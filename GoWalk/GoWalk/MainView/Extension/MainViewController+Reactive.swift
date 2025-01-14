@@ -17,7 +17,7 @@ extension Reactive where Base: MainViewController {
     }
 
     var viewWillAppear: Observable<Void> {
-        return methodInvoked(#selector(base.viewDidLoad)).map { _ in }
+        return methodInvoked(#selector(base.viewWillAppear)).map { _ in }
     }
 
     var refreshDate: Binder<Date> {

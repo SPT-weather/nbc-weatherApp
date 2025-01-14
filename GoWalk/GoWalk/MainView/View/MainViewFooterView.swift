@@ -49,7 +49,6 @@ final class MainFooterView: UIView {
     }()
     let fineDustLabel: UILabel = {
         let label = valueLabel()
-        label.text = "10"
         return label
     }()
     override init(frame: CGRect) {
