@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = Test(networkManager: RXNetworkManager())
+        window.rootViewController = SearchViewController()
+//        window.rootViewController = Test(networkManager: RXNetworkManager())
         window.makeKeyAndVisible()
         self.window = window
 //        window.overrideUserInterfaceStyle = .dark

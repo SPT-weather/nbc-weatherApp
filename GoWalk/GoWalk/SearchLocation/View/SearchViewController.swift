@@ -13,16 +13,11 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-protocol SearchViewControllerDelegate: AnyObject {
-    func didSelectLocation(_ location: LocationPoint)
-}
-
 final class SearchViewController: UIViewController {
     
     private let viewModel = SearchLocationViewModel()
     private let searchTextRelay = BehaviorRelay<String>(value: "")
     private let disposeBag = DisposeBag()
-    weak var delegate: SearchViewControllerDelegate?
     
     private var searchBar: UISearchBar = {
         let search = UISearchBar()
@@ -109,8 +104,8 @@ final class SearchViewController: UIViewController {
                     // 코어데이터에서 locationName에 해당하는 LocationPoint 찾기
                     if let location = CoreDataStack.shared.fetchLocationPointList()
                         .first(where: { $0.regionName == locationName }) {
-                        // 델리게이트를 통해 메인 뷰에 데이터 전달
-                        self.delegate?.didSelectLocation(location)
+                        // 선택된 지역 정보 UserDefaults에 저장
+                        LocationUserDefaults.shared.saveUserLocation(location.regionName, location.latitude, location.longitude)
                         self.navigationController?.popViewController(animated: true)
                     }
                 case .searchResult(let regionName, let latitude, let longitude):
