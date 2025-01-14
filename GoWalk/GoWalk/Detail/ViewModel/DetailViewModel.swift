@@ -97,7 +97,7 @@ class DetailViewModel {
                                 let hourDate = calendar.date(byAdding: .hour, value: index, to: now) ?? now
                                 return DetailWeather.Hourly(
                                     time: Int(hourDate.timeIntervalSince1970),
-                                    rawTemperature: Int(round(hourly.temp)),
+                                    rawTemperature: hourly.temp,
                                     iconName: hourly.icon
                                 )
                             }
@@ -109,8 +109,8 @@ class DetailViewModel {
                                 return DetailWeather.Weekly(
                                     date: Int(dayDate.timeIntervalSince1970),
                                     iconName: daily.icon,
-                                    rawMinTemperature: Int(round(daily.minTemp)),
-                                    rawMaxTemperature: Int(round(daily.maxTemp))
+                                    rawMinTemperature: daily.minTemp,
+                                    rawMaxTemperature: daily.maxTemp
                                 )
                             }
                             self.weeklyWeatherRelay.accept(weeklyData)
