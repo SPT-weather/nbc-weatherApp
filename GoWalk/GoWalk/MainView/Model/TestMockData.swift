@@ -14,9 +14,9 @@ struct TestMockData {
                                                        highestTemperature: 15,
                                                        lowestTemperature: -11)
     static let weather = WeatherSimple(location: "서울특별시",
-                                       weather: .cloudy)
+                                       weather: .clearSky)
     static let testWeather = WeatherSimple(location: "작동확인",
-                                           weather: .cloudy)
+                                           weather: .clearSky)
     static let seoul = LocationPoint(regionName: "서울특별시",
                                      latitude: 37.514575,
                                      longitude: 127.0495556)

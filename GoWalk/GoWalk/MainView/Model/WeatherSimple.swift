@@ -9,9 +9,9 @@ import Foundation
 // 삭제예정 데이터 
 struct WeatherSimple {
     let location: String
-    let weather: TempWeather
+    let weather: WeatherType
 
     static let failure = WeatherSimple(location: "업데이트 실패",
-                                         weather: .sunny)
+                                       weather: .clearSky)
 
 }

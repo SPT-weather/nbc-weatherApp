@@ -22,7 +22,7 @@ extension Reactive where Base: MainWeatherView {
         }
     }
 
-    var weather: Binder<TempWeather> {
+    var weather: Binder<WeatherType> {
         return Binder(base) { [weak base] _, model in
             base?.weatherImageView.image = WeatherAssetTranslator.resourceImage(from: model)
         }

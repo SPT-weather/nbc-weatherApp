@@ -36,6 +36,7 @@ extension Reactive where Base: MainFooterView {
 
             // UILabel 에 NSMutableAttributedString 적용
             base?.temperatureLabel.attributedText = attributedStr
+>>>>>>> Stashed changes
         }
     }
 
@@ -46,7 +47,7 @@ extension Reactive where Base: MainFooterView {
         }
     }
 
-    var weather: Binder<TempWeather> {
+    var weather: Binder<WeatherType> {
         return Binder(base) { [weak base] _, model in
             base?.weatherLabel.text = model.korean
         }

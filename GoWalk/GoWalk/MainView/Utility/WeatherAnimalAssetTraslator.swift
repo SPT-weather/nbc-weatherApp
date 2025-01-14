@@ -8,10 +8,9 @@
 import UIKit.UIImage
 // 날씨 -> 동물 이미지 변환
 enum WeatherAnimalAssetTraslator {
-    static func transform(_ weather: TempWeather) -> UIImage {
+    static func transform(_ weather: WeatherType) -> UIImage {
         switch weather {
-        case .cloudy: return .puppy
-        case .sunny: return .puppy
+        default: return .puppy
         }
     }
 }

@@ -11,6 +11,15 @@ import RxSwift
 import RxRelay
 import RxCocoa
 
+enum MainViewType {
+    case `default`
+    case selected
+}
+/*
+ 위치 불러오기 -> 위도 경도를 통해 빌더로 URL 생성 후 데이터 요청
+ 
+ */
+
 // 위치 새로고침에 대해 로직 수정 필요
 class MainViewModel {
     private lazy var locationRelay: BehaviorRelay<LocationPoint> = {
@@ -23,48 +32,50 @@ class MainViewModel {
             }).disposed(by: disposeBag)
         return locationRelay
     }()
-    private let weatherRelay = PublishRelay<TempWeather>()
-    private let temperatureRelay = PublishRelay<TempTemperature>()
-    private let dustRelay = PublishRelay<TempDust>()
-    private let refreshDateRelay = PublishRelay<Date>()
-    private let disposeBag = DisposeBag()
     private var location: LocationPoint
-
+    private let weatherRelay = PublishRelay<DailyWeatherDTO>()
+    private let airPoulltionRelay = PublishRelay<AirPollutionDTO>()
+    private let refreshTimeRelay = PublishRelay<Date>()
+    private let errorRelay = PublishRelay<Error>()
+    private let disposeBag = DisposeBag()
+    
     init(location: LocationPoint = TestMockData.seoul) {
         self.location = location
     }
     // 데이터 업데이트 ( 지역 제외 )
     private func fetchAll() {
-        fetchDust()
         fetchWeather()
-        fetchTemperature()
+        fetchAirPollution()
         fetchRefreshDate()
     }
-
-    private func fetchDust() {
-        let dust = TempDust(micro: Int.random(in: 10...20), fine: Int.random(in: 100...1000))
-        dustRelay.accept(dust)
+    
+    private func fetchSelectedLocation() {
+        
     }
-
-    private func fetchWeather() {
-        weatherRelay.accept(.cloudy)
-    }
-
-    private func fetchTemperature() {
-        temperatureRelay.accept(.init(currentTemperature: Int.random(in: 0...10),
-                                      highestTemperature: Int.random(in: 0...10),
-                                      lowestTemperature: Int.random(in: 0...10)))
-    }
-
-    private func fetchCurrentLocation() {
+    private func fetchRefreshLocation() {
+        // 현 위치 불러오기
         let location = LocationPoint(regionName: "작동확인",
                                      latitude: 10,
                                      longitude: 10)
         locationRelay.accept(location)
     }
-
+    private func fetchWeather() {
+        let weatherDTO = DailyWeatherDTO(minTemp: 0,
+                                         maxTemp: 0,
+                                         id: 1,
+                                         main: "정상",
+                                         description: "날씨 상세",
+                                         icon: "01")
+        weatherRelay.accept(weatherDTO)
+    }
+    private func fetchAirPollution() {
+        // 현재 날씨 불러오기
+        let airPollution = AirPollutionDTO(aqi: 0, pmTwoPointFive: 0, pmTen: 0  )
+        airPoulltionRelay.accept(airPollution)
+    }
     private func fetchRefreshDate() {
-        refreshDateRelay.accept(Date.now)
+        // 추가로 생각해본다면 요청시간을 통해 업데이트 or 응답 시간을 통해 업데이트
+        refreshTimeRelay.accept(Date.now)
     }
 }
 
@@ -73,15 +84,15 @@ extension MainViewModel {
     struct Input {
         let viewDidLoad: Observable<Void>
         let refreshWeather: Observable<Void>
-        let refreshLocation: Observable<Void>
+        let refreshLocation: Observable<Void>?
     }
 
     struct Output {
-        let temperature: Driver<TempTemperature>
-        let dust: Driver<TempDust>
         let location: Driver<LocationPoint>
-        let weather: Driver<TempWeather>
+        let weather: Driver<DailyWeatherDTO>
+        let airPollution: Driver<AirPollutionDTO>
         let refreshDate: Driver<Date>
+        let error: Driver<Error>
     }
 
     func transform(_ input: Input) -> Output {
@@ -91,28 +102,22 @@ extension MainViewModel {
                 owner.fetchAll()
             }).disposed(by: disposeBag)
 
-         input.refreshLocation
+         input.refreshLocation?
              .withUnretained(self)
              .subscribe(onNext: { owner, _ in
-                 owner.fetchCurrentLocation()
+                 owner.fetchRefreshLocation()
              }).disposed(by: disposeBag)
 
          input.viewDidLoad
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.fetchAll()
+                owner.fetchRefreshLocation()
             }).disposed(by: disposeBag)
 
-        let temperature = temperatureRelay.asDriver(onErrorJustReturn: .failure)
-        let dust = dustRelay.asDriver(onErrorJustReturn: .failure)
-        let location = locationRelay.asDriver(onErrorJustReturn: .init(regionName: "실패", latitude: 0, longitude: 0))
-        let weather = weatherRelay.asDriver(onErrorJustReturn: .cloudy)
-        let refreshDate = refreshDateRelay.asDriver(onErrorJustReturn: .now)
-
-        return Output(temperature: temperature,
-                      dust: dust,
-                      location: location,
-                      weather: weather,
-                      refreshDate: refreshDate)
+        return Output(location: locationRelay.asDriver(),
+                      weather: weatherRelay.asDriver(onErrorDriveWith: .empty()),
+                      airPollution: airPoulltionRelay.asDriver(onErrorDriveWith: .empty()),
+                      refreshDate: refreshTimeRelay.asDriver(onErrorDriveWith: .empty()),
+                      error: errorRelay.asDriver(onErrorDriveWith: .empty()))
     }
 }
