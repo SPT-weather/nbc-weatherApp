@@ -54,6 +54,7 @@ final class SearchViewController: UIViewController {
         setNavigationBar()
         setupUI()
         bind()
+        alertBind()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -144,6 +145,27 @@ final class SearchViewController: UIViewController {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func alertBind() {
+        viewModel.alertMessageRelay
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] message in
+                self?.showAlert(message: message)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // Alert 표시 메서드
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(
+            title: "알림",
+            message: message,
+            preferredStyle: .alert
+        )
+        let confirmAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        alertController.addAction(confirmAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - UI 관련 메서드

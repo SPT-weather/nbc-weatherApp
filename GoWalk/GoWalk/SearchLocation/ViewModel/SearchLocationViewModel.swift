@@ -36,6 +36,7 @@ final class SearchLocationViewModel {
     
     private let weatherRelay = PublishRelay<[WeatherCellData]>()
     private let selectedLocationRelay = PublishRelay<LocationPoint>()
+    let alertMessageRelay = PublishRelay<String>()
     private let disposeBag = DisposeBag()
     
     // MARK: - transform 메서드
@@ -51,6 +52,13 @@ final class SearchLocationViewModel {
         // 삭제 처리
         input.deleteCell
             .withLatestFrom(weatherRelay) { (indexPath, data) -> [WeatherCellData] in
+                // 첫 번째 셀인지 확인
+                guard indexPath.row != 0 else {
+                    // Alert 메시지 전송
+                    self.alertMessageRelay.accept("기본 위치는 삭제할 수 없습니다!")
+                    return data // 기존 데이터를 그대로 반환 (삭제 처리 안 함)
+                }
+                
                 var updateData = data
                 let cellData = updateData[indexPath.row]
                 if case .coreData(let regionName, _, _) = cellData.cellType {
