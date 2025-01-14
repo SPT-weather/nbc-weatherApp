@@ -12,8 +12,8 @@ import RxCocoa
 extension Reactive where Base: MainFooterView {
     var dailyWeather: Binder<DailyWeatherDTO> {
         return Binder(base) { [weak base] _, model in
-            let max = String(double: model.maxTemp)
-            let min = String(double: model.minTemp)
+            let max = TemperatureFormatter.simple(model.maxTemp)
+            let min = TemperatureFormatter.simple(model.minTemp)
             let string = max + " / " + min
             // 문자열 중 범위 특정
             // "/" 를 함께 설정하는 것은 값이 같을 경우 범위가 중복되는 경우를 방지하기 위함
