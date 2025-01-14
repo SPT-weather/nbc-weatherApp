@@ -50,6 +50,7 @@ class AddressNetworkManager {
                         )
                     }
                     completion()
+                    
                 case .failure(let error):
                     print("\(error.localizedDescription)")
                 }
