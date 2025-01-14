@@ -53,7 +53,7 @@ class DetailViewModel {
     // 날씨 데이터를 API에서 가져오는 Observable 반환
     private func fetchWeatherData() -> Observable<Result<TotalWeatherDTO, AppError>> {
         let coordinates = getLocationCoordinates()
-        print(coordinates.latitude, coordinates.longitude)
+        print(coordinates.latitude, coordinates.longitude) // 추후 삭제 예정
 
         guard let url = URLBuilder(api: OpenWeatherAPI())
             .addPath(.weather)
@@ -82,7 +82,7 @@ class DetailViewModel {
                 guard let self = self else { return }
 
                 self.fetchWeatherData()
-                    .debug()
+                    .debug() // 추후 삭제 예정
                     .observe(on: MainScheduler.instance)
                     .subscribe(onNext: { [weak self] result in
                         guard let self = self else { return }
