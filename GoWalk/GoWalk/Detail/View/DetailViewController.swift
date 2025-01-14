@@ -32,7 +32,7 @@ class DetailViewController: UIViewController {
         return label
     }()
 
-    private lazy var hourlyCollectionView: UICollectionView = {
+    private var hourlyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 80, height: 100)
@@ -49,7 +49,7 @@ class DetailViewController: UIViewController {
         return collectionView
     }()
 
-    private lazy var weeklyCollectionView: UICollectionView = {
+    private var weeklyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 32, height: 60)
