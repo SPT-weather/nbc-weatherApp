@@ -2,6 +2,17 @@ import UIKit
 import SnapKit
 
 class TestModalViewController: UIViewController {
+    private let networkManager: AbstractNetworkManager
+    
+    init(networkManager: AbstractNetworkManager = RXNetworkManager()) {
+        self.networkManager = networkManager
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private lazy var modalButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Show Modal", for: .normal)
@@ -39,14 +50,14 @@ class TestModalViewController: UIViewController {
     }
     
     @objc private func showModal() {
-        let viewModel = DetailViewModel()
+        let viewModel = DetailViewModel(networkManager: networkManager)
         let detailVC = DetailViewController(viewModel: viewModel)
         
         detailVC.modalPresentationStyle = .pageSheet
         detailVC.isModalInPresentation = false
         
         if let sheet = detailVC.sheetPresentationController {
-            sheet.detents = [ // detents를 사용하여 커스텀
+            sheet.detents = [
                 .custom { [weak self] _ in
                     guard let self = self else { return 500 }
                     let buttonFrame = self.modalButton.convert(self.modalButton.bounds, to: self.view)
