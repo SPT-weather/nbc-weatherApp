@@ -87,7 +87,7 @@ final class LocationTableViewCell: UITableViewCell {
         } else {
             temperatureLabel.text = "N/A"
         }
-        
+        locationLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         locationLabel.snp.makeConstraints {
             $0.centerY.equalTo(contentView.snp.centerY)
             $0.leading.equalTo(contentView.snp.leading).offset(10)

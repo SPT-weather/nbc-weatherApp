@@ -20,7 +20,7 @@ protocol SearchViewControllerDelegate: AnyObject {
 final class SearchViewController: UIViewController {
     
     private let viewModel = SearchLocationViewModel()
-    
+    private let searchTextRelay = BehaviorRelay<String>(value: "")
     private let disposeBag = DisposeBag()
     weak var delegate: SearchViewControllerDelegate?
     
@@ -61,12 +61,8 @@ final class SearchViewController: UIViewController {
         applyTheme()
     }
     
-    // 네비바 셋업
-    private func setNavigationBar() {
-        navigationItem.title = "Today"
-    }
+    // MARK: - 데이터 바인딩 메서드
     
-    let searchTextRelay = BehaviorRelay<String>(value: "")
     // 바인딩 메서드
     private func bind() {
         
@@ -133,6 +129,28 @@ final class SearchViewController: UIViewController {
                 }
             })
             .disposed(by: disposeBag)
+        
+        // 셀 선택 시 하이라이트 애니메이션
+        locationTableVIew.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                if let cell = self?.locationTableVIew.cellForRow(at: indexPath) {
+                    UIView.animate(withDuration: 0.1, animations: {
+                        cell.contentView.backgroundColor = UIColor.lightGray
+                    }) { _ in
+                        UIView.animate(withDuration: 0.1) {
+                            cell.contentView.backgroundColor = UIColor.clear
+                        }
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: - UI 관련 메서드
+    
+    // 네비바 셋업
+    private func setNavigationBar() {
+        navigationItem.title = "Today"
     }
     
     // UI 셋업 메서드
@@ -168,5 +186,4 @@ final class SearchViewController: UIViewController {
             overrideUserInterfaceStyle = .unspecified
         }
     }
-    
 }
