@@ -15,7 +15,7 @@ struct LocationPoint {
     let regionName: String
     let latitude: Double
     let longitude: Double
-    
+
     init(id: NSManagedObjectID? = nil, regionName: String, latitude: Double, longitude: Double) {
         self.id = id
         self.regionName = regionName
@@ -60,6 +60,7 @@ final class CoreDataStack {
             let locations: [Location] = try context.fetch(fetchRequst)
             return locations.map { location in
                 LocationPoint(
+                    id: location.objectID,
                     regionName: location.regionName ?? "알 수 없는 지역",
                     latitude: location.latitude,
                     longitude: location.longitude
