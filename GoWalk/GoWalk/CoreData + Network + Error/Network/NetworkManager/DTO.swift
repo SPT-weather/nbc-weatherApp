@@ -112,11 +112,11 @@ struct AirPollutionDTO: Mappable {
 
 // MARK: - 주소 DTO
 struct AddressDTO: Mappable { // Search page에서 사용
-    let locationPoint: [LocationPoint]
+    let locationPoint: [LocationDTO]
 
     static func map(from response: AddressModel<String>) -> Result<AddressDTO, AppError> {
         let addresses = response.documents.map { data in
-            LocationPoint(
+            LocationDTO(
                 regionName: data.addressName,
                 latitude: Double(data.lat) ?? 0,
                 longitude: Double(data.lon) ?? 0
@@ -127,7 +127,7 @@ struct AddressDTO: Mappable { // Search page에서 사용
 }
 
 struct RegionDTO: Mappable { // use in main page
-    let locationPoint: LocationPoint
+    let locationPoint: LocationDTO
 
     static func map(from response: AddressModel<Double>) -> Result<RegionDTO, AppError> {
         guard let document = response.documents.first
@@ -135,12 +135,18 @@ struct RegionDTO: Mappable { // use in main page
             return .failure(.network(.failedToMapping))
         }
 
-        let locationPoint: LocationPoint = LocationPoint(
+        let locationDTO: LocationDTO = LocationDTO(
             regionName: document.addressName,
             latitude: document.lat,
             longitude: document.lon
         )
 
-        return .success(RegionDTO(locationPoint: locationPoint))
+        return .success(RegionDTO(locationPoint: locationDTO))
     }
+}
+
+struct LocationDTO: Decodable {
+    let regionName: String
+    let latitude: Double
+    let longitude: Double
 }

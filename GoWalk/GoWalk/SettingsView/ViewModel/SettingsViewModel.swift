@@ -1,4 +1,3 @@
-// swiftlint:disable trailing_whitespace
 //
 //  SettingsViewModel.swift
 //  GoWalk
