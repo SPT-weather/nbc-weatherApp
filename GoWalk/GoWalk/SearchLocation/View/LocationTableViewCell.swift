@@ -33,7 +33,7 @@ final class LocationTableViewCell: UITableViewCell {
     }()
     
     // 날씨 아이콘 이미지뷰
-    private let weatherIconImageVIew: UIImageView = {
+    private let weatherIconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .systemBackground
@@ -53,7 +53,7 @@ final class LocationTableViewCell: UITableViewCell {
         [
             locationLabel,
             temperatureLabel,
-            weatherIconImageVIew
+            weatherIconImageView
         ].forEach { contentView.addSubview($0) }
         
         locationLabel.snp.makeConstraints {
@@ -70,7 +70,7 @@ final class LocationTableViewCell: UITableViewCell {
             $0.height.equalTo(locationLabel.snp.height)
         }
         
-        weatherIconImageVIew.snp.makeConstraints {
+        weatherIconImageView.snp.makeConstraints {
             $0.centerY.equalTo(contentView.snp.centerY)
             $0.leading.equalTo(temperatureLabel.snp.trailing).offset(12)
             $0.trailing.equalTo(contentView.snp.trailing).offset(-16)
@@ -95,10 +95,14 @@ final class LocationTableViewCell: UITableViewCell {
             $0.height.equalTo(30)
         }
         
-        weatherIconImageVIew.image = UIImage(named: icon ?? "DummyWeather" )
+        if let iconName = icon, let image = UIImage(named: iconName) {
+            weatherIconImageView.image = image
+        } else {
+            weatherIconImageView.image = UIImage(named: "DummyWeather")
+        }
         // 온도 레이블 및 아이콘 보이기
         temperatureLabel.isHidden = false
-        weatherIconImageVIew.isHidden = false
+        weatherIconImageView.isHidden = false
         
     }
     
@@ -108,7 +112,7 @@ final class LocationTableViewCell: UITableViewCell {
         locationLabel.font = UIFont.systemFont(ofSize: 22, weight: .regular)
         // 온도 레이블 및 아이콘 숨기기
         temperatureLabel.isHidden = true
-        weatherIconImageVIew.isHidden = true
+        weatherIconImageView.isHidden = true
         
         // 검색 결과 상태의 제약조건으로 업데이트
         locationLabel.snp.remakeConstraints {
