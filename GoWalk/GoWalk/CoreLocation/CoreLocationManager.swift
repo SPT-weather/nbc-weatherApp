@@ -35,8 +35,7 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
     func checkUserDeviceLocationServiceAuthorizationStatus() {
         if CLLocationManager.locationServicesEnabled() {
             print("위치 서비스가 활성화 상태입니다.")
-            let authorizationStatus = locationManager.authorizationStatus
-            checkUserCurrentLocationAuthorization(authorizationStatus)
+            locationManager.requestWhenInUseAuthorization()
         } else {
             print("위치 서비스가 비활성화 상태입니다.") // 권한이 denied로 변경됨
         }
@@ -56,11 +55,13 @@ class CoreLocationManager: NSObject, CLLocationManagerDelegate {
             locationManager.requestWhenInUseAuthorization()
         case .restricted, .denied:
             print("restricted, denied")
-            delegate?.requestLocationServiceAlert(
-                title: "위치 서비스 권한 필요",
-                message: "위치 서비스 권한을 허용해주세요.\n설정 > 앱 이름에서 위치 서비스를 허용해주세요.",
-                preferredStyle: .alert
-            )
+            DispatchQueue.main.async { [weak self] in
+                self?.delegate?.requestLocationServiceAlert(
+                    title: "위치 서비스 권한 필요",
+                    message: "위치 서비스 권한을 허용해주세요.\n설정 > 앱 이름에서 위치 서비스를 허용해주세요.",
+                    preferredStyle: .alert
+                )
+            }
         case .authorizedWhenInUse:
             print("authorizedWhenInUse")
             locationManager.startUpdatingLocation()
