@@ -72,6 +72,8 @@ final class SearchViewController: UIViewController {
         
         // searchBar 텍스트 바인딩
         searchBar.rx.text.orEmpty
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
             .bind(to: searchTextRelay)
             .disposed(by: disposeBag)
         
