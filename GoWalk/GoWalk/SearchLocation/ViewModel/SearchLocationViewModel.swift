@@ -26,6 +26,7 @@ final class SearchLocationViewModel {
     struct Input {
         let searchText: Observable<String>
         let deleteCell: Observable<IndexPath>
+//        let addFirstData: Observable<Void>
     }
     
     // 하나의 테이블 뷰를 활용할 예정이라 하나의 Output을 사용
@@ -34,10 +35,13 @@ final class SearchLocationViewModel {
         let selectedLocation: PublishRelay<LocationPoint> // 선택된 지역 데이터
     }
     
-    private let weatherRelay = PublishRelay<[WeatherCellData]>()
+    private let weatherRelay = BehaviorRelay<[WeatherCellData]>(value: [])
     private let selectedLocationRelay = PublishRelay<LocationPoint>()
     let alertMessageRelay = PublishRelay<String>()
     private let disposeBag = DisposeBag()
+    
+    // 디폴트 데이터
+//    private let defaultCellData = WeatherCellData(cellType: .coreData(locationName: "현재 위치", temperature: 25, icon: ""))
     
     // MARK: - transform 메서드
     
@@ -73,6 +77,18 @@ final class SearchLocationViewModel {
             .bind(to: weatherRelay)
             .disposed(by: disposeBag)
         
+//        input.addFirstData
+//            .subscribe(onNext: { [weak self] in
+//                guard let self = self else { return }
+//                var currentData = self.weatherRelay.value
+//                let newData = WeatherCellData(
+//                    cellType: .coreData(
+//                        locationName: "new Location", temperature: 25, icon: ""))
+//                currentData.insert(newData, at: 1) // 새 데이터는 두번째 셀부터 추가
+//                self.weatherRelay.accept(currentData)
+//            })
+//            .disposed(by: disposeBag)
+        
         return Output(
             tableViewData: weatherRelay.asDriver(onErrorJustReturn: []),
             selectedLocation: selectedLocationRelay
@@ -89,6 +105,11 @@ final class SearchLocationViewModel {
             self.fetchWeatherData(point)
         }
         return Observable.combineLatest(weatherDataObservables)
+//            .map { data in
+//                var defaultData = data
+//                defaultData.insert(self.defaultCellData, at: 0) // 첫번째 셀에 기본 데이터 추가
+//                return defaultData
+//            }
     }
     
     /// 검색 시 api 요청으로 지역명과 위도, 경도 불러오는 메서드

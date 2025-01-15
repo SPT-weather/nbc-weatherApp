@@ -34,7 +34,7 @@ final class SearchViewController: UIViewController {
     
     private lazy var locationTableVIew: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .systemBackground
+        tableView.backgroundColor = UIColor(resource: .mainBackground)
         tableView.showsVerticalScrollIndicator = false
         tableView.rowHeight = 70
         tableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.id)
@@ -43,18 +43,16 @@ final class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
-            return traitCollection.userInterfaceStyle == .dark ? .black : .white
-        }
-        setNavigationBar()
         setupUI()
         bind()
         alertBind()
+        view.backgroundColor = UIColor.mainBackground
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         applyTheme()
+        setNavigationBar()
     }
     
     // MARK: - 데이터 바인딩 메서드
@@ -73,7 +71,7 @@ final class SearchViewController: UIViewController {
         
         let input = SearchLocationViewModel.Input(
             searchText: searchTextRelay.asObservable(),
-            deleteCell: deleteCell
+            deleteCell: deleteCell/*, addFirstData: <#Observable<Void>#>*/
         )
         let output = viewModel.transform(input)
         
@@ -167,7 +165,18 @@ final class SearchViewController: UIViewController {
     
     // 네비바 셋업
     private func setNavigationBar() {
+        // 타이틀 속성 설정
+        let titleAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.label,
+            .font: UIFont.systemFont(ofSize: 28, weight: .bold)
+        ]
+        
+        // 타이틀 속성 적용
+        navigationController?.navigationBar.titleTextAttributes = titleAttributes
         navigationItem.title = "Today"
+        
+        // Back 버튼 색상 설정
+        navigationController?.navigationBar.tintColor = UIColor.label
     }
     
     // UI 셋업 메서드
