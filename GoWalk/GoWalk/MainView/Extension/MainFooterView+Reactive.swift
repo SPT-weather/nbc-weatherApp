@@ -38,7 +38,7 @@ extension Reactive where Base: MainFooterView {
 
             // UILabel 에 NSMutableAttributedString 적용
             base?.temperatureLabel.attributedText = attributedStr
-            base?.weatherLabel.text = model.main
+            base?.weatherLabel.text = model.description
         }
     }
 

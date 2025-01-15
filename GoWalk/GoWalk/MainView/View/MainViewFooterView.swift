@@ -92,6 +92,8 @@ extension MainFooterView {
         label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 1
+        label.minimumScaleFactor = 0.5
+        label.adjustsFontSizeToFitWidth = true
         return label
     }
     private static func titleLabel(_ text: String) -> UILabel {
@@ -100,6 +102,8 @@ extension MainFooterView {
         label.textAlignment = .center
         label.textColor = labelColor
         label.text = text
+        label.minimumScaleFactor = 0.5
+        label.adjustsFontSizeToFitWidth = true
         return label
     }
 }

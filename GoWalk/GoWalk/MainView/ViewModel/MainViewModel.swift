@@ -88,7 +88,6 @@ final class MainViewModel {
                     guard let dailyWeatherDTO = weatherDTO.daily.first else { return }
                     owner.weatherRelay.accept(currentDTO)
                     owner.dailyWeatherRelay.accept(dailyWeatherDTO)
-                    print(currentDTO, dailyWeatherDTO)
                 case .failure(let error):
                     owner.errorRelay.accept(error)
                 }
@@ -110,7 +109,6 @@ final class MainViewModel {
                 switch result {
                 case .success(let airPollution):
                     owner.airPoulltionRelay.accept(airPollution)
-                    print(airPollution)
                 case .failure(let error):
                     owner.errorRelay.accept(error)
                 }

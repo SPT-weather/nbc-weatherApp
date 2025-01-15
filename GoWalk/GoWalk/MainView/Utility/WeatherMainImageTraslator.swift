@@ -21,7 +21,7 @@ enum WeatherMainImageTraslator {
         case 11: return .thunder
         case 13: return .snow
         case 50: return .mist
-        default: return .yellowDust
+        default: return nil
         }
     }
 }
