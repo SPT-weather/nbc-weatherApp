@@ -116,7 +116,7 @@ class WeeklyCollectionViewCell: UICollectionViewCell {
 
     func configure(with model: DetailWeather.Weekly) {
         dateLabel.text = DetailDateFormatter.weeklyString(from: model.date)
-        iconImageView.image = UIImage(named: "\(model.iconName).png")
+        iconImageView.image = UIImage(named: model.iconName)?.withTintColor(.label)
         maxTemperatureLabel.text = model.maxTemperature
         minTemperatureLabel.text = model.minTemperature
     }
