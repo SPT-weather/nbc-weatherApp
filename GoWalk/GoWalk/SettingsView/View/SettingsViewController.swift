@@ -142,7 +142,7 @@ final class SettingsViewController: UIViewController {
         
         // 다크 모드와 라이트 모드 모두에서 적절한 배경 색상 설정
         view.backgroundColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
-            return traitCollection.userInterfaceStyle == .dark ? .black : .white
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.mainBackground : UIColor.mainBackground
         }
         
         setNavigationBar()
@@ -201,6 +201,7 @@ final class SettingsViewController: UIViewController {
                 .forEach { windowScene in
                     windowScene.windows.forEach { window in
                         window.overrideUserInterfaceStyle = .unspecified
+                        window.backgroundColor = UIColor.mainBackground
                     }
                 }
             updateCheckMaker(systemModeButton)
@@ -211,6 +212,7 @@ final class SettingsViewController: UIViewController {
                 .forEach { windowScene in
                     windowScene.windows.forEach { window in
                         window.overrideUserInterfaceStyle = .light
+                        window.backgroundColor = UIColor.mainBackground
                     }
                 }
             updateCheckMaker(lightModeButton)
@@ -221,6 +223,7 @@ final class SettingsViewController: UIViewController {
                 .forEach { windowScene in
                     windowScene.windows.forEach { window in
                         window.overrideUserInterfaceStyle = .dark
+                        window.backgroundColor = UIColor.mainBackground
                     }
                 }
             updateCheckMaker(darkModeButton)
@@ -231,11 +234,11 @@ final class SettingsViewController: UIViewController {
     private func updateTemperatureUnit(_ unit: TemperatureUnit) {
         switch unit {
         case .celsius:
-            celsiusButton.backgroundColor = .systemCyan
+            celsiusButton.backgroundColor = UIColor.tempMin
             fahrenheitButton.backgroundColor = .systemGray4
         case .fahrenheit:
             celsiusButton.backgroundColor = .systemGray4
-            fahrenheitButton.backgroundColor = .systemCyan
+            fahrenheitButton.backgroundColor = UIColor.tempMin
         }
     }
     
@@ -243,11 +246,11 @@ final class SettingsViewController: UIViewController {
     private func updatePetType(_ type: PetType) {
         switch type {
         case .dog:
-            dogButton.backgroundColor = .systemCyan
+            dogButton.backgroundColor = UIColor.tempMin
             catButton.backgroundColor = .systemGray4
         case .cat:
             dogButton.backgroundColor = .systemGray4
-            catButton.backgroundColor = .systemCyan
+            catButton.backgroundColor = UIColor.tempMin
         }
     }
     
@@ -265,7 +268,18 @@ final class SettingsViewController: UIViewController {
     
     // 네비바 셋업
     private func setNavigationBar() {
+        // 타이틀 속성 설정
+        let titleAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.label,
+            .font: UIFont.systemFont(ofSize: 28, weight: .bold)
+        ]
+        
+        // 타이틀 속성 적용
+        navigationController?.navigationBar.titleTextAttributes = titleAttributes
         navigationItem.title = "Settings"
+        
+        // Back 버튼 색상 설정
+        navigationController?.navigationBar.tintColor = UIColor.label
     }
     
     // UI 셋업
