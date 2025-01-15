@@ -19,6 +19,8 @@ final class LocationTableViewCell: UITableViewCell {
         label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         label.textAlignment = .left
         label.textColor = .label
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         return label
     }()
     
@@ -29,6 +31,8 @@ final class LocationTableViewCell: UITableViewCell {
         label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         label.textAlignment = .center
         label.textColor = .label
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         return label
     }()
     
@@ -36,7 +40,7 @@ final class LocationTableViewCell: UITableViewCell {
     private let weatherIconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .systemBackground
+        imageView.backgroundColor = .clear
         return imageView
     }()
     
@@ -50,6 +54,7 @@ final class LocationTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
+        applyTheme()
         [
             locationLabel,
             temperatureLabel,
@@ -95,10 +100,10 @@ final class LocationTableViewCell: UITableViewCell {
             $0.height.equalTo(30)
         }
         
-        if let iconName = icon, let image = UIImage(named: iconName) {
+        if let iconName = icon, let image = UIImage(named: iconName)?.withTintColor(.label) {
             weatherIconImageView.image = image
         } else {
-            weatherIconImageView.image = UIImage(named: "DummyWeather")
+            weatherIconImageView.image = UIImage(named: "DummyWeather")?.withTintColor(.label)
         }
         // 온도 레이블 및 아이콘 보이기
         temperatureLabel.isHidden = false
@@ -121,6 +126,19 @@ final class LocationTableViewCell: UITableViewCell {
             $0.trailing.equalTo(contentView.snp.trailing).offset(-16)
             $0.height.equalTo(30)
         }
-        
     }
+    // 화면 테마모드 적용
+    private func applyTheme() {
+        let theme = SettingsManager.shared.themeMode
+        switch theme {
+        case .light:
+            overrideUserInterfaceStyle = .light
+        case .dark:
+            overrideUserInterfaceStyle = .dark
+        case .system:
+            overrideUserInterfaceStyle = .unspecified
+        }
+        contentView.backgroundColor = UIColor(resource: .mainBackground)
+    }
+    
 }

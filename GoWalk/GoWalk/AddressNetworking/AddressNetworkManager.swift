@@ -59,7 +59,7 @@ class AddressNetworkManager {
 
     // MARK: - 위도,경도로 주소 api요청 메서드(main page)
     func fetchRegionData(_ lat: Double, _ lon: Double, completion: @escaping () -> Void) {
-        guard let url = URL(string: "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=\(lat)&y=\(lon)") else {
+        guard let url = URL(string: "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=\(lon)&y=\(lat)") else {
             print("url 빌드 오류")
             return
         }
