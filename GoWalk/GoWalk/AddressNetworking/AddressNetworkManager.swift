@@ -32,6 +32,8 @@ class AddressNetworkManager {
     }
     // MARK: - 입력값으로 주소 api요청 메서드(search page)
     func fetchAddressData(_ inputData: String, completion: @escaping () -> Void) {
+        guard let inputData =  inputData.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { print("url 인코딩 실패")
+            return }
         guard let url = URL(string: "https://dapi.kakao.com/v2/local/search/address.json?query=\(inputData)") else {
             print("url 빌드 오류")
             return
