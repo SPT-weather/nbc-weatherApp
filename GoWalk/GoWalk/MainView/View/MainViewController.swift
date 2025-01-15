@@ -239,7 +239,7 @@ extension MainViewController {
             let targetHeight = weatherView.frame.maxY
             let height = self.view.safeAreaLayoutGuide.layoutFrame.height
             let customDetent = UISheetPresentationController.Detent.custom { _ in
-                return height - targetHeight
+                return height - targetHeight + 60
             }
             sheet.detents = [customDetent]
         }
