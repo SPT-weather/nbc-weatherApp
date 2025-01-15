@@ -32,11 +32,16 @@ final class MainViewController: UIViewController {
     private let weatherView = MainWeatherView()
     // 새로고침 기준 시간 라벨
     let refreshDateLabel = dateLabel()
-    // 동물 이미지 뷰.
+    // 동물 이미지 뷰
     let animalImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = .puppy
+        return imageView
+    }()
+    // 배경 이미지 뷰
+    let backgroundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     // 푸터 뷰
@@ -50,7 +55,7 @@ final class MainViewController: UIViewController {
 // MARK: - Life Cycle + configureUI
 
 extension MainViewController {
-    
+
     override func loadView() {
         super.loadView()
         bind()
@@ -70,16 +75,16 @@ extension MainViewController {
     }
     // UI 설정
     private func configureUI() {
-        view.backgroundColor = UIColor.sectionBg
+        view.backgroundColor = UIColor.mainBackground
         let navigationView = UIView()
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.refreshControl = refreshController
-        
+
         [locationListButton, refreshLocationButton, settingButton]
             .forEach { navigationView.addSubview($0) }
-        [weatherView, animalImageView]
+        [weatherView, animalImageView, backgroundImageView]
             .forEach { view.addSubview($0) }
         [scrollView, navigationView, footerView]
             .forEach { view.addSubview($0) }
@@ -127,6 +132,12 @@ extension MainViewController {
             $0.top.equalTo(refreshDateLabel.snp.bottom).offset(30)
             $0.bottom.equalTo(footerView.snp.top)
         }
+        backgroundImageView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(40)
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(refreshDateLabel.snp.bottom).offset(30)
+            $0.bottom.equalTo(footerView.snp.top)
+        }
         footerView.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.2)
@@ -139,22 +150,36 @@ extension MainViewController {
 extension MainViewController {
     // viewModel 바인드
     private func bind() {
-        let viewUpdate = rx.viewUpdate
+        let viewDidLoad = rx.viewDidLoad
+        let viewWillAppear = rx.viewWillAppear
         let refresh = refreshController.rx.controlEvent(.valueChanged).asObservable()
         let refreshLocation = refreshLocationButton.rx.tap.asObservable()
-        let input = MainViewModel.Input(viewUpdate: viewUpdate,
+        let input = MainViewModel.Input(viewDidLoad: viewDidLoad,
+                                        viewWillAppear: viewWillAppear,
                                         refreshWeather: refresh,
                                         refreshLocation: refreshLocation)
         let output = viewModel.transform(input)
 
-        output.weather.drive(rx.weather).disposed(by: disposeBag)
-        output.refreshDate.drive(rx.refreshDate).disposed(by: disposeBag)
+        output.weather
+            .drive(rx.weather)
+            .disposed(by: disposeBag)
+        output.refreshDate
+            .drive(rx.refreshDate)
+            .disposed(by: disposeBag)
 
-        output.location.drive(weatherView.rx.location).disposed(by: disposeBag)
-        output.weather.drive(weatherView.rx.weather).disposed(by: disposeBag)
+        output.location
+            .drive(weatherView.rx.location)
+            .disposed(by: disposeBag)
+        output.weather
+            .drive(weatherView.rx.weather)
+            .disposed(by: disposeBag)
 
-        output.dailyWeather.drive(footerView.rx.dailyWeather).disposed(by: disposeBag)
-        output.airPollution.drive(footerView.rx.airPollution).disposed(by: disposeBag)
+        output.dailyWeather
+            .drive(footerView.rx.dailyWeather)
+            .disposed(by: disposeBag)
+        output.airPollution
+            .drive(footerView.rx.airPollution)
+            .disposed(by: disposeBag)
 
         // 전체 요청 응답에 대한 구독
         Observable.merge(output.weather.asObservable().map { _ in () },
@@ -197,7 +222,6 @@ extension MainViewController {
     // 지역 목록 버튼 액션
     private func locationListButtonTapped() {
         let searchViewController = SearchViewController()
-        searchViewController.delegate = viewModel
         navigationController?.pushViewController(searchViewController, animated: true)
     }
     // 설정 버튼 액션
@@ -210,9 +234,6 @@ extension MainViewController {
         guard gestureRecognizer.state == .ended else { return }
         let detailViewModel = DetailViewModel()
         let detailViewControllerModal = DetailViewController(viewModel: detailViewModel)
-        //        viewModel.delegate = detailViewController
-        //        viewModel.present()
-
         if let sheet = detailViewControllerModal.sheetPresentationController {
             // 원하는 뷰의 높이를 계산
             let targetHeight = weatherView.frame.maxY

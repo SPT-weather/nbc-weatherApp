@@ -49,7 +49,6 @@ final class MainFooterView: UIView {
     }()
     let fineDustLabel: UILabel = {
         let label = valueLabel()
-        label.text = "10"
         return label
     }()
     override init(frame: CGRect) {
@@ -62,6 +61,7 @@ final class MainFooterView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     private func configureUI() {
+        backgroundColor = UIColor.sectionBg
         [weatherStackView, microDustStackView, fineDustStackView]
             .forEach { wholeStackView.addArrangedSubview($0) }
         addSubview(wholeStackView)

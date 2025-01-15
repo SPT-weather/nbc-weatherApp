@@ -9,16 +9,16 @@ import Foundation
 class LocationUserDefaults {
     static let shared = LocationUserDefaults()
     private let defaults = UserDefaults.standard
-    
+
     /// 사용자의 위치 정보를 저장
     func saveUserLocation(_ name: String, _ lat: Double, _ lon: Double) {
         defaults.set(name, forKey: "addressName")
         defaults.set(lat, forKey: "lat")
         defaults.set(lon, forKey: "lon")
     }
-    
-    func read() -> LocationPoint? {
-        guard let addressName = defaults.string(forKey: "addressName") else { return nil }
+
+    func read() -> LocationPoint {
+        guard let addressName = defaults.string(forKey: "addressName") else { return LocationPoint(regionName: "서울 강남구", latitude: 37.514575, longitude: 127.0495556) }
         let lat = defaults.double(forKey: "lat")
         let lon = defaults.double(forKey: "lon")
         return LocationPoint(regionName: addressName, latitude: lat, longitude: lon)

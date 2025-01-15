@@ -1,5 +1,5 @@
 //
-//  WeatherSimpleView.swift
+//  WeatherSimpleView+Reactive.swift
 //  GoWalk
 //
 //  Created by 0-jerry on 1/12/25.
@@ -12,7 +12,8 @@ import RxCocoa
 extension Reactive where Base: MainWeatherView {
     var location: Binder<LocationPoint> {
         return Binder(base) { [weak base] _, model in
-            base?.locationLabel.text = model.regionName
+            guard let regionName = model.regionName.components(separatedBy: " ").last else { return }
+            base?.locationLabel.text = regionName
         }
     }
 

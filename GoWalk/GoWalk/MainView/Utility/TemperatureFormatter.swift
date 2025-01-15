@@ -27,7 +27,8 @@ enum TemperatureFormatter {
         return String(format: "%d %@", temperature, mark)
     }
     // 간단한 형태 00º
-    static func simple(_ temperature: Int) -> String {
+    static func simple(_ temperature: Double) -> String {
+        let temperature = Int(temperature.rounded())
         return String(format: "%dº", temperature)
     }
 }
